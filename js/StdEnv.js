@@ -234,7 +234,6 @@ class StdEnv {
         }
 
         this.spawnOtherPlayer = function(avatarPath){
-            console.log(this.scene);
             const scene = this.scene;
             const loader = new GLTFLoader();
             loader.load('glb/animation.glb', (gltf) => {
@@ -251,11 +250,17 @@ class StdEnv {
                     });
                 });
             });
-            console.log(this.otherPlayer)
         }
 
         this.getLocation = () => {
             return this.playerAvatar.position;
+        }
+
+        this.moveOtherPlayer = (x,y,z) => {
+            if(typeof this.otherPlayer !== "undefined"){
+                //console.log(this.otherPlayer)
+                this.otherPlayer.model.position.copy(new THREE.Vector3(x,y,z));
+            }
         }
 
         this.cameraPosition = new THREE.Vector3();
@@ -307,6 +312,10 @@ class StdEnv {
             this.playerAvatar.position.copy(player.position);
             this.playerAvatar.update(delta, frustum, this.dummyCamera);
             this.playerAvatar.opacity = (this.controlVector.z - 0.01) / (40 - 0.01);
+        }
+        if (this.otherPlayer) {
+            this.playerAvatar.position.copy(player.position);
+            this.playerAvatar.update(delta, frustum, this.dummyCamera);
         }
         this.scene.fog.needsUpdate = true;
 

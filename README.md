@@ -1,0 +1,37 @@
+# Welcome to the Spacetime Standard Kit
+
+The Spacetime standard kit is meant to allow developers to deploy complete and compatible virtual environments without worrying about the integration of common metaverse features.
+
+## Development
+
+To get started, you must first clone the repo on your local drive and navigate to the projects folder.
+```
+git clone https://github.com/Spacetime-Meta/spacetime-standard-kit.git
+cd spacetime-standard-kit
+```
+
+Once you are ready to participate in the development of the standard kit, you must go to the [issue page](https://github.com/Spacetime-Meta/spacetime-standard-kit/issues) of the project and select an issues to work on. Once you have selected the issus you want to work on, crate a new branch for this issue. 
+
+**Do not forget to change the branch to develop!!**  
+*The develop branch is always the starting point when working on the project. If you want more information about branch management, i recommend reading this article: [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/)*
+
+after creating your issue branch, you can check it out in local
+```
+git fetch origin
+git checkout <your branch name>
+```
+
+At this point you can do the modifications you came to do. If you modify the class structure, do not forget to adapt the UML Class Diagram
+
+Once you are done with you modifications, you can commit and push your changes to your branch origin.
+```
+git add .
+git commit -m "<your commit message>"
+git push
+```
+
+At this point you can go on the Github website and open a pull request to merge your changes into the develop branch.
+ 
+## Useful Visual Studio Code Extensions
+1. To edit the UML diagrams direcly in your Visual Studio Code, we strongly recommend the [drawio extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).
+2. To easily test your changes in the examples, we recommend the [live server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).

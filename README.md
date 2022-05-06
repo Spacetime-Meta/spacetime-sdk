@@ -2,6 +2,14 @@
 
 The Spacetime standard kit is meant to allow developers to deploy complete and compatible virtual environments without worrying about the integration of common metaverse features.
 
+## Examples
+
+The standard kit comes with 2 demo world to help you get started, see what is possible and understand the code.
+1. Base template
+2. Spawn planet
+
+Do not forget to keep the examples up to date as the codebase gets more advanced.
+
 ## Development
 
 To get started, you must first clone the repo on your local drive and navigate to the projects folder.
@@ -12,7 +20,7 @@ cd spacetime-standard-kit
 
 Once you are ready to participate in the development of the standard kit, you must go to the [issue page](https://github.com/Spacetime-Meta/spacetime-standard-kit/issues) of the project and select an issues to work on. Once you have selected the issus you want to work on, crate a new branch for this issue. 
 
-**Do not forget to change the branch to develop!!**  
+**Do not forget to branch from develop!!**  
 *The develop branch is always the starting point when working on the project. If you want more information about branch management, i recommend reading this article: [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/)*
 
 after creating your issue branch, you can check it out in local
@@ -33,10 +41,9 @@ git push
 At this point you can go on the Github website and open a pull request to merge your changes into the develop branch.
  
 ## Environments
-There are two environment for the Standard Kit:
-1. Production: Deployed on Github pages from the main branch [View deployment](https://spacetime-meta.github.io/spacetime-standard-kit/)
-2. Development: Deployed on Netlify from the develop branch [View deployment](https://stdkit-dev.netlify.app/)
-3. Local: You can easily deploy the project on your local drive using the [live server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
+There are two environments for the Standard Kit:
+1. **Production:** Deployed on Github pages from the main branch [View deployment](https://spacetime-meta.github.io/spacetime-standard-kit/)
+2. **Development:** Deployed on Netlify from the develop branch [View deployment](https://stdkit-dev.netlify.app/)
 
 
 ## Useful Visual Studio Code Extensions

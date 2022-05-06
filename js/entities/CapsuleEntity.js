@@ -1,8 +1,10 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { Entity } from "./Entity.js";
-class CapsuleEntity extends Entity {
+class CapsuleEntity extends THREE.Object3D {
     constructor(radius, size) {
         super();
+        this.box = new THREE.Box3();
+        this.velocity = new THREE.Vector3();
         this.horizontalVelocity = new THREE.Vector3();
         this.radius = radius;
         this.size = size;
@@ -78,7 +80,6 @@ class CapsuleEntity extends Entity {
         } else {
             this.velocity.set(0, 0, 0);
         }
-
     }
 }
 

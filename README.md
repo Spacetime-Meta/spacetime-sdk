@@ -32,6 +32,13 @@ git push
 
 At this point you can go on the Github website and open a pull request to merge your changes into the develop branch.
  
+## Environments
+There are two environment for the Standard Kit:
+1. Production: Deployed on Github pages from the main branch [View deployment](https://spacetime-meta.github.io/spacetime-standard-kit/)
+2. Development: Deployed on Netlify from the develop branch [View deployment](https://stdkit-dev.netlify.app/)
+3. Local: You can easily deploy the project on your local drive using the [live server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
+
+
 ## Useful Visual Studio Code Extensions
 1. To edit the UML diagrams direcly in your Visual Studio Code, we strongly recommend the [drawio extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).
 2. To easily test your changes in the examples, we recommend the [live server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).

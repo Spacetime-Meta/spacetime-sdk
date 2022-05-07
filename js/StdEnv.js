@@ -8,7 +8,6 @@ import { MeshBVH, MeshBVHVisualizer } from './util/three-mesh-bvh.js';
 import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
-import { PlayerAvatar } from './entities/PlayerAvatar.js';
 import localProxy from "./util/localProxy.js";
 
 const LOW = 0;
@@ -149,24 +148,10 @@ class StdEnv {
                 visualizer.visible = false;
                 visualizer.update();
                 scene.add(visualizer);
-                loader.load('glb/animation.glb', (gltf) => {
-                    loader.load(avatarPath, (vanguard) => {
-                        vanguard.scene.scale.set(0.2, 0.2, 0.2);
-                        this.playerAvatar = new PlayerAvatar(2.5, 30, vanguard.scene, {
-                            "idle": gltf.animations[2],
-                            "walk": gltf.animations[1],
-                            "run": gltf.animations[3],
-                            "jump": gltf.animations[4],
-                            "fall": gltf.animations[5]
-                        }, {
-                            scene
-                        });
-                    });
-                });
-            }, onProgress, onError);
+            });
             this.entities = [];
             // ===== player =====
-            this.player = new PlayerLocal();
+            this.player = new PlayerLocal('glb/animation.glb', avatarPath, this.scene);
             window.player = this.player;
             this.scene.add(this.player);
 
@@ -232,35 +217,11 @@ class StdEnv {
             this.setGraphicsSetting(this.graphicTier)
         }
 
-        this.spawnOtherPlayer = function(avatarPath){
-            const scene = this.scene;
-            const loader = new GLTFLoader();
-            loader.load('glb/animation.glb', (gltf) => {
-                loader.load(avatarPath, (vanguard) => {
-                    vanguard.scene.scale.set(0.2, 0.2, 0.2);
-                    this.otherPlayer = new PlayerAvatar(2.5, 30, vanguard.scene, {
-                        "idle": gltf.animations[2],
-                        "walk": gltf.animations[1],
-                        "run": gltf.animations[3],
-                        "jump": gltf.animations[4],
-                        "fall": gltf.animations[5]
-                    }, {
-                        scene
-                    });
-                });
-            });
-        }
+        this.spawnOtherPlayer = function(avatarPath){ }
 
-        this.getLocation = () => {
-            return this.playerAvatar.position;
-        }
+        this.getLocation = () => { }
 
-        this.moveOtherPlayer = (x,y,z) => {
-            if(typeof this.otherPlayer !== "undefined"){
-                //console.log(this.otherPlayer)
-                this.otherPlayer.model.position.copy(new THREE.Vector3(x,y,z));
-            }
-        }
+        this.moveOtherPlayer = (x,y,z) => { }
 
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();
@@ -275,16 +236,19 @@ class StdEnv {
         const frustum = new THREE.Frustum();
         frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse));
         if (collider) {
+            
+            const controlVector = this.controlVector;
+            this.controls.minPolarAngle = controlVector.x;
+            this.controls.maxPolarAngle = controlVector.y;
+            
             for (let i = 0; i < 5; i++) {
-                this.player.update(delta / 5, this.dummyCamera, collider, this.entities);
+                this.player.update(delta / 5, this.dummyCamera, collider, this.entities, frustum, this.dummyCamera, controlVector);
                 this.camera.position.copy(this.player.position);
                 this.entities.forEach(entity => {
                     entity.update(delta / 5, frustum);
                 })
             }
-            const controlVector = this.controlVector;
-            this.controls.minPolarAngle = controlVector.x;
-            this.controls.maxPolarAngle = controlVector.y;
+            
             //this.camera.position.y += 10;
             this.camera.position.copy(this.player.position);
             const dir = this.dummyCamera.getWorldDirection(new THREE.Vector3());
@@ -306,15 +270,6 @@ class StdEnv {
             this.camera.position.copy(this.cameraPosition);
             this.camera.lookAt(this.cameraTarget);
             this.controlVector.lerp(this.targetControlVector, 0.1);
-        }
-        if (this.playerAvatar) {
-            this.playerAvatar.position.copy(player.position);
-            this.playerAvatar.update(delta, frustum, this.dummyCamera);
-            this.playerAvatar.opacity = (this.controlVector.z - 0.01) / (40 - 0.01);
-        }
-        if (this.otherPlayer) {
-            this.playerAvatar.position.copy(player.position);
-            this.playerAvatar.update(delta, frustum, this.dummyCamera);
         }
         this.scene.fog.needsUpdate = true;
 

@@ -6,7 +6,7 @@ function angleDifference(angle1, angle2) {
     return (diff < -Math.PI) ? diff + (Math.PI * 2) : diff;
 }
 
-class PlayerAvatar extends THREE.Object3D {
+class AvatarController extends THREE.Object3D {
     constructor(radius, size, model, animations, {
         scene,
         entities
@@ -135,4 +135,4 @@ class PlayerAvatar extends THREE.Object3D {
     }
 }
 
-export { PlayerAvatar };
+export { AvatarController };

@@ -7,8 +7,7 @@ import { MeshBVH, MeshBVHVisualizer } from './util/three-mesh-bvh.js';
 
 import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
-import { Player } from './entities/Player.js';
-import { Avatar } from './entities/Avatar.js';
+import { PlayerLocal } from './entities/PlayerLocal.js';
 import { PlayerAvatar } from './entities/PlayerAvatar.js';
 import localProxy from "./util/localProxy.js";
 
@@ -167,7 +166,7 @@ class StdEnv {
             }, onProgress, onError);
             this.entities = [];
             // ===== player =====
-            this.player = new Player();
+            this.player = new PlayerLocal();
             window.player = this.player;
             this.scene.add(this.player);
 

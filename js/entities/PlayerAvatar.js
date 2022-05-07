@@ -1,6 +1,5 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import * as SkeletonUtils from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/utils/SkeletonUtils.js';
-import Controller from "./animation/Controller.js";
 
 function angleDifference(angle1, angle2) {
     const diff = ((angle2 - angle1 + Math.PI) % (Math.PI * 2)) - Math.PI;
@@ -29,19 +28,42 @@ class PlayerAvatar extends THREE.Object3D {
                 child.frustumCulled = false;
             }
         });
+        this.current = "none";
         this.mixer = new THREE.AnimationMixer(this.model);
         this.animations = animations;
-        this.controller = new Controller(this.mixer, this.animations);
-        this.controller.animations.jump.loop = THREE.LoopPingPong;
+        Object.entries(animations).forEach(([anim, clip]) => {
+            this.animations[anim] = this.mixer.clipAction(clip);
+        });
+        this.lastChange = performance.now() - 250;
+        this.animations.jump.loop = THREE.LoopPingPong;
         this.scene = scene;
         this.scene.add(this.model);
         this.delta = 0;
         this.box = new THREE.Box3();
         this.updateBox();
         this.positionChange = new THREE.Vector3();
-        this.controller.play("idle", 0);
+        this.play("idle", 0);
         this.jumpTick = 0;
         this.opacity = 1;
+    }
+    play(anim, time = 0.5) {
+        if (anim === this.current) {
+            return;
+        }
+        if (performance.now() - this.lastChange < 250) {
+            return;
+        }
+        this.lastChange = performance.now();
+        if (this.current !== "none") {
+            this.animations[this.current].fadeOut(time);
+        }
+        this.current = anim;
+        if (this.current !== "none") {
+            this.animations[this.current].enabled = true;
+            this.animations[this.current].reset();
+            this.animations[this.current].fadeIn(time);
+            this.animations[this.current].play();
+        }
     }
     update(delta, frustum, fpsCamera) {
         this.delta = delta;
@@ -70,21 +92,21 @@ class PlayerAvatar extends THREE.Object3D {
         this.lastPosition = this.position.clone();
         const changeMag = Math.hypot(this.positionChange.x, this.positionChange.z);
         if (player.jumped > 0 && this.jumpTick === 0) {
-            this.controller.play("jump", 0.25);
+            this.play("jump", 0.25);
         } else {
             if (this.positionChange.y < -0.25 && !player.groundBelow) {
-                this.controller.play("fall", 0.25);
+                this.play("fall", 0.25);
             } else {
-                if ((this.controller.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
+                if ((this.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
                     if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
-                        this.controller.play("walk");
+                        this.play("walk");
                     } else {
-                        this.controller.play("idle");
+                        this.play("idle");
                     }
                 }
             }
         }
-        if (this.controller.current === "jump") {
+        if (this.current === "jump") {
             this.jumpTick += delta;
         } else {
             this.jumpTick = 0;

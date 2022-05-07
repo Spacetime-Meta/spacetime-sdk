@@ -1,4 +1,4 @@
-import { StdEnv } from 'https://spacetime-meta.github.io/spacetime-standard-kit/js/StdEnv.js';
+import { StdEnv } from '../../../js/StdEnv.js';
 
 let stats;
 
@@ -10,7 +10,6 @@ const flyout = document.getElementById('fly-out');
 const graphics = document.getElementById("graphics");
 
 const VE = new StdEnv();
-
 init();
 
 function init() {

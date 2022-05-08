@@ -21,7 +21,7 @@ const bloomScene = new THREE.Scene();
 const clock = new THREE.Clock();
 
 /*
-This class wraps the whole Virtual Environement and provide an easy to use API for
+This class wraps the whole Virtual Environment and provide an easy to use API for
 people who want to build standard worlds.
 
 In main.js, this class should be used the following way:
@@ -55,7 +55,7 @@ Other usages should be like:
 class StdEnv {
     constructor() {
         this.scene = new THREE.Scene();
-        this.init = function(terrainPath, avatarPath, x, y, z) {
+        this.init = function() {
             this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
 
             // ===== renderer =====
@@ -93,68 +93,6 @@ class StdEnv {
             // ===== shaders =====
             this.composer = new DefaultComposer(this.renderer, this.scene, this.camera);
 
-            // ===== load the terrain =====
-            function onProgress(xr) { /* console.log((xr.loaded / xr.total) * 100)*/ }
-
-            function onError(e) { console.log(e) };
-
-            const loader = new GLTFLoader();
-            loader.load(terrainPath, (object) => {
-                object.scene.position.set(x, y, z);
-                object.scene.traverse(object => {
-                    if (object.isMesh) {
-                        object.castShadow = true;
-                        object.receiveShadow = true;
-                        object.material.roughness = 1;
-                        if (object.material.map) {
-                            object.material.map.anisotropy = 16;
-                            object.material.map.needsUpdate = true;
-                        }
-                        const cloned = new THREE.Mesh(object.geometry, object.material);
-                        object.getWorldPosition(cloned.position);
-                        //object.updateMatrixWorld();
-                        if (object.material.emissive && (object.material.emissive.r > 0 || object.material.emissive.g > 0 || object.material.color.b > 0)) {
-                            /* object.updateMatrixWorld();
-                                cloned.matrix.copy(object.matrixWorld);*/
-                            bloomScene.attach(cloned);
-                        }
-                    }
-                    if (object.isLight) {
-                        object.parent.remove(object);
-                    }
-                });
-                scene.add(object.scene);
-                let geometries = [];
-                object.scene.traverse(object => {
-                    if (object.geometry && object.visible) {
-                        const cloned = object.geometry.clone();
-                        cloned.applyMatrix4(object.matrixWorld);
-                        for (const key in cloned.attributes) {
-                            if (key !== 'position') { cloned.deleteAttribute(key); }
-                        }
-                        geometries.push(cloned);
-                    }
-                });
-                const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries, false);
-                mergedGeometry.boundsTree = new MeshBVH(mergedGeometry, { lazyGeneration: false });
-                collider = new THREE.Mesh(mergedGeometry);
-                collider.material.wireframe = true;
-                collider.material.opacity = 0.5;
-                collider.material.transparent = true;
-                collider.visible = false;
-                scene.add(collider);
-
-                const visualizer = new MeshBVHVisualizer(collider, 10);
-                visualizer.visible = false;
-                visualizer.update();
-                scene.add(visualizer);
-            });
-            this.entities = [];
-            // ===== player =====
-            this.player = new PlayerLocal('glb/animation.glb', avatarPath, this.scene);
-            window.player = this.player;
-            this.scene.add(this.player);
-
             // ===== controls =====
             this.controls = new PointerLockControls(this.dummyCamera, document.body);
             this.controls.sensitivityY = 0.002;
@@ -186,6 +124,67 @@ class StdEnv {
             this.setGraphicsSetting(this.graphicTier);
 
         } // -- end init
+
+        this.loadTerrain = function(terrainPath, x, y, z){
+            const loader = new GLTFLoader();
+            loader.load(terrainPath, (object) => {
+                object.scene.position.set(x, y, z);
+                object.scene.traverse(object => {
+                    if (object.isMesh) {
+                        object.castShadow = true;
+                        object.receiveShadow = true;
+                        object.material.roughness = 1;
+                        if (object.material.map) {
+                            object.material.map.anisotropy = 16;
+                            object.material.map.needsUpdate = true;
+                        }
+                        const cloned = new THREE.Mesh(object.geometry, object.material);
+                        object.getWorldPosition(cloned.position);
+                        //object.updateMatrixWorld();
+                        if (object.material.emissive && (object.material.emissive.r > 0 || object.material.emissive.g > 0 || object.material.color.b > 0)) {
+                            /* object.updateMatrixWorld();
+                                cloned.matrix.copy(object.matrixWorld);*/
+                            bloomScene.attach(cloned);
+                        }
+                    }
+                    if (object.isLight) {
+                        object.parent.remove(object);
+                    }
+                });
+                this.scene.add(object.scene);
+                let geometries = [];
+                object.scene.traverse(object => {
+                    if (object.geometry && object.visible) {
+                        const cloned = object.geometry.clone();
+                        cloned.applyMatrix4(object.matrixWorld);
+                        for (const key in cloned.attributes) {
+                            if (key !== 'position') { cloned.deleteAttribute(key); }
+                        }
+                        geometries.push(cloned);
+                    }
+                });
+                const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries, false);
+                mergedGeometry.boundsTree = new MeshBVH(mergedGeometry, { lazyGeneration: false });
+                collider = new THREE.Mesh(mergedGeometry);
+                collider.material.wireframe = true;
+                collider.material.opacity = 0.5;
+                collider.material.transparent = true;
+                collider.visible = false;
+                this.scene.add(collider);
+
+                const visualizer = new MeshBVHVisualizer(collider, 10);
+                visualizer.visible = false;
+                visualizer.update();
+                this.scene.add(visualizer);
+            });
+        }
+
+        this.spawnPlayer = function(avatarPath) {
+            this.entities = [];
+            this.player = new PlayerLocal('glb/animation.glb', avatarPath, this.scene);
+            window.player = this.player;
+            this.scene.add(this.player);
+        }
 
         this.setShadowLightTier = function(graphicTier) {
             if (shadowLight) {

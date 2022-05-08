@@ -93,33 +93,6 @@ class StdEnv {
             // ===== shaders =====
             this.composer = new DefaultComposer(this.renderer, this.scene, this.camera);
 
-            // ===== controls =====
-            this.controls = new PointerLockControls(this.dummyCamera, document.body);
-            this.controls.sensitivityY = 0.002;
-            this.scene.add(this.controls.getObject());
-
-            document.addEventListener('keydown', (event) => {
-                if (event.key === "v") {
-                    if (this.targetControlVector === this.thirdPersonControls) {
-                        this.targetControlVector = this.fpsControls;
-                        this.controls.sensitivityY = -0.002;
-                    } else {
-                        this.targetControlVector = this.thirdPersonControls;
-                        this.controls.sensitivityY = 0.002;
-                    }
-                }
-                this.player.keys[event.key] = true;
-            });
-            document.addEventListener('keyup', (event) => {
-                this.player.keys[event.key] = false;
-            });
-
-            window.addEventListener('keydown', (e) => {
-                if (e.keyCode === 32 && e.target === document.body) {
-                    e.preventDefault();
-                }
-            });
-
             // ===== graphic settings =====
             this.setGraphicsSetting(this.graphicTier);
 
@@ -184,6 +157,33 @@ class StdEnv {
             this.player = new PlayerLocal('glb/animation.glb', avatarPath, this.scene);
             window.player = this.player;
             this.scene.add(this.player);
+
+            // ===== controls =====
+            this.controls = new PointerLockControls(this.dummyCamera, document.body);
+            this.controls.sensitivityY = 0.002;
+            this.scene.add(this.controls.getObject());
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === "v") {
+                    if (this.targetControlVector === this.thirdPersonControls) {
+                        this.targetControlVector = this.fpsControls;
+                        this.controls.sensitivityY = -0.002;
+                    } else {
+                        this.targetControlVector = this.thirdPersonControls;
+                        this.controls.sensitivityY = 0.002;
+                    }
+                }
+                this.player.keys[event.key] = true;
+            });
+            document.addEventListener('keyup', (event) => {
+                this.player.keys[event.key] = false;
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.keyCode === 32 && e.target === document.body) {
+                    e.preventDefault();
+                }
+            });
         }
 
         this.setShadowLightTier = function(graphicTier) {

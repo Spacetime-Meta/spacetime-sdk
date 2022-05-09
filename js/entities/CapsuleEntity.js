@@ -9,15 +9,11 @@ class CapsuleEntity extends THREE.Object3D {
         this.size = size;
         this.onGround = false;
         this.gravity = -300;
-        this.info = {
-            radius: radius,
-            segment: new THREE.Line3(new THREE.Vector3(), new THREE.Vector3(0, -size, 0.0))
-        };
+        this.segment = new THREE.Line3(new THREE.Vector3(), new THREE.Vector3(0, -size, 0.0));
         this.friction = 0.99;
     }
     update(delta, bvh) {
         const collider = bvh;
-        const capsuleInfo = this.info;
         this.velocity.y += this.onGround ? 0 : delta * this.gravity;
         this.position.addScaledVector(this.velocity, delta);
         this.position.add(this.horizontalVelocity);
@@ -28,13 +24,13 @@ class CapsuleEntity extends THREE.Object3D {
         const tempSegment = new THREE.Line3();
         tempBox.makeEmpty();
         tempMat.copy(collider.matrixWorld).invert();
-        tempSegment.copy(capsuleInfo.segment);
+        tempSegment.copy(this.segment);
         tempSegment.start.applyMatrix4(this.matrixWorld).applyMatrix4(tempMat);
         tempSegment.end.applyMatrix4(this.matrixWorld).applyMatrix4(tempMat);
         tempBox.expandByPoint(tempSegment.start);
         tempBox.expandByPoint(tempSegment.end);
-        tempBox.min.addScalar(-capsuleInfo.radius);
-        tempBox.max.addScalar(capsuleInfo.radius);
+        tempBox.min.addScalar(-this.radius);
+        tempBox.max.addScalar(this.radius);
         const tempVector = new THREE.Vector3();
         const tempVector2 = new THREE.Vector3();
         collider.geometry.boundsTree.shapecast({
@@ -49,9 +45,9 @@ class CapsuleEntity extends THREE.Object3D {
                 const capsulePoint = tempVector2;
 
                 const distance = tri.closestPointToSegment(tempSegment, triPoint, capsulePoint);
-                if (distance < capsuleInfo.radius) {
+                if (distance < this.radius) {
 
-                    const depth = capsuleInfo.radius - distance;
+                    const depth = this.radius - distance;
                     const direction = capsulePoint.sub(triPoint).normalize();
 
                     tempSegment.start.addScaledVector(direction, depth);

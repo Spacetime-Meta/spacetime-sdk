@@ -1,6 +1,5 @@
 import { CapsuleEntity } from "./CapsuleEntity.js";
 import { Vector3, Matrix4, Raycaster } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
-import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
 import { AvatarController } from './AvatarController.js';
 
 class PlayerLocal extends CapsuleEntity {
@@ -10,21 +9,7 @@ class PlayerLocal extends CapsuleEntity {
         this.playerDirection = new Vector3();
         this.keys = {};
 
-        const loader = new GLTFLoader();
-        loader.load(animationURL, (gltf) => {
-            loader.load(avatarURL, (vanguard) => {
-                vanguard.scene.scale.set(0.2, 0.2, 0.2);
-                this.avatarController = new AvatarController(2.5, 30, vanguard.scene, {
-                    "idle": gltf.animations[2],
-                    "walk": gltf.animations[1],
-                    "run": gltf.animations[3],
-                    "jump": gltf.animations[4],
-                    "fall": gltf.animations[5]
-                }, {
-                    scene
-                });
-            });
-        });
+        this.avatarController = new AvatarController(animationURL, avatarURL, scene);
 
         this.visible = false;
         this.position.y = 50;

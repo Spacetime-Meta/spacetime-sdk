@@ -1,9 +1,6 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { PointerLockControls } from './util/PointerLockControls.js';
-
-import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
-import * as BufferGeometryUtils from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/utils/BufferGeometryUtils.js';
-import { MeshBVH, MeshBVHVisualizer } from './util/three-mesh-bvh.js';
+import { TerrainController } from './util/TerrainController.js';
 
 import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
@@ -15,9 +12,8 @@ const MEDIUM = 1;
 const HIGH = 2;
 const ULTRA = 3;
 
-let shadowLight, collider;
+let shadowLight;
 
-const bloomScene = new THREE.Scene();
 const clock = new THREE.Clock();
 
 /*
@@ -97,59 +93,10 @@ class StdEnv {
             this.setGraphicsSetting(this.graphicTier);
 
         } // -- end init
-
+        
         this.loadTerrain = function(terrainPath, x, y, z){
-            const loader = new GLTFLoader();
-            loader.load(terrainPath, (object) => {
-                object.scene.position.set(x, y, z);
-                object.scene.traverse(object => {
-                    if (object.isMesh) {
-                        object.castShadow = true;
-                        object.receiveShadow = true;
-                        object.material.roughness = 1;
-                        if (object.material.map) {
-                            object.material.map.anisotropy = 16;
-                            object.material.map.needsUpdate = true;
-                        }
-                        const cloned = new THREE.Mesh(object.geometry, object.material);
-                        object.getWorldPosition(cloned.position);
-                        //object.updateMatrixWorld();
-                        if (object.material.emissive && (object.material.emissive.r > 0 || object.material.emissive.g > 0 || object.material.color.b > 0)) {
-                            /* object.updateMatrixWorld();
-                                cloned.matrix.copy(object.matrixWorld);*/
-                            bloomScene.attach(cloned);
-                        }
-                    }
-                    if (object.isLight) {
-                        object.parent.remove(object);
-                    }
-                });
-                this.scene.add(object.scene);
-                let geometries = [];
-                object.scene.traverse(object => {
-                    if (object.geometry && object.visible) {
-                        const cloned = object.geometry.clone();
-                        cloned.applyMatrix4(object.matrixWorld);
-                        for (const key in cloned.attributes) {
-                            if (key !== 'position') { cloned.deleteAttribute(key); }
-                        }
-                        geometries.push(cloned);
-                    }
-                });
-                const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries, false);
-                mergedGeometry.boundsTree = new MeshBVH(mergedGeometry, { lazyGeneration: false });
-                collider = new THREE.Mesh(mergedGeometry);
-                collider.material.wireframe = true;
-                collider.material.opacity = 0.5;
-                collider.material.transparent = true;
-                collider.visible = false;
-                this.scene.add(collider);
-
-                const visualizer = new MeshBVHVisualizer(collider, 10);
-                visualizer.visible = false;
-                visualizer.update();
-                this.scene.add(visualizer);
-            });
+            this.terrainController = new TerrainController();
+            this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z);
         }
 
         this.spawnPlayer = function(avatarPath) {
@@ -234,14 +181,14 @@ class StdEnv {
         const delta = Math.min(clock.getDelta(), 0.1);
         const frustum = new THREE.Frustum();
         frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse));
-        if (collider) {
+        if (this.terrainController.collider) {
             
             const controlVector = this.controlVector;
             this.controls.minPolarAngle = controlVector.x;
             this.controls.maxPolarAngle = controlVector.y;
             
             for (let i = 0; i < 5; i++) {
-                this.player.update(delta / 5, this.dummyCamera, collider, this.entities, frustum, this.dummyCamera, controlVector);
+                this.player.update(delta / 5, this.dummyCamera, this.terrainController.collider, this.entities, frustum, this.dummyCamera, controlVector);
                 this.camera.position.copy(this.player.position);
                 this.entities.forEach(entity => {
                     entity.update(delta / 5, frustum);
@@ -255,9 +202,9 @@ class StdEnv {
             this.camera.lookAt(this.player.position);
             const invMat = new THREE.Matrix4();
             const raycaster = new THREE.Raycaster(this.player.position.clone(), this.camera.position.clone().sub(this.player.position.clone()).normalize());
-            invMat.copy(collider.matrixWorld).invert();
+            invMat.copy(this.terrainController.collider.matrixWorld).invert();
             raycaster.ray.applyMatrix4(invMat);
-            const hit = collider.geometry.boundsTree.raycastFirst(raycaster.ray);
+            const hit = this.terrainController.collider.geometry.boundsTree.raycastFirst(raycaster.ray);
             if (hit) {
                 this.camera.position.copy(this.player.position);
                 const dir = this.dummyCamera.getWorldDirection(new THREE.Vector3());
@@ -282,7 +229,7 @@ class StdEnv {
             this.renderer.render(this.scene, this.camera);
             this.renderer.setRenderTarget(this.composer.bloomTexture);
             this.renderer.clear();
-            this.renderer.render(bloomScene, this.camera);
+            this.renderer.render(this.terrainController.bloomScene, this.camera);
         }
 
         this.renderer.setRenderTarget(null);

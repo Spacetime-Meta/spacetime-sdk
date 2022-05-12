@@ -10,57 +10,17 @@ function angleDifference(angle1, angle2) {
 class AvatarController extends THREE.Object3D {
     constructor(animationURL, avatarURL, scene) {
         super();
-        const loader = new GLTFLoader();
-        loader.load(animationURL, (gltf) => {
-            
-            loader.load(avatarURL, (vanguard) => {
-                this.radius = 2.5;
-                this.size = 30;
+        this.scene = scene;
+        this.animations;
+        this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
+    }
 
-                this.model = vanguard.scene;
-                this.model.scale.set(0.2, 0.2, 0.2);
-                // this.model = SkeletonUtils.clone(this.model);
-                this.model.traverse(child => {
-                    if (child.isMesh) {
-                        child.geometry = child.geometry.clone();
-                        child.material = new THREE.MeshStandardMaterial({ color: child.material.color, transparent: true, roughness: child.material.roughness, metalness: child.material.metalness, map: child.material.map, normalMap: child.material.normalMap });
-                    }
-                })
-                this.model.traverse(child => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                        child.frustumCulled = false;
-                    }
-                });
+    get animations() {
+        return this._animations;
+    }
 
-                this.current = "none";
-                this.mixer = new THREE.AnimationMixer(this.model);
-                this.animations = {
-                    "idle": gltf.animations[2],
-                    "walk": gltf.animations[1],
-                    "run": gltf.animations[3],
-                    "jump": gltf.animations[4],
-                    "fall": gltf.animations[5]
-                };
-                Object.entries(this.animations).forEach(([anim, clip]) => {
-                    this.animations[anim] = this.mixer.clipAction(clip);
-                });
-
-                this.lastChange = performance.now() - 250;
-                this.animations.jump.loop = THREE.LoopPingPong;
-                this.scene = scene;
-                this.scene.add(this.model);
-                this.delta = 0;
-                this.box = new THREE.Box3();
-                this.updateBox();
-                this.positionChange = new THREE.Vector3();
-                this.play("idle", 0);
-                this.jumpTick = 0;
-                this.opacity = 1;
-
-            });
-        });
+    set animations(newAnimations) {
+        this._animations = newAnimations;
     }
 
     play(anim, time = 0.5) {
@@ -152,6 +112,62 @@ class AvatarController extends THREE.Object3D {
             new THREE.Vector3(this.position.x + this.radius, this.position.y, this.position.z + this.radius),
             new THREE.Vector3(this.position.x - this.radius, this.position.y - this.size - this.radius, this.position.z - this.radius),
         ]);
+    }
+
+    loadAvatar(avatarURL, loadAnimation) {
+        const loader = new GLTFLoader();
+        loader.load(avatarURL, (vanguard) => {
+            this.radius = 2.5;
+            this.size = 30;
+
+            this.model = vanguard.scene;
+            this.model.scale.set(0.2, 0.2, 0.2);
+            // this.model = SkeletonUtils.clone(this.model);
+            this.model.traverse(child => {
+                if (child.isMesh) {
+                    child.geometry = child.geometry.clone();
+                    child.material = new THREE.MeshStandardMaterial({ color: child.material.color, transparent: true, roughness: child.material.roughness, metalness: child.material.metalness, map: child.material.map, normalMap: child.material.normalMap });
+                }
+            })
+            this.model.traverse(child => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    child.frustumCulled = false;
+                }
+            });
+            this.scene.add(this.model);
+            if(loadAnimation) loadAnimation();
+        });
+    }
+
+    loadAnimations(animationURL) {
+        const loader = new GLTFLoader();
+        loader.load(animationURL, (gltf) => {
+            if(typeof this.model == 'undefined') return;
+            this.current = "none";
+            this.animations = {
+                "idle": gltf.animations[2],
+                "walk": gltf.animations[1],
+                "run": gltf.animations[3],
+                "jump": gltf.animations[4],
+                "fall": gltf.animations[5]
+            };
+            this.mixer = new THREE.AnimationMixer(this.model);
+            Object.entries(this.animations).forEach(([anim, clip]) => {
+                this.animations[anim] = this.mixer.clipAction(clip);
+            });
+            this.lastChange = performance.now() - 250;
+            this.animations.jump.loop = THREE.LoopPingPong;
+            this.scene.add(this.model);
+            this.delta = 0;
+            this.box = new THREE.Box3();
+            this.updateBox();
+            this.positionChange = new THREE.Vector3();
+            this.play("idle", 0);
+            this.jumpTick = 0;
+            this.opacity = 1;
+        });
     }
 }
 

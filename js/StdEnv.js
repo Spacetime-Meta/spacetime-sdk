@@ -92,6 +92,15 @@ class StdEnv {
             // ===== graphic settings =====
             this.setGraphicsSetting(this.graphicTier);
 
+            // ============= setup resize listener ==========
+            window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
+
+            function onWindowResize(camera, renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
         } // -- end init
         
         this.loadTerrain = function(terrainPath, x, y, z){

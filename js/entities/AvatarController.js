@@ -54,7 +54,7 @@ class AvatarController extends THREE.Object3D {
         if (this.positionChange) {
             const viewDir = Math.atan2(dir.x, dir.z) + Math.PI;
             const moveDir = Math.atan2(this.positionChange.x, this.positionChange.z);
-            this.model.rotation.y = viewDir + angleDifference(viewDir, moveDir) * Math.min(Math.hypot(this.positionChange.x, this.positionChange.z), 1);
+            this.rotateFaceDirection(viewDir, moveDir);
         } else {
             this.model.rotation.y = Math.atan2(dir.x, dir.z) + Math.PI;
         }
@@ -169,6 +169,24 @@ class AvatarController extends THREE.Object3D {
             this.opacity = 1;
         });
     }
+
+    rotateFaceDirection(viewDir, moveDir) {
+        this.model.rotation.y = viewDir + angleDifference(viewDir, moveDir) * Math.min(Math.hypot(this.positionChange.x, this.positionChange.z), 1);
+        if(player.keys["w"]) {
+            if(player.keys["a"]) this.model.rotation.y += 7;
+            if(player.keys["d"]) this.model.rotation.y -= 7;
+        }
+        if(player.keys["s"]) {
+            if(player.keys["a"]) this.model.rotation.y += 2;
+            else if(player.keys["d"]) this.model.rotation.y -= 2;
+            else this.model.rotation.y = viewDir + 15.65;
+        }
+        if(!player.keys["w"] && !player.keys["s"]) {
+            if(player.keys["a"]) this.model.rotation.y -= 5;
+            if(player.keys["d"]) this.model.rotation.y += 5;
+        }
+    }
+
 }
 
 export { AvatarController };

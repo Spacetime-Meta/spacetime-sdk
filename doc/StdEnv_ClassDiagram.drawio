@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="bAAXgGwKLryCuVSAvFsi" name="Page-1">
-        <mxGraphModel dx="1768" dy="2390" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1643" dy="2390" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -142,16 +142,16 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-103" value="AvatarController" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="965" y="762" width="344" height="316" as="geometry"/>
+                    <mxGeometry x="965" y="762" width="344" height="296" as="geometry"/>
                 </mxCell>
-                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-104" value="loader: GLTFLoader&#10;radius: Number&#10;size: Number&#10;model: THREE.Skeleton&#10;mixer: THREE.AnimationMixer&#10;current: String&#10;animations: {JsonObject}&#10;scene: THREE.Scene&#10;delta: Number&#10;lastChange: Number&#10;box: THREE.Box&#10;positionChange: THREE.Vector3&#10;jumpTick: Number&#10;opacity: Number" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-103" vertex="1">
-                    <mxGeometry y="26" width="344" height="212" as="geometry"/>
+                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-104" value="animations: {JsonObject}&#10;scene: THREE.Scene" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-103" vertex="1">
+                    <mxGeometry y="26" width="344" height="61" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-105" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-103" vertex="1">
-                    <mxGeometry y="238" width="344" height="8" as="geometry"/>
+                    <mxGeometry y="87" width="344" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-106" value="constructor(animationURL, avatarURL, scene)&#10;update(delta, frustum, fpsCamera)&#10;play(anim, time)&#10;updateBox()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-103" vertex="1">
-                    <mxGeometry y="246" width="344" height="70" as="geometry"/>
+                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-106" value="constructor(animationURL, avatarURL, scene)&#10;get animations&#10;set animations(newAnimations)&#10;update(delta, frustum, fpsCamera)&#10;play(anim, time)&#10;updateBox()&#10;loadAvatar(avatarURL, loadAnimation)&#10;loadAnimations(animationURL)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-103" vertex="1">
+                    <mxGeometry y="95" width="344" height="201" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-115" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;endSize=16;strokeWidth=1;" parent="1" source="7TFr1C6rGWP-Rq-zpPYZ-6" target="7TFr1C6rGWP-Rq-zpPYZ-103" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -295,7 +295,7 @@
                 <mxCell id="17" value="constructor()&#10;loadTerrain(URL, scene, x, y, z)&#10;generateCollider(scene)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="14" vertex="1">
                     <mxGeometry y="134" width="194" height="59" as="geometry"/>
                 </mxCell>
-                <mxCell id="21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=diamondThin;endFill=1;endSize=16;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="15">
+                <mxCell id="21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=diamondThin;endFill=1;endSize=16;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="15" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="2354" y="-214"/>

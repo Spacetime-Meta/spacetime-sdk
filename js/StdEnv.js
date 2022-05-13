@@ -96,6 +96,9 @@ class StdEnv {
             // ===== UI =====
             this.createUiElements();
 
+            // ===== Terrain Controller
+            this.terrainController = new TerrainController();
+
             // ============= setup resize listener ==========
             window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
 
@@ -165,7 +168,6 @@ class StdEnv {
         }
         
         this.loadTerrain = function(terrainPath, x, y, z){
-            this.terrainController = new TerrainController();
             this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z);
         }
 

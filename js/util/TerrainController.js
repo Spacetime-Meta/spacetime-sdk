@@ -7,7 +7,7 @@ class TerrainController {
     
     constructor(){
         this.loader = new GLTFLoader();
-        this.terrain;
+        this.terrain = new THREE.Object3D();
         this.collider;
         this.bloomScene = new THREE.Scene();
     }
@@ -44,8 +44,8 @@ class TerrainController {
         })
     }
 
-    generateCollider(scene){
-        let geometries = [];
+    generateCollider(scene, geometries = []){
+        console.log("loading collider")
         this.terrain.traverse(object => {
             if (object.geometry && object.visible) {
                 const cloned = object.geometry.clone();
@@ -62,15 +62,14 @@ class TerrainController {
         this.collider.material.wireframe = true;
         this.collider.material.opacity = 0.5;
         this.collider.material.transparent = true;
-        this.collider.visible = false;
+        this.collider.visible = true;
         scene.add(this.collider);
 
-        const visualizer = new MeshBVHVisualizer(this.collider, 10);
-        visualizer.visible = false;
-        visualizer.update();
-        scene.add(visualizer);
+        // const visualizer = new MeshBVHVisualizer(this.collider, 10);
+        // visualizer.visible = true;
+        // visualizer.update();
+        // scene.add(visualizer);
     }
-
 }
 
 export { TerrainController };

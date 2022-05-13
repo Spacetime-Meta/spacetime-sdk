@@ -131,10 +131,10 @@ class StdEnv {
                         this.controls.sensitivityY = 0.002;
                     }
                 }
-                this.player.keys[event.key] = true;
+                this.player.keys[event.key.toLowerCase()] = true;
             });
             document.addEventListener('keyup', (event) => {
-                this.player.keys[event.key] = false;
+                this.player.keys[event.key.toLowerCase()] = false;
             });
 
             window.addEventListener('keydown', (e) => {

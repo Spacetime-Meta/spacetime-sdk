@@ -11,6 +11,7 @@ class PlayerLocal extends CapsuleEntity {
 
         this.avatarController = new AvatarController(animationURL, avatarURL, scene);
 
+        this.speedFactor = 1; // 1 is the default walk speed
         this.visible = false;
         this.position.y = 50;
         this.position.z = -30;
@@ -36,20 +37,24 @@ class PlayerLocal extends CapsuleEntity {
     }
 
     update(delta, camera, collider, entities, frustum, dummyCamera, controlVector) {
+
+        // speedFactor depending on the run/walk state
+        this.speedFactor = this.keys["shift"] ? 3 : 1;
+
         if (this.keys["w"]) {
-            this.horizontalVelocity.add(this.getForwardVector(camera).multiplyScalar(2 * delta));
+            this.horizontalVelocity.add(this.getForwardVector(camera).multiplyScalar(this.speedFactor * delta));
         }
 
         if (this.keys["s"]) {
-            this.horizontalVelocity.add(this.getForwardVector(camera).multiplyScalar(-2 * delta));
+            this.horizontalVelocity.add(this.getForwardVector(camera).multiplyScalar(-this.speedFactor * delta));
         }
 
         if (this.keys["a"]) {
-            this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(-2 * delta));
+            this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(-this.speedFactor * delta));
         }
 
         if (this.keys["d"]) {
-            this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(2 * delta));
+            this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(this.speedFactor * delta));
         }
         this.jumped -= 0.2;
         if (this.keys[" "]) {

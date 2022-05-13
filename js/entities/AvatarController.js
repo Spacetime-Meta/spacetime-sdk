@@ -78,7 +78,8 @@ class AvatarController extends THREE.Object3D {
             } else {
                 if ((this.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
                     if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
-                        this.play("walk");
+                        if(player.keys["shift"]){ this.play("run"); }
+                        else { this.play("walk"); }
                     } else {
                         this.play("idle");
                     }

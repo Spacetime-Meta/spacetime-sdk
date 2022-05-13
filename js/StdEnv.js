@@ -11,6 +11,7 @@ const LOW = 0;
 const MEDIUM = 1;
 const HIGH = 2;
 const ULTRA = 3;
+const settings = ["Low", "Medium", "High", "Ultra"];
 
 let shadowLight;
 
@@ -91,6 +92,9 @@ class StdEnv {
 
             // ===== graphic settings =====
             this.setGraphicsSetting(this.graphicTier);
+            
+            // ===== UI =====
+            this.createUiElements();
 
             // ============= setup resize listener ==========
             window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
@@ -102,6 +106,63 @@ class StdEnv {
             }
 
         } // -- end init
+
+        this.createUiElements = function () {
+            this.graphicTierButton();
+            this.blocker();
+        }
+
+        this.graphicTierButton = function () {
+            const element = document.createElement("div");
+
+            element.id = "graphicTierButton";
+
+            Object.assign(element.style, {
+                position: 'absolute',
+                padding: '10px',
+                top: '2px',
+                left: 'calc(100% - 2px)',
+                transform: 'translate(-100%, 0)',
+                width: '10%',
+                textAlign: 'center',
+                border: '1px solid #00FFF0',
+                boxSizing: 'border-box',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                zIndex: 100,
+                textDecoration: 'none',
+                color: '#00FFF0'
+            })
+
+            element.innerHTML = "Graphics: " + settings[this.graphicTier];
+            element.addEventListener("click", () => {this.increaseGraphicSettings();});
+            document.body.appendChild(element);    
+        }
+
+        this.blocker = function () {
+            const element = document.createElement("div");
+
+            element.id = "blocker";
+
+            Object.assign(element.style, {
+                position: "absolute",
+                top: "0",
+                width: "100%",
+                height: "100%",
+                background: "rgba(0, 0, 0, 0.5)",
+                textAlign: "center",
+                color: "Turquoise"
+            })
+
+            element.innerHTML = "click to play"
+
+            element.addEventListener('click', () => {
+                this.controls.lock()
+                element.style.display = "none";
+            })
+
+            document.body.appendChild(element);
+        }
         
         this.loadTerrain = function(terrainPath, x, y, z){
             this.terrainController = new TerrainController();
@@ -113,7 +174,7 @@ class StdEnv {
             this.player = new PlayerLocal('glb/animation.glb', avatarPath, this.scene);
             window.player = this.player;
             this.scene.add(this.player);
-
+            
             // ===== controls =====
             this.controls = new PointerLockControls(this.dummyCamera, document.body);
             this.controls.sensitivityY = 0.002;
@@ -122,16 +183,18 @@ class StdEnv {
             this.scene.add(this.controls.getObject());
 
             document.addEventListener('keydown', (event) => {
-                if (event.key === "v") {
-                    if (this.targetControlVector === this.thirdPersonControls) {
-                        this.targetControlVector = this.fpsControls;
-                        this.controls.sensitivityY = -0.002;
-                    } else {
-                        this.targetControlVector = this.thirdPersonControls;
-                        this.controls.sensitivityY = 0.002;
+                if(this.controls.isLocked) {
+                    if (event.key === "v") {
+                        if (this.targetControlVector === this.thirdPersonControls) {
+                            this.targetControlVector = this.fpsControls;
+                            this.controls.sensitivityY = -0.002;
+                        } else {
+                            this.targetControlVector = this.thirdPersonControls;
+                            this.controls.sensitivityY = 0.002;
+                        }
                     }
+                    this.player.keys[event.key.toLowerCase()] = true;
                 }
-                this.player.keys[event.key.toLowerCase()] = true;
             });
             document.addEventListener('keyup', (event) => {
                 this.player.keys[event.key.toLowerCase()] = false;
@@ -141,6 +204,11 @@ class StdEnv {
                 if (e.keyCode === 32 && e.target === document.body) {
                     e.preventDefault();
                 }
+            });
+
+            this.controls.addEventListener('unlock', () => {
+                window.player.keys = {};
+                document.getElementById("blocker").style.display = 'block';
             });
         }
 
@@ -165,6 +233,12 @@ class StdEnv {
             this.graphicTier = graphicTier;
             this.setShadowLightTier(graphicTier);
             this.composer.setGraphicsSetting(graphicTier, this.renderer, this.scene);
+
+            const graphicTierButtonElement = document.getElementById("graphicTierButton");
+            if(graphicTierButtonElement !== null) {
+                graphicTierButtonElement.innerHTML = "Graphics: " + settings[graphicTier];
+            }
+            
         }
 
         this.increaseGraphicSettings = function() {

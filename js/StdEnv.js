@@ -250,6 +250,10 @@ class StdEnv {
             this.setGraphicsSetting(this.graphicTier)
         }
 
+        this.newSolidGeometriesFromSource = function(url, x, y, z, scaleFactor){
+            this.terrainController.newSolidGeometriesFromSource(this.scene, url, x, y, z, scaleFactor)
+        }
+
         this.spawnOtherPlayer = function(avatarPath){ }
 
         this.getLocation = () => { }

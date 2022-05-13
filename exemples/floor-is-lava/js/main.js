@@ -9,39 +9,18 @@ function init() {
     // ===== Virtual Env =====
     VE.init();
     VE.spawnPlayer('glb/vanguard.glb')
+    
+    setTimeout(() => {
+        VE.newSolidGeometriesFromSource('glb/rock_platform.glb', 0, 20, 1000, 16);
+        VE.newSolidGeometriesFromSource('glb/rock_platform.glb', 0, -20, -30, 16);
 
-    const loader = new GLTFLoader();
-    loader.load('glb/rock_platform.glb', (platform) => {
-        setTimeout(() => {
+        for(let i=0; i<35; i++) {
+            let position = new THREE.Vector3(Math.random() * 800 - 400, 0, Math.random() * 1000);
+            VE.newSolidGeometriesFromSource('glb/rock_platform.glb', position.x, position.y, position.z, Math.random() * 20 + 4);
+        }
 
-            const factor = 16;
-
-            console.log("load new stuff")
-            platform.scene.scale.set(3.75 * factor, 3.75 * factor, 3.75 * factor)
-            platform.scene.position.set(0,0,-30)
-            VE.scene.add(platform.scene)
-
-            let newGeometries = [];
-            platform.scene.traverse((object) => {
-                if(object.geometry && object.visible && object.position) {
-                    const cloned = object.geometry.clone();
-                    cloned.scale(3.75 * factor, 3.75 * factor, 3.75 * factor)
-                    cloned.translate(0,-1 * factor,-30)
-                    console.log(object.matrixWorld)
-                    object.updateMatrixWorld();
-                    cloned.applyMatrix4(object.matrixWorld);
-                    for (const key in cloned.attributes) {
-                        if (key !== 'position') { cloned.deleteAttribute(key); }
-                    }
-                    
-                    newGeometries.push(cloned);
-                }
-            })
-
-            VE.terrainController.generateCollider(VE.scene, newGeometries)
-        }, 2000);
-        
-    })
+        VE.terrainController.generateCollider(VE.scene);
+    }, 100);
 
 }
 

@@ -117,6 +117,8 @@ class StdEnv {
             // ===== controls =====
             this.controls = new PointerLockControls(this.dummyCamera, document.body);
             this.controls.sensitivityY = 0.002;
+            this.controls.minPolarAngle = 0.01; 
+            this.controls.maxPolarAngle = Math.PI - 0.25;
             this.scene.add(this.controls.getObject());
 
             document.addEventListener('keydown', (event) => {
@@ -192,12 +194,8 @@ class StdEnv {
         frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse));
         if (this.terrainController.collider) {
             
-            const controlVector = this.controlVector;
-            this.controls.minPolarAngle = controlVector.x;
-            this.controls.maxPolarAngle = controlVector.y;
-            
             for (let i = 0; i < 5; i++) {
-                this.player.update(delta / 5, this.dummyCamera, this.terrainController.collider, this.entities, frustum, this.dummyCamera, controlVector);
+                this.player.update(delta / 5, this.dummyCamera, this.terrainController.collider, this.entities, frustum, this.dummyCamera, this.controlVector);
                 this.camera.position.copy(this.player.position);
                 this.entities.forEach(entity => {
                     entity.update(delta / 5, frustum);
@@ -207,7 +205,7 @@ class StdEnv {
             //this.camera.position.y += 10;
             this.camera.position.copy(this.player.position);
             const dir = this.dummyCamera.getWorldDirection(new THREE.Vector3());
-            this.camera.position.add(dir.multiplyScalar(controlVector.z));
+            this.camera.position.add(dir.multiplyScalar(this.controlVector.z));
             this.camera.lookAt(this.player.position);
             const invMat = new THREE.Matrix4();
             const raycaster = new THREE.Raycaster(this.player.position.clone(), this.camera.position.clone().sub(this.player.position.clone()).normalize());
@@ -217,11 +215,11 @@ class StdEnv {
             if (hit) {
                 this.camera.position.copy(this.player.position);
                 const dir = this.dummyCamera.getWorldDirection(new THREE.Vector3());
-                this.camera.position.add(dir.multiplyScalar(Math.min(hit.point.distanceTo(this.player.position), controlVector.z * 1.25) * 0.8));
+                this.camera.position.add(dir.multiplyScalar(Math.min(hit.point.distanceTo(this.player.position), this.controlVector.z * 1.25) * 0.8));
                 this.camera.lookAt(this.player.position);
             }
-            this.cameraPosition.lerp(this.camera.position, controlVector.w);
-            this.cameraTarget.lerp(this.player.position, controlVector.w);
+            this.cameraPosition.lerp(this.camera.position, this.controlVector.w);
+            this.cameraTarget.lerp(this.player.position, this.controlVector.w);
             this.camera.position.copy(this.cameraPosition);
             this.camera.lookAt(this.cameraTarget);
             this.controlVector.lerp(this.targetControlVector, 0.1);

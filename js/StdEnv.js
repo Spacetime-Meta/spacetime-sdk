@@ -96,6 +96,9 @@ class StdEnv {
             // ===== UI =====
             this.createUiElements();
 
+            // ===== Terrain Controller
+            this.terrainController = new TerrainController();
+
             // ============= setup resize listener ==========
             window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
 
@@ -165,7 +168,6 @@ class StdEnv {
         }
         
         this.loadTerrain = function(terrainPath, x, y, z){
-            this.terrainController = new TerrainController();
             this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z);
         }
 
@@ -246,6 +248,10 @@ class StdEnv {
             this.graphicTier %= 4;
             localProxy.tier = this.graphicTier;
             this.setGraphicsSetting(this.graphicTier)
+        }
+
+        this.newSolidGeometriesFromSource = function(url, x, y, z, scaleFactor){
+            this.terrainController.newSolidGeometriesFromSource(this.scene, url, x, y, z, scaleFactor)
         }
 
         this.spawnOtherPlayer = function(avatarPath){ }

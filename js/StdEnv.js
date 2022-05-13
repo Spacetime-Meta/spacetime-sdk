@@ -6,6 +6,7 @@ import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
+import loadingPage from './util/loadingPage.js';
 
 const LOW = 0;
 const MEDIUM = 1;
@@ -51,6 +52,15 @@ Other usages should be like:
 class StdEnv {
     constructor() {
         this.scene = new THREE.Scene();
+        this.loadingPage = function(element) {
+            loadingPage(element, true);
+            var intervalId = window.setInterval(function() {
+                if (typeof document.getElementsByTagName('body')[0] !== 'undefined') {
+                  window.clearInterval(intervalId);
+                  loadingPage(element, false);
+                }
+            }, 1000);
+        }
         this.init = function() {
             this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
 
@@ -179,6 +189,8 @@ class StdEnv {
         this.getLocation = () => { }
 
         this.moveOtherPlayer = (x,y,z) => { }
+
+        // this.loadingPage = loadingPage(!this || !this.spawnOtherPlayer || !this.terrainController);
 
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();

@@ -14,9 +14,10 @@ init();
 
 function init() {
     // ===== Virtual Env =====
+    VE.loadingPage(blocker);
     VE.init();
-    VE.loadTerrain('glb/base_template.glb', 0, -20, 0)
-    VE.spawnPlayer('glb/vanguard.glb')
+    VE.loadTerrain('glb/base_template.glb', 0, -20, 0);
+    VE.spawnPlayer('glb/vanguard.glb');
 
     // ===== controls =====
     VE.controls.addEventListener('lock', function() {

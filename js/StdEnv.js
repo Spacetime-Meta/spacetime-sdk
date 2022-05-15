@@ -22,13 +22,7 @@ class StdEnv {
     constructor() {
         this.scene = new THREE.Scene();
         // ===== loading =====
-        loadingPage(true);
-        var intervalId = window.setInterval(function() {
-            if (typeof document.getElementsByTagName('body')[0] !== 'undefined') {
-                window.clearInterval(intervalId);
-                loadingPage(false);
-            }
-        }, 1000);
+        this.loading();
         
         this.init = function() {
             this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
@@ -295,6 +289,16 @@ class StdEnv {
         this.targetControlVector = this.thirdPersonControls;
     } // -- end constructor
 
+    loading() {
+        loadingPage(true);
+        var intervalId = window.setInterval(function() {
+            if (typeof document.getElementsByTagName('body')[0] !== 'undefined') {
+                window.clearInterval(intervalId);
+                loadingPage(false);
+            }
+        }, 1000);
+    }
+    
     update() {
         const delta = Math.min(clock.getDelta(), 0.1);
         const frustum = new THREE.Frustum();

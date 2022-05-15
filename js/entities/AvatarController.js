@@ -11,7 +11,7 @@ class AvatarController extends THREE.Object3D {
     constructor(animationURL, avatarURL, scene) {
         super();
         this.scene = scene;
-        this.animations;
+        this.animations = {};
         this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
     }
 
@@ -108,6 +108,10 @@ class AvatarController extends THREE.Object3D {
         })
     }
 
+    changeAvatar(avatarUrl, animationsUrl) {
+        this.loadAvatar(avatarUrl, () => this.loadAnimations(animationsUrl));
+    }
+
     updateBox() {
         this.box.setFromPoints([
             new THREE.Vector3(this.position.x + this.radius, this.position.y, this.position.z + this.radius),
@@ -117,11 +121,14 @@ class AvatarController extends THREE.Object3D {
 
     loadAvatar(avatarURL, loadAnimation) {
         const loader = new GLTFLoader();
-        loader.load(avatarURL, (vanguard) => {
+        loader.load(avatarURL, (responseObject) => {
+            
+            this.scene.remove(this.model)
+
             this.radius = 2.5;
             this.size = 30;
 
-            this.model = vanguard.scene;
+            this.model = responseObject.scene;
             this.model.scale.set(0.2, 0.2, 0.2);
             // this.model = SkeletonUtils.clone(this.model);
             this.model.traverse(child => {
@@ -138,7 +145,9 @@ class AvatarController extends THREE.Object3D {
                 }
             });
             this.scene.add(this.model);
-            if(loadAnimation) loadAnimation();
+            // if(loadAnimation) { 
+            loadAnimation(); 
+            // }
         });
     }
 

@@ -7,9 +7,10 @@ class TerrainController {
     
     constructor(){
         this.loader = new GLTFLoader();
-        this.terrain;
+        this.terrain = new THREE.Object3D();
         this.collider;
         this.bloomScene = new THREE.Scene();
+        this.geometries = [];
     }
 
     loadTerrain(URL, scene, x, y, z){
@@ -45,7 +46,7 @@ class TerrainController {
     }
 
     generateCollider(scene){
-        let geometries = [];
+        console.log("loading collider")
         this.terrain.traverse(object => {
             if (object.geometry && object.visible) {
                 const cloned = object.geometry.clone();
@@ -53,10 +54,10 @@ class TerrainController {
                 for (const key in cloned.attributes) {
                     if (key !== 'position') { cloned.deleteAttribute(key); }
                 }
-                geometries.push(cloned);
+                this.geometries.push(cloned);
             }
         });
-        const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries, false);
+        const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(this.geometries, false);
         mergedGeometry.boundsTree = new MeshBVH(mergedGeometry, { lazyGeneration: false });
         this.collider = new THREE.Mesh(mergedGeometry);
         this.collider.material.wireframe = true;
@@ -65,12 +66,41 @@ class TerrainController {
         this.collider.visible = false;
         scene.add(this.collider);
 
-        const visualizer = new MeshBVHVisualizer(this.collider, 10);
-        visualizer.visible = false;
-        visualizer.update();
-        scene.add(visualizer);
+        // const visualizer = new MeshBVHVisualizer(this.collider, 10);
+        // visualizer.visible = true;
+        // visualizer.update();
+        // scene.add(visualizer);
     }
 
+    newSolidGeometriesFromSource(scene, url, x, y, z, scaleFactor) {
+        this.loader.load(url, (responseObject) => {
+            setTimeout(() => {   
+                console.log("load new stuff")
+                responseObject.scene.scale.set(3.75 * scaleFactor, 3.75 * scaleFactor, 3.75 * scaleFactor)
+                responseObject.scene.position.set(x,y,z)
+                scene.add(responseObject.scene)
+    
+                responseObject.scene.traverse((object) => {
+                    if(object.geometry && object.visible && object.position) {
+                        const cloned = object.geometry.clone();
+                        cloned.scale(3.75 * scaleFactor, 3.75 * scaleFactor, 3.75 * scaleFactor)
+                        cloned.translate(x, y + (-1 * scaleFactor),z)
+                        console.log(object.matrixWorld)
+                        object.updateMatrixWorld();
+                        cloned.applyMatrix4(object.matrixWorld);
+                        for (const key in cloned.attributes) {
+                            if (key !== 'position') { cloned.deleteAttribute(key); }
+                        }
+                        
+                        this.geometries.push(cloned);
+                    }
+                })
+                
+                this.generateCollider(scene)
+            }, 2000);
+            
+        })
+    }
 }
 
 export { TerrainController };

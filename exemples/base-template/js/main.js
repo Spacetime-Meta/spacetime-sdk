@@ -6,8 +6,8 @@ init();
 function init() {
     // ===== Virtual Env =====
     VE.init();
-    VE.loadTerrain('glb/base_template.glb', 0, -20, 0)
-    VE.spawnPlayer('glb/vanguard.glb')
+    VE.loadTerrain('../../../glb/terrains/base_template.glb', 0, 0, 0)
+    VE.spawnPlayer('../../../glb/avatars/vanguard.glb')
 }
 
 if (!window.requestPostAnimationFrame) {

@@ -18,38 +18,6 @@ let shadowLight;
 
 const clock = new THREE.Clock();
 
-/*
-This class wraps the whole Virtual Environment and provide an easy to use API for
-people who want to build standard worlds.
-
-In main.js, this class should be used the following way:
-
-const VE = new StdEnv();
-function init() { 
-    VE.init("path/to/terrain.glb"); 
-    // .. other stuff for the webpage
-}
-
-function animate() {
-    VE.update();
-    // .. other stuff
-}
-
-init();
-animate();
-
-
-Other usages should be like:
-    to change the graphic tier:
-    VE.setGraphicsSetting(graphicTier);
-    VE.increaseGraphicSettings()
-
-    for events on control lock and unlock
-    VE.controls.addEventListener('lock', function() { .. do stuff });
-    VE.controls.addEventListener('unlock', function() { .. do stuff });
-    VE.controls.lock();
-*/
-
 class StdEnv {
     constructor() {
         this.scene = new THREE.Scene();
@@ -106,6 +74,9 @@ class StdEnv {
             // ===== UI =====
             this.createUiElements();
 
+            // ===== Terrain Controller
+            this.terrainController = new TerrainController();
+
             // ============= setup resize listener ==========
             window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
 
@@ -120,11 +91,60 @@ class StdEnv {
         this.createUiElements = function () {
             this.graphicTierButton();
             this.blocker();
+            this.avatarSelectPanel();
+        }
+
+        this.avatarSelectPanel = function () {
+            const element = document.createElement("div");
+            element.id = "avatarPanel"
+
+            Object.assign(element.style, {
+                position: 'absolute',
+                padding: '10px',
+                top: '2px',
+                right: 'calc(100% - 2px)',
+                transform: 'translate(100%, 0)',
+                width: '10%',
+                textAlign: 'center',
+                border: '1px solid #00FFF0',
+                boxSizing: 'border-box',
+                borderRadius: '10px',
+                zIndex: 100,
+                color: '#00FFF0'
+            })
+
+            element.innerHTML = "avatars"
+             
+            avatarButton("Vanguard", element, '../../../glb/avatars/vanguard.glb')
+            avatarButton("xBot", element, '../../../glb/avatars/xBot.glb')
+            avatarButton("yBot", element, '../../../glb/avatars/yBot.glb')
+            
+            
+            document.body.appendChild(element);
+            
+            function avatarButton(name, parent, avatarUrl) {
+                const avatarButtonElement = document.createElement("div");
+                avatarButtonElement.id = "avatarPanel"+name;
+
+                Object.assign(avatarButtonElement.style, {
+                    border: '1px solid #00FFF0',
+                    padding: '5px',
+                    margin: '2px',
+                    cursor: 'pointer'
+                })
+                
+                avatarButtonElement.innerHTML = name
+
+                avatarButtonElement.addEventListener("click", () => {
+                    window.player.avatarController.changeAvatar(avatarUrl, '../../../glb/animations/animation.glb')
+                })
+
+                parent.appendChild(avatarButtonElement)
+            }
         }
 
         this.graphicTierButton = function () {
             const element = document.createElement("div");
-
             element.id = "graphicTierButton";
 
             Object.assign(element.style, {
@@ -140,7 +160,6 @@ class StdEnv {
                 borderRadius: '10px',
                 cursor: 'pointer',
                 zIndex: 100,
-                textDecoration: 'none',
                 color: '#00FFF0'
             })
 
@@ -151,7 +170,6 @@ class StdEnv {
 
         this.blocker = function () {
             const element = document.createElement("div");
-
             element.id = "blocker";
 
             Object.assign(element.style, {
@@ -175,13 +193,12 @@ class StdEnv {
         }
         
         this.loadTerrain = function(terrainPath, x, y, z){
-            this.terrainController = new TerrainController();
             this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z);
         }
 
         this.spawnPlayer = function(avatarPath) {
             this.entities = [];
-            this.player = new PlayerLocal('glb/animation.glb', avatarPath, this.scene);
+            this.player = new PlayerLocal('../../../glb/animations/animation.glb', avatarPath, this.scene);
             window.player = this.player;
             this.scene.add(this.player);
             
@@ -256,6 +273,10 @@ class StdEnv {
             this.graphicTier %= 4;
             localProxy.tier = this.graphicTier;
             this.setGraphicsSetting(this.graphicTier)
+        }
+
+        this.newSolidGeometriesFromSource = function(url, x, y, z, scaleFactor){
+            this.terrainController.newSolidGeometriesFromSource(this.scene, url, x, y, z, scaleFactor)
         }
 
         this.spawnOtherPlayer = function(avatarPath){ }

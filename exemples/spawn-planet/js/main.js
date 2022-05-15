@@ -7,8 +7,8 @@ import { StdEnv } from '../../../js/StdEnv.js';
             // ===== Virtual Env =====
             VE.loadingPage(blocker);
             VE.init();
-            VE.loadTerrain('glb/spawnplanet.glb', 0, -20, 0)
-            VE.spawnPlayer('glb/vanguard.glb')
+            VE.loadTerrain('../../../glb/terrains/spawnPlanet.glb', 0, -20, 0)
+            VE.spawnPlayer('../../../glb/avatars/vanguard.glb')
         }
 
         if (!window.requestPostAnimationFrame) {

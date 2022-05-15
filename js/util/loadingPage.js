@@ -1,13 +1,12 @@
-const loadingPage = function(element, waiting) {
+const loadingPage = function(waiting) {
     var loadingScreen;
-    element.style.display = waiting ? 'none' : 'block';
     if(document.getElementById('loading-screen')) {
         loadingScreen = document.getElementById('loading-screen');
         loadingScreen.style.display = waiting ? 'flex' : 'none';
         return;
     }
     loadingScreen = document.createElement('div');
-    loadingScreen.setAttribute('id','loading-screen');
+    loadingScreen.id = 'loading-screen';
 
     //======style====
     var style = 'position: absolute;';
@@ -26,8 +25,8 @@ const loadingPage = function(element, waiting) {
 
     //======loading======
     var loadingDiv = document.createElement('div');
-    loadingDiv.setAttribute('id', 'loading');
-    loadingDiv.appendChild(document.createTextNode('Loading...'));
+    loadingDiv.id = 'loading';
+    loadingDiv.innerHTML = 'Loading...';
 
     //======append loading page====
     loadingScreen.appendChild(loadingDiv);

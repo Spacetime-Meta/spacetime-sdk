@@ -21,15 +21,15 @@ const clock = new THREE.Clock();
 class StdEnv {
     constructor() {
         this.scene = new THREE.Scene();
-        this.loadingPage = function(element) {
-            loadingPage(element, true);
-            var intervalId = window.setInterval(function() {
-                if (typeof document.getElementsByTagName('body')[0] !== 'undefined') {
-                  window.clearInterval(intervalId);
-                  loadingPage(element, false);
-                }
-            }, 1000);
-        }
+        // ===== loading =====
+        loadingPage(true);
+        var intervalId = window.setInterval(function() {
+            if (typeof document.getElementsByTagName('body')[0] !== 'undefined') {
+                window.clearInterval(intervalId);
+                loadingPage(false);
+            }
+        }, 1000);
+        
         this.init = function() {
             this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
 

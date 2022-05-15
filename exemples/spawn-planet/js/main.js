@@ -4,8 +4,7 @@ import { StdEnv } from '../../../js/StdEnv.js';
         init();
 
         function init() {
-            // ===== Virtual Env =====
-            VE.loadingPage(blocker);
+            // ===== Virtual Env =====s
             VE.init();
             VE.loadTerrain('../../../glb/terrains/spawnPlanet.glb', 0, -20, 0)
             VE.spawnPlayer('../../../glb/avatars/vanguard.glb')

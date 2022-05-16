@@ -21,7 +21,7 @@ let shadowLight;
 
 const clock = new THREE.Clock();
 
-class StdEnv {
+class VirtualEnvironment {
     constructor() {
         this.scene = new THREE.Scene();
         // ===== loading =====
@@ -260,4 +260,4 @@ class StdEnv {
 
 }
 
-export { StdEnv };
+export { VirtualEnvironment };

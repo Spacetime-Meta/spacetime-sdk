@@ -1,6 +1,7 @@
-import { StdEnv } from '../../../js/StdEnv.js';
+import { VirtualEnvironment } from '../../../js/VirtualEnvironment.js';
+
 // start by creating a basic virtual environment
-let virtualEnvironment = new StdEnv();
+let virtualEnvironment = new VirtualEnvironment();
 
 // then fill your world with the stuff you want
 init();

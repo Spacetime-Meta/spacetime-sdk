@@ -1,9 +1,9 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
-import { StdEnv } from '../../../js/StdEnv.js';
+import { VirtualEnvironment } from '../../../js/VirtualEnvironment.js';
 
 // start by creating a basic virtual environment
-let virtualEnvironment = new StdEnv();
+let virtualEnvironment = new VirtualEnvironment();
 
 // then fill your world with the stuff you want
 init();

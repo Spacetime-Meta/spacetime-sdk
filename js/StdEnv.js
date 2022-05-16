@@ -6,6 +6,7 @@ import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
+import loadingPage from './util/loadingPage.js';
 
 const LOW = 0;
 const MEDIUM = 1;
@@ -20,6 +21,9 @@ const clock = new THREE.Clock();
 class StdEnv {
     constructor() {
         this.scene = new THREE.Scene();
+        // ===== loading =====
+        this.loading();
+        
         this.init = function() {
             this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
 
@@ -275,6 +279,8 @@ class StdEnv {
 
         this.moveOtherPlayer = (x,y,z) => { }
 
+        // this.loadingPage = loadingPage(!this || !this.spawnOtherPlayer || !this.terrainController);
+
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();
         this.fpsControls = new THREE.Vector4(0.01, Math.PI - 0.01, 0.01, 1);
@@ -283,6 +289,16 @@ class StdEnv {
         this.targetControlVector = this.thirdPersonControls;
     } // -- end constructor
 
+    loading() {
+        loadingPage(true);
+        var intervalId = window.setInterval(function() {
+            if (typeof document.getElementsByTagName('body')[0] !== 'undefined') {
+                window.clearInterval(intervalId);
+                loadingPage(false);
+            }
+        }, 1000);
+    }
+    
     update() {
         const delta = Math.min(clock.getDelta(), 0.1);
         const frustum = new THREE.Frustum();

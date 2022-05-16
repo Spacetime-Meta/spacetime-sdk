@@ -13,6 +13,9 @@ class AvatarController extends THREE.Object3D {
         this.scene = scene;
         this.animations = {};
         this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
+
+        this.quat90 = new THREE.Quaternion();
+        this.quat90.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), Math.PI / 2 );
     }
 
     get animations() {
@@ -43,21 +46,23 @@ class AvatarController extends THREE.Object3D {
         }
     }
 
-    update(delta, frustum, fpsCamera) {
+    update(delta, frustum, position, horizontalVelocity) {
+
+        this.position.copy(position);
+        if(horizontalVelocity.length() > 0.001){
+            this.lookAt(this.position.x + horizontalVelocity.x, 0, this.position.z + horizontalVelocity.z)
+            this.quaternion.multiply(this.quat90)
+        }
+        
+
         this.delta = delta;
         if(typeof this.box == 'undefined') return;
         this.updateBox();
+
         this.model.position.copy(this.position);
-        // this.model.position.y -= (this.size) / 2 - this.radius / 2;
         this.model.position.y -= this.size / 2 + 1.25;
-        const dir = fpsCamera.getWorldDirection(new THREE.Vector3());
-        if (this.positionChange) {
-            const viewDir = Math.atan2(dir.x, dir.z) + Math.PI;
-            const moveDir = Math.atan2(this.positionChange.x, this.positionChange.z);
-            this.rotateFaceDirection(viewDir, moveDir);
-        } else {
-            this.model.rotation.y = Math.atan2(dir.x, dir.z) + Math.PI;
-        }
+        this.model.quaternion.copy(this.quaternion);
+
         if (!frustum.intersectsBox(this.box)) {
             this.model.visible = false;
         } else {
@@ -69,7 +74,6 @@ class AvatarController extends THREE.Object3D {
             this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
         }
         this.lastPosition = this.position.clone();
-        const changeMag = Math.hypot(this.positionChange.x, this.positionChange.z);
         if (player.jumped > 0 && this.jumpTick === 0) {
             this.play("jump", 0.25);
         } else {
@@ -103,7 +107,6 @@ class AvatarController extends THREE.Object3D {
                 } else {
                     child.material.depthWrite = true;
                 }
-                //child.material.color = new THREE.Color(1.0, 0.0, 0.0);
             }
         })
     }

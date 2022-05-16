@@ -6,7 +6,10 @@ import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
-import loadingPage from './util/loadingPage.js';
+import loadingPage from './UiElements/loadingPage.js';
+import graphicTierButton from './UiElements/graphicTierButton.js';
+import blocker from './UiElements/blocker.js';
+import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
 
 const LOW = 0;
 const MEDIUM = 1;
@@ -83,107 +86,12 @@ class StdEnv {
         } // -- end init
 
         this.createUiElements = function () {
-            this.graphicTierButton();
-            this.blocker();
-            this.avatarSelectPanel();
-        }
-
-        this.avatarSelectPanel = function () {
-            const element = document.createElement("div");
-            element.id = "avatarPanel"
-
-            Object.assign(element.style, {
-                position: 'absolute',
-                padding: '10px',
-                top: '2px',
-                right: 'calc(100% - 2px)',
-                transform: 'translate(100%, 0)',
-                width: '10%',
-                textAlign: 'center',
-                border: '1px solid #00FFF0',
-                boxSizing: 'border-box',
-                borderRadius: '10px',
-                zIndex: 100,
-                color: '#00FFF0'
-            })
-
-            element.innerHTML = "avatars"
-             
-            avatarButton("Vanguard", element, '../../../glb/avatars/vanguard.glb')
-            avatarButton("xBot", element, '../../../glb/avatars/xBot.glb')
-            avatarButton("yBot", element, '../../../glb/avatars/yBot.glb')
-            
-            
-            document.body.appendChild(element);
-            
-            function avatarButton(name, parent, avatarUrl) {
-                const avatarButtonElement = document.createElement("div");
-                avatarButtonElement.id = "avatarPanel"+name;
-
-                Object.assign(avatarButtonElement.style, {
-                    border: '1px solid #00FFF0',
-                    padding: '5px',
-                    margin: '2px',
-                    cursor: 'pointer'
-                })
-                
-                avatarButtonElement.innerHTML = name
-
-                avatarButtonElement.addEventListener("click", () => {
-                    window.player.avatarController.changeAvatar(avatarUrl, '../../../glb/animations/animation.glb')
-                })
-
-                parent.appendChild(avatarButtonElement)
-            }
-        }
-
-        this.graphicTierButton = function () {
-            const element = document.createElement("div");
-            element.id = "graphicTierButton";
-
-            Object.assign(element.style, {
-                position: 'absolute',
-                padding: '10px',
-                top: '2px',
-                left: 'calc(100% - 2px)',
-                transform: 'translate(-100%, 0)',
-                width: '10%',
-                textAlign: 'center',
-                border: '1px solid #00FFF0',
-                boxSizing: 'border-box',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                zIndex: 100,
-                color: '#00FFF0'
-            })
-
-            element.innerHTML = "Graphics: " + settings[this.graphicTier];
-            element.addEventListener("click", () => {this.increaseGraphicSettings();});
-            document.body.appendChild(element);    
-        }
-
-        this.blocker = function () {
-            const element = document.createElement("div");
-            element.id = "blocker";
-
-            Object.assign(element.style, {
-                position: "absolute",
-                top: "0",
-                width: "100%",
-                height: "100%",
-                background: "rgba(0, 0, 0, 0.5)",
-                textAlign: "center",
-                color: "Turquoise"
-            })
-
-            element.innerHTML = "click to play"
-
-            element.addEventListener('click', () => {
+            graphicTierButton(this.graphicTier, () => {this.increaseGraphicSettings()});
+            blocker(() => {
                 this.controls.lock()
-                element.style.display = "none";
-            })
-
-            document.body.appendChild(element);
+                document.getElementById('blocker').style.display = "none";
+            });
+            avatarSelectPanel();
         }
         
         this.loadTerrain = function(terrainPath, x, y, z){

@@ -1,26 +1,26 @@
-import { StdEnv } from '../../../js/StdEnv.js';
-        const VE = new StdEnv();
+import { VirtualEnvironment } from '../../../js/VirtualEnvironment.js';
 
-        init();
+// start by creating a basic virtual environment
+let virtualEnvironment = new VirtualEnvironment();
 
-        function init() {
-            // ===== Virtual Env =====s
-            VE.init();
-            VE.loadTerrain('../../../glb/terrains/spawnPlanet.glb', 0, -20, 0)
-            VE.spawnPlayer('../../../glb/avatars/vanguard.glb')
-        }
+// then fill your world with the stuff you want
+init();
+function init() {
+    virtualEnvironment.loadTerrain('../../../glb/terrains/spawnPlanet.glb', 0, -20, 0)
+    virtualEnvironment.spawnPlayer('../../../glb/avatars/vanguard.glb')
+}
 
-        if (!window.requestPostAnimationFrame) {
-            window.requestPostAnimationFrame = function(task) {
-                requestAnimationFrame(() => {
-                    setTimeout(task, 0);
-                });
-            }
-        }
+if (!window.requestPostAnimationFrame) {
+    window.requestPostAnimationFrame = function(task) {
+        requestAnimationFrame(() => {
+            setTimeout(task, 0);
+        });
+    }
+}
 
-        function animate() {
-            requestPostAnimationFrame(animate);
+function animate() {
+    requestPostAnimationFrame(animate);
 
-            VE.update();
-        }
-        requestPostAnimationFrame(animate);
+    virtualEnvironment.update();
+}
+requestPostAnimationFrame(animate);

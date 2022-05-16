@@ -68,7 +68,6 @@ class PlayerLocal extends CapsuleEntity {
         }
         super.update(delta, collider);
 
-
         if (this.position.y < -1000) {
             this.position.set(0, 40, -30);
         }
@@ -97,8 +96,7 @@ class PlayerLocal extends CapsuleEntity {
         }
 
         if(typeof this.avatarController !== "undefined"){
-            this.avatarController.position.copy(this.position);
-            this.avatarController.update(delta, frustum, dummyCamera);
+            this.avatarController.update(delta, frustum, this.position, this.horizontalVelocity);
             this.avatarController.opacity = (controlVector.z - 0.01) / (40 - 0.01);
         }
     }

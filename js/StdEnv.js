@@ -27,167 +27,60 @@ class StdEnv {
         // ===== loading =====
         this.loading();
         
-        this.init = function() {
-            this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
+        this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
 
-            // ===== renderer =====
-            this.renderer = new THREE.WebGLRenderer({ alpha: true });
-            this.renderer.setPixelRatio(1);
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-            this.renderer.shadowMap.enabled = true;
-            this.renderer.shadowMap.type = THREE.VSMShadowMap;
-            document.body.appendChild(this.renderer.domElement);
+        // ===== renderer =====
+        this.renderer = new THREE.WebGLRenderer({ alpha: true });
+        this.renderer.setPixelRatio(1);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.VSMShadowMap;
+        document.body.appendChild(this.renderer.domElement);
 
-            // ===== scene =====
-            const scene = this.scene;
-            this.scene.background = new THREE.Color(0x69e6f4);
-            this.scene.fog = new THREE.Fog(0x69e6f4, 1600, 2000);
+        // ===== scene =====
+        const scene = this.scene;
+        this.scene.background = new THREE.Color(0x69e6f4);
+        this.scene.fog = new THREE.Fog(0x69e6f4, 1600, 2000);
 
-            // ===== camera =====
-            this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-            this.camera.position.y = 1.6;
-            this.camera.lookAt(0, 1.7, -1);
-            this.dummyCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-            this.dummyCamera.position.y = 1.6;
-            this.dummyCamera.lookAt(0, 1.7, -1);
+        // ===== camera =====
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        this.camera.position.y = 1.6;
+        this.camera.lookAt(0, 1.7, -1);
+        this.dummyCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        this.dummyCamera.position.y = 1.6;
+        this.dummyCamera.lookAt(0, 1.7, -1);
 
-            // ===== lights =====
-            const light = new THREE.HemisphereLight(0xffeeff, 0x777788, 1);
-            light.position.set(0.5, 1, 0.75);
-            this.scene.add(light);
+        // ===== lights =====
+        const light = new THREE.HemisphereLight(0xffeeff, 0x777788, 1);
+        light.position.set(0.5, 1, 0.75);
+        this.scene.add(light);
 
-            if (this.graphicTier !== LOW) {
-                shadowLight = new DefaultDirectionalLight(this.graphicTier);
-                this.scene.add(shadowLight);
-                this.scene.add(shadowLight.target);
-            }
-
-            // ===== shaders =====
-            this.composer = new DefaultComposer(this.renderer, this.scene, this.camera);
-
-            // ===== graphic settings =====
-            this.setGraphicsSetting(this.graphicTier);
-            
-            // ===== UI =====
-            this.createUiElements();
-
-            // ===== Terrain Controller
-            this.terrainController = new TerrainController();
-
-            // ============= setup resize listener ==========
-            window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
-
-            function onWindowResize(camera, renderer) {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }
-
-        } // -- end init
-
-        this.createUiElements = function () {
-            graphicTierButton(this.graphicTier, () => {this.increaseGraphicSettings()});
-            blocker(() => {
-                this.controls.lock()
-                document.getElementById('blocker').style.display = "none";
-            });
-            avatarSelectPanel();
+        if (this.graphicTier !== LOW) {
+            shadowLight = new DefaultDirectionalLight(this.graphicTier);
+            this.scene.add(shadowLight);
+            this.scene.add(shadowLight.target);
         }
+
+        // ===== shaders =====
+        this.composer = new DefaultComposer(this.renderer, this.scene, this.camera);
+
+        // ===== graphic settings =====
+        this.setGraphicsSetting(this.graphicTier);
         
-        this.loadTerrain = function(terrainPath, x, y, z){
-            this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z);
+        // ===== UI =====
+        this.createUiElements();
+
+        // ===== Terrain Controller
+        this.terrainController = new TerrainController();
+
+        // ============= setup resize listener ==========
+        window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
+
+        function onWindowResize(camera, renderer) {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         }
-
-        this.spawnPlayer = function(avatarPath) {
-            this.entities = [];
-            this.player = new PlayerLocal('../../../glb/animations/animation.glb', avatarPath, this.scene);
-            window.player = this.player;
-            this.scene.add(this.player);
-            
-            // ===== controls =====
-            this.controls = new PointerLockControls(this.dummyCamera, document.body);
-            this.controls.sensitivityY = 0.002;
-            this.controls.minPolarAngle = 0.01; 
-            this.controls.maxPolarAngle = Math.PI - 0.25;
-            this.scene.add(this.controls.getObject());
-
-            document.addEventListener('keydown', (event) => {
-                if(this.controls.isLocked) {
-                    if (event.key === "v") {
-                        if (this.targetControlVector === this.thirdPersonControls) {
-                            this.targetControlVector = this.fpsControls;
-                            this.controls.sensitivityY = -0.002;
-                        } else {
-                            this.targetControlVector = this.thirdPersonControls;
-                            this.controls.sensitivityY = 0.002;
-                        }
-                    }
-                    this.player.keys[event.key.toLowerCase()] = true;
-                }
-            });
-            document.addEventListener('keyup', (event) => {
-                this.player.keys[event.key.toLowerCase()] = false;
-            });
-
-            window.addEventListener('keydown', (e) => {
-                if (e.keyCode === 32 && e.target === document.body) {
-                    e.preventDefault();
-                }
-            });
-
-            this.controls.addEventListener('unlock', () => {
-                window.player.keys = {};
-                document.getElementById("blocker").style.display = 'block';
-            });
-        }
-
-        this.setShadowLightTier = function(graphicTier) {
-            if (shadowLight) {
-                this.scene.remove(shadowLight.target);
-                this.scene.remove(shadowLight);
-                shadowLight.dispose();
-                shadowLight.shadow.dispose();
-            }
-
-            if (graphicTier !== LOW) {
-                shadowLight = new DefaultDirectionalLight(this.graphicTier);
-                this.scene.add(shadowLight);
-                this.scene.add(shadowLight.target);
-            } else {
-                shadowLight = undefined;
-            }
-        }
-
-        this.setGraphicsSetting = function(graphicTier) {
-            this.graphicTier = graphicTier;
-            this.setShadowLightTier(graphicTier);
-            this.composer.setGraphicsSetting(graphicTier, this.renderer, this.scene);
-
-            const graphicTierButtonElement = document.getElementById("graphicTierButton");
-            if(graphicTierButtonElement !== null) {
-                graphicTierButtonElement.innerHTML = "Graphics: " + settings[graphicTier];
-            }
-            
-        }
-
-        this.increaseGraphicSettings = function() {
-            this.graphicTier += 1;
-            this.graphicTier %= 4;
-            localProxy.tier = this.graphicTier;
-            this.setGraphicsSetting(this.graphicTier)
-        }
-
-        this.newSolidGeometriesFromSource = function(url, x, y, z, scaleFactor){
-            this.terrainController.newSolidGeometriesFromSource(this.scene, url, x, y, z, scaleFactor)
-        }
-
-        this.spawnOtherPlayer = function(avatarPath){ }
-
-        this.getLocation = () => { }
-
-        this.moveOtherPlayer = (x,y,z) => { }
-
-        // this.loadingPage = loadingPage(!this || !this.spawnOtherPlayer || !this.terrainController);
 
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();
@@ -196,6 +89,108 @@ class StdEnv {
         this.controlVector = this.thirdPersonControls.clone();
         this.targetControlVector = this.thirdPersonControls;
     } // -- end constructor
+
+    createUiElements = function () {
+        graphicTierButton(this.graphicTier, () => {this.increaseGraphicSettings()});
+        blocker(() => {
+            this.controls.lock()
+            document.getElementById('blocker').style.display = "none";
+        });
+        avatarSelectPanel();
+    }
+
+    loadTerrain = function(terrainPath, x, y, z){
+        this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z);
+    }
+    
+    spawnPlayer = function(avatarPath) {
+        this.entities = [];
+        this.player = new PlayerLocal('../../../glb/animations/animation.glb', avatarPath, this.scene);
+        window.player = this.player;
+        this.scene.add(this.player);
+        
+        // ===== controls =====
+        this.controls = new PointerLockControls(this.dummyCamera, document.body);
+        this.controls.sensitivityY = 0.002;
+        this.controls.minPolarAngle = 0.01; 
+        this.controls.maxPolarAngle = Math.PI - 0.25;
+        this.scene.add(this.controls.getObject());
+
+        document.addEventListener('keydown', (event) => {
+            if(this.controls.isLocked) {
+                if (event.key === "v") {
+                    if (this.targetControlVector === this.thirdPersonControls) {
+                        this.targetControlVector = this.fpsControls;
+                        this.controls.sensitivityY = -0.002;
+                    } else {
+                        this.targetControlVector = this.thirdPersonControls;
+                        this.controls.sensitivityY = 0.002;
+                    }
+                }
+                this.player.keys[event.key.toLowerCase()] = true;
+            }
+        });
+        document.addEventListener('keyup', (event) => {
+            this.player.keys[event.key.toLowerCase()] = false;
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.keyCode === 32 && e.target === document.body) {
+                e.preventDefault();
+            }
+        });
+
+        this.controls.addEventListener('unlock', () => {
+            window.player.keys = {};
+            document.getElementById("blocker").style.display = 'block';
+        });
+    }
+
+    setShadowLightTier = function(graphicTier) {
+        if (shadowLight) {
+            this.scene.remove(shadowLight.target);
+            this.scene.remove(shadowLight);
+            shadowLight.dispose();
+            shadowLight.shadow.dispose();
+        }
+
+        if (graphicTier !== LOW) {
+            shadowLight = new DefaultDirectionalLight(this.graphicTier);
+            this.scene.add(shadowLight);
+            this.scene.add(shadowLight.target);
+        } else {
+            shadowLight = undefined;
+        }
+    }
+
+    setGraphicsSetting = function(graphicTier) {
+        this.graphicTier = graphicTier;
+        this.setShadowLightTier(graphicTier);
+        this.composer.setGraphicsSetting(graphicTier, this.renderer, this.scene);
+
+        const graphicTierButtonElement = document.getElementById("graphicTierButton");
+        if(graphicTierButtonElement !== null) {
+            graphicTierButtonElement.innerHTML = "Graphics: " + settings[graphicTier];
+        }
+        
+    }
+
+    newSolidGeometriesFromSource = function(url, x, y, z, scaleFactor){
+        this.terrainController.newSolidGeometriesFromSource(this.scene, url, x, y, z, scaleFactor)
+    }
+
+    increaseGraphicSettings = function() {
+        this.graphicTier += 1;
+        this.graphicTier %= 4;
+        localProxy.tier = this.graphicTier;
+        this.setGraphicsSetting(this.graphicTier)
+    }
+
+    getLocation = () => { }
+
+    moveOtherPlayer = (x,y,z) => { }
+
+    spawnOtherPlayer = function(avatarPath){ }
 
     loading() {
         loadingPage(true);

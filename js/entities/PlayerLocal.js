@@ -16,24 +16,25 @@ class PlayerLocal extends CapsuleEntity {
         this.position.y = 50;
         this.position.z = -30;
 
-        this.getForwardVector = function(camera) {
-            camera.getWorldDirection(this.playerDirection);
-            this.playerDirection.y = 0;
-            this.playerDirection.normalize();
-            this.playerDirection.multiplyScalar(-1);
-            return this.playerDirection;
-        }
-
-        this.getSideVector = function(camera) {
-            camera.getWorldDirection(this.playerDirection);
-            this.playerDirection.y = 0;
-            this.playerDirection.normalize();
-            this.playerDirection.cross(camera.up);
-            this.playerDirection.multiplyScalar(-1);
-            return this.playerDirection;
-        }
         this.jumped = 0;
         this.friction = 0.975;
+    }
+    
+    getForwardVector = function(camera) {
+        camera.getWorldDirection(this.playerDirection);
+        this.playerDirection.y = 0;
+        this.playerDirection.normalize();
+        this.playerDirection.multiplyScalar(-1);
+        return this.playerDirection;
+    }
+    
+    getSideVector = function(camera) {
+        camera.getWorldDirection(this.playerDirection);
+        this.playerDirection.y = 0;
+        this.playerDirection.normalize();
+        this.playerDirection.cross(camera.up);
+        this.playerDirection.multiplyScalar(-1);
+        return this.playerDirection;
     }
 
     update(delta, camera, collider, entities, frustum, dummyCamera, controlVector) {

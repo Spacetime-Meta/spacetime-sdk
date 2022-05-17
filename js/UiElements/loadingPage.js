@@ -35,6 +35,4 @@ const loadingPage = function(waiting) {
     return waiting;
 }
 
-
-
 export default loadingPage;

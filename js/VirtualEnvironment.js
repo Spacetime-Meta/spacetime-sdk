@@ -1,6 +1,7 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { PointerLockControls } from './util/PointerLockControls.js';
 import { TerrainController } from './util/TerrainController.js';
+import { RemoteController } from './util/RemoteController.js';
 
 import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
@@ -73,7 +74,7 @@ class VirtualEnvironment {
         // ===== Terrain Controller
         this.terrainController = new TerrainController();
 
-        // ============= setup resize listener ==========
+        // ===== setup resize listener ==========
         window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
 
         function onWindowResize(camera, renderer) {
@@ -81,6 +82,9 @@ class VirtualEnvironment {
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
+
+        // ===== setupMultiplayer =====
+        this.remoteController = new RemoteController();
 
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();

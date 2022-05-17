@@ -49,62 +49,62 @@ class AvatarController extends THREE.Object3D {
     update(delta, frustum, position, horizontalVelocity) {
         this.delta = delta;
         
-        this.position.copy(position);
-        this.updateFacingDirection(horizontalVelocity)
-        
         if(typeof this.box !== 'undefined') {
             this.updateBox();
+            
+            this.position.copy(position);
+            this.updateFacingDirection(horizontalVelocity)
+        
             if (!frustum.intersectsBox(this.box)) {
                 this.model.visible = false;
             } else {
                 this.model.visible = true;
                 this.mixer.update(delta);
             }
-        }
         
-        
-        if (this.lastPosition) {
-            this.positionChange.multiplyScalar(0.8);
-            this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
-        }
-        this.lastPosition = this.position.clone();
+            if (this.lastPosition) {
+                this.positionChange.multiplyScalar(0.8);
+                this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
+            }
+            this.lastPosition = this.position.clone();
 
 
-        if (player.jumped > 0 && this.jumpTick === 0) {
-            this.play("jump", 0.25);
-        } else {
-            if (this.positionChange.y < -0.25 && !player.groundBelow) {
-                this.play("fall", 0.25);
+            if (player.jumped > 0 && this.jumpTick === 0) {
+                this.play("jump", 0.25);
             } else {
-                if ((this.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
-                    if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
-                        if(player.keys["shift"]){ this.play("run"); }
-                        else { this.play("walk"); }
-                    } else {
-                        this.play("idle");
+                if (this.positionChange.y < -0.25 && !player.groundBelow) {
+                    this.play("fall", 0.25);
+                } else {
+                    if ((this.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
+                        if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
+                            if(player.keys["shift"]){ this.play("run"); }
+                            else { this.play("walk"); }
+                        } else {
+                            this.play("idle");
+                        }
                     }
                 }
             }
-        }
-        if (this.current === "jump") {
-            this.jumpTick += delta;
-        } else {
-            this.jumpTick = 0;
-        }
-        this.model.traverse(child => {
-            if (child.isMesh) {
-                child.material.opacity = this.opacity;
-                if (this.opacity < 1) {
-                    child.material.transparent = true;
-                }
-                child.material.needsUpdate = true;
-                if (this.opacity < 0.1) {
-                    child.material.depthWrite = false;
-                } else {
-                    child.material.depthWrite = true;
-                }
+            if (this.current === "jump") {
+                this.jumpTick += delta;
+            } else {
+                this.jumpTick = 0;
             }
-        })
+            this.model.traverse(child => {
+                if (child.isMesh) {
+                    child.material.opacity = this.opacity;
+                    if (this.opacity < 1) {
+                        child.material.transparent = true;
+                    }
+                    child.material.needsUpdate = true;
+                    if (this.opacity < 0.1) {
+                        child.material.depthWrite = false;
+                    } else {
+                        child.material.depthWrite = true;
+                    }
+                }
+            })
+        }
     }
 
     changeAvatar(avatarUrl, animationsUrl) {

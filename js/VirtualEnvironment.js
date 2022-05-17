@@ -90,7 +90,7 @@ class VirtualEnvironment {
         this.targetControlVector = this.thirdPersonControls;
     } // -- end constructor
 
-    createUiElements = function () {
+    createUiElements() {
         graphicTierButton(this.graphicTier, () => {this.increaseGraphicSettings()});
         blocker(() => {
             this.controls.lock()
@@ -99,13 +99,17 @@ class VirtualEnvironment {
         avatarSelectPanel();
     }
 
-    loadTerrain = function(terrainPath, x, y, z){
+    loadTerrain(terrainPath, x, y, z){
         this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z);
     }
+
+    generateTerrain(seed) {
+        this.terrainController.generateTerrain(this.scene, seed);
+    }
     
-    spawnPlayer = function(avatarPath) {
+    spawnPlayer(avatarPath, x, y, z) {
         this.entities = [];
-        this.player = new PlayerLocal('../../../glb/animations/animation.glb', avatarPath, this.scene);
+        this.player = new PlayerLocal('../../../glb/animations/animation.glb', avatarPath, this.scene, x, y, z);
         window.player = this.player;
         this.scene.add(this.player);
         
@@ -146,7 +150,7 @@ class VirtualEnvironment {
         });
     }
 
-    setShadowLightTier = function(graphicTier) {
+    setShadowLightTier(graphicTier) {
         if (shadowLight) {
             this.scene.remove(shadowLight.target);
             this.scene.remove(shadowLight);
@@ -163,7 +167,7 @@ class VirtualEnvironment {
         }
     }
 
-    setGraphicsSetting = function(graphicTier) {
+    setGraphicsSetting(graphicTier) {
         this.graphicTier = graphicTier;
         this.setShadowLightTier(graphicTier);
         this.composer.setGraphicsSetting(graphicTier, this.renderer, this.scene);
@@ -175,22 +179,22 @@ class VirtualEnvironment {
         
     }
 
-    newSolidGeometriesFromSource = function(url, x, y, z, scaleFactor){
+    newSolidGeometriesFromSource(url, x, y, z, scaleFactor){
         this.terrainController.newSolidGeometriesFromSource(this.scene, url, x, y, z, scaleFactor)
     }
 
-    increaseGraphicSettings = function() {
+    increaseGraphicSettings() {
         this.graphicTier += 1;
         this.graphicTier %= 4;
         localProxy.tier = this.graphicTier;
         this.setGraphicsSetting(this.graphicTier)
     }
 
-    getLocation = () => { }
+    getLocation(){ }
 
-    moveOtherPlayer = (x,y,z) => { }
+    moveOtherPlayer(x,y,z){ }
 
-    spawnOtherPlayer = function(avatarPath){ }
+    spawnOtherPlayer(avatarPath){ }
 
     loading() {
         loadingPage(true);
@@ -216,7 +220,6 @@ class VirtualEnvironment {
                 })
             }
             
-            //this.camera.position.y += 10;
             this.camera.position.copy(this.player.position);
             const dir = this.dummyCamera.getWorldDirection(new THREE.Vector3());
             this.camera.position.add(dir.multiplyScalar(this.controlVector.z));

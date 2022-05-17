@@ -3,7 +3,7 @@ import { Vector3, Matrix4, Raycaster } from 'https://cdn.skypack.dev/pin/three@v
 import { AvatarController } from './AvatarController.js';
 
 class PlayerLocal extends CapsuleEntity {
-    constructor(animationURL, avatarURL, scene) {
+    constructor(animationURL, avatarURL, scene, x, y, z) {
         super(5, 30);
 
         this.playerDirection = new Vector3();
@@ -13,8 +13,8 @@ class PlayerLocal extends CapsuleEntity {
 
         this.speedFactor = 1; // 1 is the default walk speed
         this.visible = false;
-        this.position.y = 50;
-        this.position.z = -30;
+        this.position.y = y;
+        this.position.z = z;
 
         this.jumped = 0;
         this.friction = 0.975;

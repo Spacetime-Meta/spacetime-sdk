@@ -33,7 +33,7 @@
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-46" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
                     <mxGeometry y="170" width="326" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="GosrUJCcwg7DmdABZyiW-18" value="createUiElements()&#10;graphicTierButton()&#10;blocker()&#10;newSolidGeometriesFromSource(url, x, y, z, scaleFactor)&#10;loadTerrain(terrainPath, x, y, z)&#10;spawnPlayer(avatarPath)&#10;setShadowLightTier(graphicTier)&#10;setGraphicsSetting(graphicTier)&#10;increaseGraphicSettings()&#10;getLocation()&#10;spawnOtherPlayer(avatarPath)&#10;moveOtherPlayer(x,y,z)&#10;update()&#10;loading()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
+                <mxCell id="GosrUJCcwg7DmdABZyiW-18" value="createUiElements()&#10;graphicTierButton()&#10;blocker()&#10;newSolidGeometriesFromSource(url, x, y, z, scaleFactor)&#10;loadTerrain(terrainPath, x, y, z)&#10;generateTerrain(seed)&#10;spawnPlayer(avatarPath)&#10;setShadowLightTier(graphicTier)&#10;setGraphicsSetting(graphicTier)&#10;increaseGraphicSettings()&#10;getLocation()&#10;spawnOtherPlayer(avatarPath)&#10;moveOtherPlayer(x,y,z)&#10;update()&#10;loading()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
                     <mxGeometry y="178" width="326" height="238" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-48" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=8;" parent="1" edge="1">
@@ -284,7 +284,7 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="14" value="TerrainController" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="2021" y="586" width="355" height="193" as="geometry"/>
+                    <mxGeometry x="2021" y="586" width="355" height="235" as="geometry"/>
                 </mxCell>
                 <mxCell id="15" value="loader: THREE.GLTFLoader&#10;terrain: Object&#10;collider: THREE.Mesh (As BVH)&#10;bloomScene: THREE.Scene&#10;geometries: [THREE.Geometry]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="14" vertex="1">
                     <mxGeometry y="26" width="355" height="87" as="geometry"/>
@@ -292,8 +292,8 @@
                 <mxCell id="16" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="14" vertex="1">
                     <mxGeometry y="113" width="355" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="17" value="constructor()&#10;loadTerrain(URL, scene, x, y, z)&#10;generateCollider(scene)&#10;newSolidGeometriesFromSource(scene, url, x, y, z, scaleFactor)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="14" vertex="1">
-                    <mxGeometry y="121" width="355" height="72" as="geometry"/>
+                <mxCell id="17" value="constructor()&#10;loadTerrain(URL, scene, x, y, z)&#10;generateTerrain(scene, seed)&#10;generateHeight(width, height, seed)&#10;generateTexture( data, width, height )&#10;generateCollider(scene)&#10;newSolidGeometriesFromSource(scene, url, x, y, z, scaleFactor)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="14" vertex="1">
+                    <mxGeometry y="121" width="355" height="114" as="geometry"/>
                 </mxCell>
                 <mxCell id="21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=diamondThin;endFill=1;endSize=16;strokeWidth=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="14" target="7TFr1C6rGWP-Rq-zpPYZ-44" edge="1">
                     <mxGeometry relative="1" as="geometry">

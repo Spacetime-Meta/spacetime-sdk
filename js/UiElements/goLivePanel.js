@@ -1,10 +1,10 @@
 import peerIdSelectPanel from './peerIdSelectPanel.js';
 
 const goLivePanel = function(remoteController) {
-    const element = document.createElement("div");
-    element.id = "goLivePanel";
+    const goLivePanel = document.createElement("div");
+    goLivePanel.id = "goLivePanel";
 
-    Object.assign(element.style, {
+    Object.assign(goLivePanel.style, {
         position: 'absolute',
         padding: '10px',
         bottom: '2px;',
@@ -20,14 +20,14 @@ const goLivePanel = function(remoteController) {
         color: '#00FFF0'
     })
 
-    element.innerHTML = "Start Multiplayer";
+    goLivePanel.innerHTML = "Start Multiplayer";
 
-    element.addEventListener('click', () => {
-        document.getElementById("goLivePanel").remove();
+    goLivePanel.addEventListener('click', () => {
+        goLivePanel.remove();
         peerIdSelectPanel(remoteController);
     })
     
-    document.body.appendChild(element); 
+    document.body.appendChild(goLivePanel); 
 }
 
 export default goLivePanel; 

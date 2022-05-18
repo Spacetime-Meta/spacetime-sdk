@@ -1,9 +1,9 @@
 const peerIdSelectPanel = function(remoteController) {
-    const panelWrapper = document.createElement("div");
-    panelWrapper.id = "peerIdSelectPanel";
-    panelWrapper.innerHTML = "Select a peer ID";
+    const peerIdSelectPanel = document.createElement("div");
+    peerIdSelectPanel.id = "peerIdSelectPanel";
+    peerIdSelectPanel.innerHTML = "Select a peer ID";
 
-    Object.assign(panelWrapper.style, {
+    Object.assign(peerIdSelectPanel.style, {
         position: 'absolute',
         padding: '10px',
         top: '40%',
@@ -27,14 +27,14 @@ const peerIdSelectPanel = function(remoteController) {
     acceptPeerIdButton.id = 'acceptPeerIdButton';
     acceptPeerIdButton.innerHTML = "Go"
     acceptPeerIdButton.addEventListener('click', () => {
-        const peerId = document.getElementById('peerIdInput').value;
+        const peerId = peerIdInput.value;
         remoteController.createPeerWithId(peerId)
-        document.getElementById("peerIdSelectPanel").remove()
+        peerIdSelectPanel.remove()
     })
 
-    panelWrapper.appendChild(peerIdInput);
-    panelWrapper.appendChild(acceptPeerIdButton);
-    document.body.appendChild(panelWrapper); 
+    peerIdSelectPanel.appendChild(peerIdInput);
+    peerIdSelectPanel.appendChild(acceptPeerIdButton);
+    document.body.appendChild(peerIdSelectPanel); 
 }
 
 export default peerIdSelectPanel; 

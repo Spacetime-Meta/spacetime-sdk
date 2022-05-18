@@ -1,11 +1,11 @@
 import localProxy from "../util/localProxy.js";
 
 const friendManagementPanel = function(remoteController) {
-    const panelWrapper = document.createElement("div");
-    panelWrapper.id = "friendManagementPanel";
-    panelWrapper.innerHTML = "Manage Friends";
+    const friendManagementPanelWrapper = document.createElement("div");
+    friendManagementPanelWrapper.id = "friendManagementPanelWrapper";
+    friendManagementPanelWrapper.innerHTML = "Manage Friends";
 
-    Object.assign(panelWrapper.style, {
+    Object.assign(friendManagementPanelWrapper.style, {
         position: 'absolute',
         padding: '10px',
         top: '350px',
@@ -20,28 +20,7 @@ const friendManagementPanel = function(remoteController) {
         color: '#00FFF0'
     })
     
-    const remotePeerIdInput =  document.createElement("input");
-    remotePeerIdInput.id = "remotePeerIdInput";
 
-    const acceptRemotePeerIdButton = document.createElement("button")
-    acceptRemotePeerIdButton.id = 'acceptRemotePeerIdButton';
-    acceptRemotePeerIdButton.innerHTML = "Add & Connect"
-    acceptRemotePeerIdButton.addEventListener('click', () => {
-
-        // get value of the input field
-        const remotePeerId = document.getElementById('remotePeerIdInput').value;
-        
-        // tell remoteController to try connect
-        remoteController.connectToPeer(remotePeerId);
-
-        // add the friend to the friend list
-        let tempList = localProxy.friendList
-        tempList.push(remotePeerId);
-        localProxy.friendList = tempList
-
-        // add the friend to the friend panel
-        friendListElement(remotePeerId, document.getElementById("friendList"));
-    })
 
     const friendList = document.createElement("ul");
     friendList.id = "friendList";
@@ -60,15 +39,38 @@ const friendManagementPanel = function(remoteController) {
     const closeButton = document.createElement("button");
     closeButton.innerHTML = "close"
     closeButton.addEventListener('click', () => {
-        document.getElementById('friendManagementPanel').remove()
+        friendManagementPanelWrapper.remove()
     })
     
-    panelWrapper.appendChild(remotePeerIdInput);
-    panelWrapper.appendChild(acceptRemotePeerIdButton);
-    panelWrapper.appendChild(friendList);
-    panelWrapper.appendChild(closeButton)
+    const remotePeerIdInput =  document.createElement("input");
+    remotePeerIdInput.id = "remotePeerIdInput";
 
-    document.body.appendChild(panelWrapper); 
+    const acceptRemotePeerIdButton = document.createElement("button")
+    acceptRemotePeerIdButton.id = 'acceptRemotePeerIdButton';
+    acceptRemotePeerIdButton.innerHTML = "Add & Connect"
+    acceptRemotePeerIdButton.addEventListener('click', () => {
+
+        // get value of the input field
+        const remotePeerId = remotePeerIdInput.value;
+        
+        // tell remoteController to try connect
+        remoteController.connectToPeer(remotePeerId);
+
+        // add the friend to the friend list
+        let tempList = localProxy.friendList
+        tempList.push(remotePeerId);
+        localProxy.friendList = tempList
+
+        // add the friend to the friend panel
+        friendListElement(remotePeerId, friendList);
+    })
+    
+    friendManagementPanelWrapper.appendChild(remotePeerIdInput);
+    friendManagementPanelWrapper.appendChild(acceptRemotePeerIdButton);
+    friendManagementPanelWrapper.appendChild(friendList);
+    friendManagementPanelWrapper.appendChild(closeButton)
+
+    document.body.appendChild(friendManagementPanelWrapper); 
 }
 
 export default friendManagementPanel; 

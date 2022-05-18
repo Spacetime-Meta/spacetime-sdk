@@ -8,7 +8,6 @@ const peerIdDisplay = function(peerId, remoteController) {
         position: 'absolute',
         bottom: '2px',
         left: 'calc(50% - 150px)',
-        transform: 'translate(0, -100%)',
         width: '300px',
         textAlign: 'center',
         boxSizing: 'border-box',
@@ -21,7 +20,7 @@ const peerIdDisplay = function(peerId, remoteController) {
 
     element.addEventListener('click', () => {
         peerIdSelectPanel(remoteController);
-        document.getElementById('peerIdDisplay').remove()
+        element.remove()
     })
     
     document.body.appendChild(element); 

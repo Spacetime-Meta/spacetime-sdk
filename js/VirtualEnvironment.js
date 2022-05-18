@@ -86,6 +86,8 @@ class VirtualEnvironment {
         // ===== setupMultiplayer =====
         this.remoteController = new RemoteController();
 
+
+        // ===== others =====
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();
         this.fpsControls = new THREE.Vector4(0.01, Math.PI - 0.01, 0.01, 1);

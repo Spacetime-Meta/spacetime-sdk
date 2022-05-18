@@ -10,7 +10,7 @@ const goLivePanel = function(remoteController) {
         bottom: '2px;',
         transform: 'translate(0, -100%)',
         left: '40%',
-        width: '20%',
+        width: '200px',
         textAlign: 'center',
         border: '1px solid #00FFF0',
         boxSizing: 'border-box',

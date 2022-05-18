@@ -18,7 +18,7 @@ git clone https://github.com/Spacetime-Meta/spacetime-standard-kit.git
 cd spacetime-standard-kit
 ```
 
-Once you are ready to participate in the development of the standard kit, you must go to the [issue page](https://github.com/Spacetime-Meta/spacetime-standard-kit/issues) of the project and select an issues to work on. Once you have selected the issus you want to work on, crate a new branch for this issue. 
+Once you are ready to participate in the development of the standard kit, you must go to the [issue page](https://github.com/Spacetime-Meta/spacetime-standard-kit/issues) of the project and select an issues to work on. Once you have selected the issus you want to work on, create a new branch for this issue. 
 
 **Do not forget to branch from develop!!**  
 *The develop branch is always the starting point when working on the project. If you want more information about branch management, i recommend reading this article: [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/)*

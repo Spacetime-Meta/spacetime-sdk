@@ -8,7 +8,7 @@ import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
 import loadingPage from './UiElements/loadingPage.js';
-import graphicTierButton from './UiElements/graphicTierButton.js';
+import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
 import blocker from './UiElements/blocker.js';
 import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
 
@@ -86,6 +86,8 @@ class VirtualEnvironment {
         // ===== setupMultiplayer =====
         this.remoteController = new RemoteController();
 
+
+        // ===== others =====
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();
         this.fpsControls = new THREE.Vector4(0.01, Math.PI - 0.01, 0.01, 1);

@@ -1,6 +1,7 @@
 import localProxy from "./localProxy.js";
 import goLivePanel from '../UiElements/goLivePanel.js';
 import peerIdDisplay from '../UiElements/peerIdDisplay.js';
+import chatBox from '../UiElements/chatBox.js';
 import friendManagement from '../UiElements/buttons/friendManagement.js';
 
 // PeerJs is injected in the window
@@ -13,24 +14,28 @@ class RemoteController {
         goLivePanel(this);
 
         // check if the user has a peerID in the local storage
-        // if(typeof localProxy.peerId !== 'undefined'){
-        //     this.peer = new Peer(localProxy.peerId);
-        //     console.log("[RemoteController] Trying to create peer: " + localProxy.peerId)
-        //     this.peer.on('open', () => {
-        //         document.getElementById("goLivePanel").remove()
-        //         this.onConnectionOpen()
-        //     })
-        // }
+        if(typeof localProxy.peerId !== 'undefined'){
+            this.peer = new Peer(localProxy.peerId);
+            console.log("[RemoteController] Trying to create peer: " + localProxy.peerId)
+            this.peer.on('open', () => {
+                document.getElementById("goLivePanel").remove()
+                this.onConnectionOpen()
+            })
+        }
     }
 
     createPeerWithId(peerId){
         localProxy.peerId = peerId;
         this.peer = new Peer(peerId);
-        this.peer.on('open', () => {this.onConnectionOpen()});
+        this.peer.on('open', () => {
+            this.onConnectionOpen()
+        });
     }
 
     onConnectionOpen() {
-        console.log("[RemoteController] Peer created with id: "+localProxy.peerId);
+        chatBox(this);
+
+        this.addMessageToChatBox("[RemoteController] Peer created with id: "+localProxy.peerId);
         peerIdDisplay(localProxy.peerId, this)
         friendManagement(this);
 
@@ -42,8 +47,9 @@ class RemoteController {
         // try connect to friends
         if(typeof localProxy.friendList !== 'undefined'){
             localProxy.friendList.forEach(friend => {
-                if(friend !== localProxy.peerId)
-                this.connectToPeer(friend)
+                if(friend !== localProxy.peerId){
+                    this.connectToPeer(friend)
+                }
             })
         }
         else {
@@ -52,12 +58,18 @@ class RemoteController {
     }
 
     onConnectionConnect(newConnection) {
-        console.log('[RemoteController] new connection to peer: ' + newConnection.peer)
+        this.addMessageToChatBox('[RemoteController] new connection to peer: ' + newConnection.peer)
+
+        this.connections.push(newConnection);
 
         // listen to new data
         newConnection.on('data', (data) => {
-            console.log(data)
+            this.onReceiveData(newConnection.peer, data)
         })
+    }
+
+    onReceiveData(peer, data) {
+        this.addMessageToChatBox(peer+": "+data)
     }
 
     connectToPeer(peerId) {
@@ -68,6 +80,18 @@ class RemoteController {
         newConnection.on('open', () => {
             this.onConnectionConnect(newConnection);
         })
+    }
+
+    sendMessage(message) {
+        this.connections.forEach(connection => {
+            connection.send(message);
+        })
+        this.addMessageToChatBox(localProxy.peerId+": "+message)
+    }
+
+    addMessageToChatBox(message) {
+        const chat = document.getElementById("chatDisplay");
+        chat.innerHTML = chat.innerHTML + "<br>" + message;
     }
 }
 

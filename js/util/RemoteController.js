@@ -7,9 +7,8 @@ const Peer = window.Peer;
 
 class RemoteController {
     constructor() {
-
         // check if the user has a peerID in the local storage
-        if(localProxy.peerId !== undefined){
+        if(typeof localProxy.peerId !== 'undefined'){
             this.peer = new Peer(localProxy.peerId);
             this.peer.on('open', () => {this.onConnectionOpen()})
         }

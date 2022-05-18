@@ -33,7 +33,7 @@ class VirtualEnvironment {
         // ===== renderer =====
         this.renderer = new THREE.WebGLRenderer({ alpha: true });
         this.renderer.setPixelRatio(1);
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth-1, window.innerHeight-1);
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.VSMShadowMap;
         document.body.appendChild(this.renderer.domElement);

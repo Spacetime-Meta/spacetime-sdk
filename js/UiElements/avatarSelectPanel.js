@@ -8,7 +8,7 @@ const avatarSelectPanel = function () {
         top: '2px',
         right: 'calc(100% - 2px)',
         transform: 'translate(100%, 0)',
-        width: '10%',
+        width: '150px',
         textAlign: 'center',
         border: '1px solid #00FFF0',
         boxSizing: 'border-box',

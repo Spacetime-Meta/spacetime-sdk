@@ -55,16 +55,16 @@ const avatarSelectPanel = function () {
             cursor: 'pointer',
             float: 'right'
         })
-        toggleBtnElement.innerHTML = "&#9746;";
+        toggleBtnElement.innerHTML = "&#x25BC;";
         toggleBtnElement.addEventListener("click", () => {
             const avatarElements = document.getElementsByClassName("avatar");
             for(let i = 0; i < avatarElements.length; i++) {
                 if(avatarElements[i].style.display === 'block') {
                     avatarElements[i].style.display = 'none';
-                    toggleBtnElement.innerHTML = "&#9947;";
+                    toggleBtnElement.innerHTML = "&#x25B2;";
                 }else {
                     avatarElements[i].style.display = 'block';
-                    toggleBtnElement.innerHTML = "&#9746;";
+                    toggleBtnElement.innerHTML = "&#x25BC;";
                 }
             }
         })

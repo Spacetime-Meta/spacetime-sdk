@@ -1,13 +1,32 @@
+import localProxy from "./localProxy.js";
+import goLivePanel from '../UiElements/goLivePanel.js';
+import peerIdDisplay from '../UiElements/peerIdDisplay.js';
+
 // PeerJs is injected in the window
 const Peer = window.Peer;
 
 class RemoteController {
     constructor() {
-        this.peer = new Peer("temporary_peer_id");
-         
-        this.peer.on('open', function(id) {
-            console.log("Peer created with id: "+id);
-        })
+
+        // check if the user has a peerID in the local storage
+        if(localProxy.peerId !== undefined){
+            this.peer = new Peer(localProxy.peerId);
+            this.peer.on('open', () => {this.onConnectionOpen()})
+        }
+        else {
+            goLivePanel(this);
+        }
+    }
+
+    createPeerWithId(peerId){
+        localProxy.peerId = peerId;
+        this.peer = new Peer(peerId);
+        this.peer.on('open', () => {this.onConnectionOpen()});
+    }
+
+    onConnectionOpen() {
+        console.log("Peer created with id: "+localProxy.peerId);
+        peerIdDisplay(localProxy.peerId, this)
     }
 }
 

@@ -1,6 +1,7 @@
 const blocker = function(onClick) {
     const element = document.createElement("div");
     element.id = "blocker";
+    element.addEventListener('click', onClick)
 
     Object.assign(element.style, {
         position: "absolute",
@@ -12,11 +13,20 @@ const blocker = function(onClick) {
         color: "Turquoise"
     })
 
-    element.innerHTML = "click to play"
+    const playElement = document.createElement("p");
+    playElement.innerHTML = "click to play"
+    element.appendChild(playElement)
 
-    element.addEventListener('click', onClick)
+    const instructions = document.createElement("p");
+    instructions.innerHTML = "<b>WASD</b> move, <b>SHIFT</b> run, <b>SPACE</b> jump, <b>V</b> view";
+    element.appendChild(instructions);
 
     document.body.appendChild(element);
+
+    const bTag = document.getElementsByTagName("b");
+    for(let index = 0 ; index < bTag.length; index++) {
+        bTag[index].style.cssText = "color: orange;";
+    }
 }
 
 export default blocker;

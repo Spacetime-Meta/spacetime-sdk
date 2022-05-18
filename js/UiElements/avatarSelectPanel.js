@@ -18,20 +18,22 @@ const avatarSelectPanel = function () {
     })
 
     element.innerHTML = "avatars"
-     
+
+    toggleButton(element);
     avatarButton("Vanguard", element, '../../../glb/avatars/vanguard.glb')
     avatarButton("xBot", element, '../../../glb/avatars/xBot.glb')
     avatarButton("yBot", element, '../../../glb/avatars/yBot.glb')
-    
-    
+
     document.body.appendChild(element);
     
     function avatarButton(name, parent, avatarUrl) {
         const avatarButtonElement = document.createElement("div");
         avatarButtonElement.id = "avatarPanel"+name;
+        avatarButtonElement.className = "avatar";
 
         Object.assign(avatarButtonElement.style, {
             border: '1px solid #00FFF0',
+            display: 'block',
             padding: '5px',
             margin: '2px',
             cursor: 'pointer'
@@ -44,6 +46,29 @@ const avatarSelectPanel = function () {
         })
 
         parent.appendChild(avatarButtonElement)
+    }
+
+    function toggleButton(parent) {
+        const toggleBtnElement = document.createElement("div");
+        toggleBtnElement.id = "toggle";
+        Object.assign(toggleBtnElement.style, {
+            cursor: 'pointer',
+            float: 'right'
+        })
+        toggleBtnElement.innerHTML = "&#9746;";
+        toggleBtnElement.addEventListener("click", () => {
+            const avatarElements = document.getElementsByClassName("avatar");
+            for(let i = 0; i < avatarElements.length; i++) {
+                if(avatarElements[i].style.display === 'block') {
+                    avatarElements[i].style.display = 'none';
+                    toggleBtnElement.innerHTML = "&#9947;";
+                }else {
+                    avatarElements[i].style.display = 'block';
+                    toggleBtnElement.innerHTML = "&#9746;";
+                }
+            }
+        })
+        parent.appendChild(toggleBtnElement)
     }
 }
 

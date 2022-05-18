@@ -1,8 +1,7 @@
 import localProxy from "./localProxy.js";
 import goLivePanel from '../UiElements/goLivePanel.js';
 import peerIdDisplay from '../UiElements/peerIdDisplay.js';
-import connectPeerTestPanel from '../UiElements/connectPeerTestPanel.js';
-import openFriendManagementButton from '../UiElements/openFriendManagementButton.js';
+import friendManagement from '../UiElements/buttons/friendManagement.js';
 
 // PeerJs is injected in the window
 const Peer = window.Peer;
@@ -12,17 +11,16 @@ class RemoteController {
         this.connections = [];
         
         goLivePanel(this);
-        connectPeerTestPanel(this);
 
         // check if the user has a peerID in the local storage
-        if(typeof localProxy.peerId !== 'undefined'){
-            this.peer = new Peer(localProxy.peerId);
-            console.log("Trying to create peer: " + localProxy.peerId)
-            this.peer.on('open', () => {
-                document.getElementById("goLivePanel").remove()
-                this.onConnectionOpen()
-            })
-        }
+        // if(typeof localProxy.peerId !== 'undefined'){
+        //     this.peer = new Peer(localProxy.peerId);
+        //     console.log("[RemoteController] Trying to create peer: " + localProxy.peerId)
+        //     this.peer.on('open', () => {
+        //         document.getElementById("goLivePanel").remove()
+        //         this.onConnectionOpen()
+        //     })
+        // }
     }
 
     createPeerWithId(peerId){
@@ -32,23 +30,29 @@ class RemoteController {
     }
 
     onConnectionOpen() {
-        console.log("Peer created with id: "+localProxy.peerId);
+        console.log("[RemoteController] Peer created with id: "+localProxy.peerId);
         peerIdDisplay(localProxy.peerId, this)
-        openFriendManagementButton();
+        friendManagement(this);
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
-            onConnectionConnect(newConnection)
+            this.onConnectionConnect(newConnection)
         })
 
         // try connect to friends
-        // if(typeof localProxy.friendList !== 'undefined'){
-        //     this.connectToPeer(localProxy.friendList[0])
-        // }
+        if(typeof localProxy.friendList !== 'undefined'){
+            localProxy.friendList.forEach(friend => {
+                if(friend !== localProxy.peerId)
+                this.connectToPeer(friend)
+            })
+        }
+        else {
+            localProxy.friendList = [];
+        }
     }
 
     onConnectionConnect(newConnection) {
-        console.log('new connection to peer :' + newConnection.peer)
+        console.log('[RemoteController] new connection to peer: ' + newConnection.peer)
 
         // listen to new data
         newConnection.on('data', (data) => {
@@ -57,12 +61,12 @@ class RemoteController {
     }
 
     connectToPeer(peerId) {
-        console.log("Trying connection to peer: " + peerId);
+        console.log("[RemoteController] Trying connection to peer: " + peerId);
         const newConnection = this.peer.connect(peerId);
 
         // on new connection establish
-        newConnection.on('connection', () => {
-            onConnectionConnect(newConnection);
+        newConnection.on('open', () => {
+            this.onConnectionConnect(newConnection);
         })
     }
 }

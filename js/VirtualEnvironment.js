@@ -8,7 +8,7 @@ import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
 import loadingPage from './UiElements/loadingPage.js';
-import graphicTierButton from './UiElements/graphicTierButton.js';
+import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
 import blocker from './UiElements/blocker.js';
 import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
 

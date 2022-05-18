@@ -1,6 +1,8 @@
-const openFriendManagementButton = function() {
+import friendManagementPanel from '../friendManagementPanel.js';
+
+const friendManagement = function(remoteController) {
     const element = document.createElement("div");
-    element.id = "openFriendManagementButton";
+    element.id = "friendManagement";
 
     Object.assign(element.style, {
         position: 'absolute',
@@ -18,8 +20,12 @@ const openFriendManagementButton = function() {
         color: '#00FFF0'
     })
     element.innerHTML = "Manage Friends"
+
+    element.addEventListener('click', () => {
+        friendManagementPanel(remoteController);
+    })
     
     document.body.appendChild(element); 
 }
 
-export default openFriendManagementButton; 
+export default friendManagement; 

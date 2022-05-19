@@ -14,14 +14,14 @@ class RemoteController {
         goLivePanel(this);
 
         // check if the user has a peerID in the local storage
-        if(typeof localProxy.peerId !== 'undefined'){
-            this.peer = new Peer(localProxy.peerId);
-            console.log("[RemoteController] Trying to create peer: " + localProxy.peerId)
-            this.peer.on('open', () => {
-                document.getElementById("goLivePanel").remove()
-                this.onConnectionOpen()
-            })
-        }
+        // if(typeof localProxy.peerId !== 'undefined'){
+        //     this.peer = new Peer(localProxy.peerId);
+        //     console.log("[RemoteController] Trying to create peer: " + localProxy.peerId)
+        //     this.peer.on('open', () => {
+        //         document.getElementById("goLivePanel").remove()
+        //         this.onConnectionOpen()
+        //     })
+        // }
     }
 
     createPeerWithId(peerId){
@@ -59,17 +59,39 @@ class RemoteController {
 
     onConnectionConnect(newConnection) {
         this.addMessageToChatBox('[RemoteController] new connection to peer: ' + newConnection.peer)
-
         this.connections.push(newConnection);
+        
+        setTimeout(() => {
+            // not sure why this is needed but if we dont give the connection some time it wont send the message
+            newConnection.send('{"type":"spawn", "pathname":"'+window.location.pathname+'"}')
+        }, 1000);
+        
 
         // listen to new data
         newConnection.on('data', (data) => {
-            this.onReceiveData(newConnection.peer, data)
+            this.onReceiveData(newConnection, data)
         })
     }
 
-    onReceiveData(peer, data) {
-        this.addMessageToChatBox(peer+": "+data)
+    onReceiveData(connection, data) {
+        let jsonData;
+        try {
+            jsonData = JSON.parse(data);
+        } catch (error) {
+            console.error("[RemoteController:onReceiveData] Error while parsing data to JSON.\nData: "+data);
+        }
+        if(typeof jsonData.type !== 'undefined') {
+            switch(jsonData.type) {
+                case "chat": 
+                    this.addMessageToChatBox(connection.peer+": "+jsonData.message)
+                    break;
+                case "spawn":
+                    if(jsonData.pathname === window.location.pathname) {
+                        console.log("would spawn: "+connection.peer)
+                    }  
+                    break;
+            }
+        }
     }
 
     connectToPeer(peerId) {
@@ -82,9 +104,9 @@ class RemoteController {
         })
     }
 
-    sendMessage(message) {
+    sendChatMessage(message) {
         this.connections.forEach(connection => {
-            connection.send(message);
+            connection.send('{"type":"chat","message":"'+message+'"}');
         })
         this.addMessageToChatBox(localProxy.peerId+": "+message)
     }
@@ -93,6 +115,8 @@ class RemoteController {
         const chat = document.getElementById("chatDisplay");
         chat.innerHTML = chat.innerHTML + "<br>" + message;
     }
+
+
 }
 
 export { RemoteController }

@@ -26,7 +26,7 @@ const chatBox = function(remoteController) {
     sendButton.id = "sendButton";
     sendButton.innerHTML = "Send";
     sendButton.addEventListener("click", () => {
-        remoteController.sendMessage(inputBar.value)
+        remoteController.sendChatMessage(inputBar.value)
         inputBar.value = "";
     })
 

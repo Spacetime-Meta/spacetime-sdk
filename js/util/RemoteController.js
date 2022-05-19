@@ -14,14 +14,14 @@ class RemoteController {
         goLivePanel(this);
 
         // check if the user has a peerID in the local storage
-        if(typeof localProxy.peerId !== 'undefined'){
-            this.peer = new Peer(localProxy.peerId);
-            console.log("[RemoteController] Trying to create peer: " + localProxy.peerId)
-            this.peer.on('open', () => {
-                document.getElementById("goLivePanel").remove()
-                this.onConnectionOpen()
-            })
-        }
+        // if(typeof localProxy.peerId !== 'undefined'){
+        //     this.peer = new Peer(localProxy.peerId);
+        //     console.log("[RemoteController] Trying to create peer: " + localProxy.peerId)
+        //     this.peer.on('open', () => {
+        //         document.getElementById("goLivePanel").remove()
+        //         this.onConnectionOpen()
+        //     })
+        // }
     }
 
     createPeerWithId(peerId){
@@ -82,6 +82,17 @@ class RemoteController {
         })
     }
 
+    disconnectPeer(peerId) {
+        console.log("[RemoteController] Trying disconnect to peer: " + peerId);
+        this.connections.forEach((connection, index) => {
+            if(connection.peer === peerId) {
+                connection.close();
+                this.connections.splice(index, 1);
+            }
+        })
+        this.addMessageToChatBox('[RemoteController] disconnect to peer: ' + peerId);
+    }
+
     sendMessage(message) {
         this.connections.forEach(connection => {
             connection.send(message);
@@ -92,6 +103,17 @@ class RemoteController {
     addMessageToChatBox(message) {
         const chat = document.getElementById("chatDisplay");
         chat.innerHTML = chat.innerHTML + "<br>" + message;
+    }
+
+    updateFriendList() {
+        let tempList = localProxy.friendList;
+        this.connections.forEach(connection => {
+            let peerId = connection.peer;
+            if(localProxy.friendList.indexOf(peerId) <= -1) {
+                tempList.push(peerId);
+            }
+        })
+        localProxy.friendList = tempList;
     }
 }
 

@@ -13,11 +13,23 @@ const chatBox = function(remoteController) {
     const chatDisplay = document.createElement("div");
     chatDisplay.id = "chatDisplay";
     Object.assign(chatDisplay.style, {
-        color: 'turquoise'
+        color: 'turquoise',
+        maxHeight: '200px',
+        maxWidth: '500px',
+        overflow: 'scroll',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        wordBreak: 'break-all'
     })
 
     const inputBar = document.createElement("input");
     inputBar.id = 'inputBar';
+    inputBar.addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendMessage(inputBar);
+        }
+    })
     Object.assign(inputBar.style, {
         width: '300px'
     })
@@ -26,9 +38,13 @@ const chatBox = function(remoteController) {
     sendButton.id = "sendButton";
     sendButton.innerHTML = "Send";
     sendButton.addEventListener("click", () => {
-        remoteController.sendMessage(inputBar.value)
-        inputBar.value = "";
+        sendMessage(inputBar);
     })
+
+    function sendMessage(input) {
+        remoteController.sendMessage(input.value)
+        input.value = "";
+    }
 
     chatBoxWrapper.appendChild(chatDisplay);
     chatBoxWrapper.appendChild(inputBar);

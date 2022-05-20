@@ -1,3 +1,5 @@
+import goLivePanel from "./goLivePanel.js";
+
 const peerIdSelectPanel = function(remoteController) {
     const peerIdSelectPanel = document.createElement("div");
     peerIdSelectPanel.id = "peerIdSelectPanel";
@@ -35,7 +37,8 @@ const peerIdSelectPanel = function(remoteController) {
     const closeButton = document.createElement("button");
     closeButton.innerHTML = "close"
     closeButton.addEventListener('click', () => {
-        peerIdSelectPanel.remove()
+        peerIdSelectPanel.remove();
+        goLivePanel(remoteController);
     })
 
     peerIdSelectPanel.appendChild(peerIdInput);

@@ -84,7 +84,7 @@ class VirtualEnvironment {
         }
 
         // ===== setupMultiplayer =====
-        this.remoteController = new RemoteController();
+        this.remoteController = new RemoteController(this.scene);
 
 
         // ===== others =====
@@ -247,6 +247,11 @@ class VirtualEnvironment {
             this.camera.lookAt(this.cameraTarget);
             this.controlVector.lerp(this.targetControlVector, 0.1);
         }
+
+        this.remoteController.update(delta, frustum);
+
+
+
         this.scene.fog.needsUpdate = true;
 
         if (this.graphicTier !== LOW) {

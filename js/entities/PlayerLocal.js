@@ -7,6 +7,7 @@ class PlayerLocal extends CapsuleEntity {
         super(5, 30);
 
         this.playerDirection = new Vector3();
+        this.positionChange = new Vector3();
         this.keys = {};
 
         this.avatarController = new AvatarController(animationURL, avatarURL, scene);
@@ -15,6 +16,8 @@ class PlayerLocal extends CapsuleEntity {
         this.visible = false;
         this.position.y = y;
         this.position.z = z;
+
+        this.horizontalVelocity = new Vector3();
 
         this.jumped = 0;
         this.friction = 0.975;
@@ -96,10 +99,47 @@ class PlayerLocal extends CapsuleEntity {
             this.groundBelow = false;
         }
 
+        this.updateCurrentAnimation()
         if(typeof this.avatarController !== "undefined"){
-            this.avatarController.update(delta, frustum, this.position, this.horizontalVelocity);
+            this.avatarController.update(delta, frustum, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
             this.avatarController.opacity = (controlVector.z - 0.01) / (40 - 0.01);
         }
+    }
+
+    updateCurrentAnimation() {
+        if (this.lastPosition) {
+            this.positionChange.multiplyScalar(0.8);
+            this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
+        }
+        this.lastPosition = this.position.clone();
+
+
+        if (player.jumped > 0 && this.jumpTick === 0) {
+            this.setAnimationParameters("jump", 0.25);
+        } else {
+            if (this.positionChange.y < -0.25 && !player.groundBelow) {
+                this.setAnimationParameters("fall", 0.25);
+            } else {
+                if ((this.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
+                    if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
+                        if(player.keys["shift"]){ this.setAnimationParameters("run"); }
+                        else { this.setAnimationParameters("walk"); }
+                    } else {
+                        this.setAnimationParameters("idle");
+                    }
+                }
+            }
+        }
+        if (this.current === "jump") {
+            this.jumpTick += delta;
+        } else {
+            this.jumpTick = 0;
+        }
+    }
+
+    setAnimationParameters(anim, time = 0.5) {
+        this.currentAnimation = anim;
+        this.currentAnimationTime = time;
     }
 }
 

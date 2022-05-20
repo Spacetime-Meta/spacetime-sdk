@@ -12,10 +12,10 @@ class AvatarController extends THREE.Object3D {
         super();
         this.scene = scene;
         this.animations = {};
-        this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
-
         this.quaternion90deg = new THREE.Quaternion();
         this.quaternion90deg.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), Math.PI / 2 );
+        
+        this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
     }
 
     get animations() {
@@ -46,8 +46,7 @@ class AvatarController extends THREE.Object3D {
         }
     }
 
-    update(delta, frustum, position, horizontalVelocity) {
-        this.delta = delta;
+    update(delta, frustum, position, horizontalVelocity, anim, time = 0.5) {
         
         if(typeof this.box !== 'undefined') {
             this.updateBox();
@@ -55,41 +54,15 @@ class AvatarController extends THREE.Object3D {
             this.position.copy(position);
             this.updateFacingDirection(horizontalVelocity)
         
+            this.play(anim, time);
+
             if (!frustum.intersectsBox(this.box)) {
                 this.model.visible = false;
             } else {
                 this.model.visible = true;
                 this.mixer.update(delta);
             }
-        
-            if (this.lastPosition) {
-                this.positionChange.multiplyScalar(0.8);
-                this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
-            }
-            this.lastPosition = this.position.clone();
 
-
-            if (player.jumped > 0 && this.jumpTick === 0) {
-                this.play("jump", 0.25);
-            } else {
-                if (this.positionChange.y < -0.25 && !player.groundBelow) {
-                    this.play("fall", 0.25);
-                } else {
-                    if ((this.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
-                        if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
-                            if(player.keys["shift"]){ this.play("run"); }
-                            else { this.play("walk"); }
-                        } else {
-                            this.play("idle");
-                        }
-                    }
-                }
-            }
-            if (this.current === "jump") {
-                this.jumpTick += delta;
-            } else {
-                this.jumpTick = 0;
-            }
             this.model.traverse(child => {
                 if (child.isMesh) {
                     child.material.opacity = this.opacity;
@@ -129,7 +102,6 @@ class AvatarController extends THREE.Object3D {
 
             this.model = responseObject.scene;
             this.model.scale.set(0.2, 0.2, 0.2);
-            // this.model = SkeletonUtils.clone(this.model);
             this.model.traverse(child => {
                 if (child.isMesh) {
                     child.geometry = child.geometry.clone();
@@ -144,9 +116,7 @@ class AvatarController extends THREE.Object3D {
                 }
             });
             this.scene.add(this.model);
-            // if(loadAnimation) { 
             loadAnimation(); 
-            // }
         });
     }
 
@@ -172,7 +142,6 @@ class AvatarController extends THREE.Object3D {
             this.delta = 0;
             this.box = new THREE.Box3();
             this.updateBox();
-            this.positionChange = new THREE.Vector3();
             this.play("idle", 0);
             this.jumpTick = 0;
             this.opacity = 1;
@@ -189,8 +158,6 @@ class AvatarController extends THREE.Object3D {
         this.model.position.y -= this.size / 2 + 1.25;
         this.model.quaternion.copy(this.quaternion);
     }
-
-
 }
 
 export { AvatarController };

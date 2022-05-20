@@ -42,7 +42,7 @@ const chatBox = function(remoteController) {
     })
 
     function sendMessage(input) {
-        remoteController.sendMessage(input.value)
+        remoteController.sendChatMessage(input.value)
         input.value = "";
     }
 

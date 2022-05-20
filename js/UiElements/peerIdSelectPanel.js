@@ -26,8 +26,10 @@ const peerIdSelectPanel = function(remoteController) {
     acceptPeerIdButton.innerHTML = "Go"
     acceptPeerIdButton.addEventListener('click', () => {
         const peerId = peerIdInput.value;
-        remoteController.createPeerWithId(peerId)
-        peerIdSelectPanel.remove()
+        if(peerId) {
+            remoteController.createPeerWithId(peerId)
+            peerIdSelectPanel.remove()
+        }
     })
 
     const closeButton = document.createElement("button");

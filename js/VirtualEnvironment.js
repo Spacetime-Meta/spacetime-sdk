@@ -180,7 +180,7 @@ class VirtualEnvironment {
 
         const graphicTierButtonElement = document.getElementById("graphicTierButton");
         if(graphicTierButtonElement !== null) {
-            graphicTierButtonElement.innerHTML = "Graphics: " + settings[graphicTier];
+            graphicTierButtonElement.innerHTML = "Light: " + settings[graphicTier];
         }
         
     }

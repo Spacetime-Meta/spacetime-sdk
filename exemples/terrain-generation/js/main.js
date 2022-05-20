@@ -7,7 +7,7 @@ let virtualEnvironment = new VirtualEnvironment();
 init();
 function init() {
     virtualEnvironment.generateTerrain(0)
-    virtualEnvironment.spawnPlayer('../../../glb/avatars/vanguard.glb', 0, 500, 0)
+    virtualEnvironment.spawnPlayer('../../../glb/avatars/yBot.glb', 0, 500, 0)
 }
 
 if (!window.requestPostAnimationFrame) {

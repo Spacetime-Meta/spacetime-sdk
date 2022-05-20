@@ -86,9 +86,14 @@ class RemoteController {
         if(typeof jsonData.type !== 'undefined') {
             switch(jsonData.type) {
                 
-                case "transform":
-                    connection.transform = jsonData.transform;
-                    // console.log(connection.transform)
+                case "stream":
+                    /* To maintain synchronization in the environment, we do not update the avatar controller every time we receive the stream information.
+                     * Instead we simply update the connections data and the update method will tak care of updating the avatarController only once per render cycle. */
+                    connection.transform = {
+                        position: new Vector3(jsonData.transform.position.x, jsonData.transform.position.y, jsonData.transform.position.z),
+                        horizontalVelocity: new Vector3(jsonData.transform.horizontalVelocity.x, 0, jsonData.transform.horizontalVelocity.z)
+                    }
+                    connection.animation = jsonData.animation
                     break;
                 
                 case "chat": 
@@ -102,7 +107,8 @@ class RemoteController {
                         // Spawn the other player
                         connection.avatarController = new AvatarController("../../glb/animations/animation.glb", "../../glb/avatars/yBot.glb", this.scene);
 
-                        // At this point, start sending position and velocity data. To do this, we add the 'needUpdate' tag to our connection
+                        /* At this point, we want to start sending data to this peer so he can display us. 
+                         * To do this, we add the 'needUpdate' tag to our connection and the update method will take care of it */
                         connection.needUpdate = true;
                     }  
                     break;
@@ -135,19 +141,14 @@ class RemoteController {
     update(delta, frustum) {
         this.connections.forEach(connection => {
             if(connection.needUpdate) {
-                const p = window.player.position;
-                const v = window.player.horizontalVelocity;
-                connection.send('{"type":"transform", "transform":{"x":"'+p.x+'", "y":"'+p.y+'", "z":"'+p.z+'", "vx":"'+v.x+'", "vy":"'+v.y+'", "vz":"'+v.z+'"}}')
+                const position = window.player.position;
+                const horizontalVelocity = window.player.horizontalVelocity;
 
-                //read and apply the transform
-                // console.log(connection);
+                connection.send('{"type":"stream", "transform":{ "position":{"x":'+position.x+', "y":'+position.y+', "z":'+position.z+'}, "horizontalVelocity": {"x":'+horizontalVelocity.x+', "y":0, "z":'+horizontalVelocity.z+'}}, "animation": ["'+window.player.currentAnimation+'", '+window.player.currentAnimationTime+']}');
 
                 if(typeof connection.transform !== 'undefined'){
-                    connection.avatarController.update(delta, frustum,
-                                                   new Vector3(connection.transform.x, connection.transform.y, connection.transform.z),
-                                                   new Vector3(connection.transform.vx, connection.transform.vy, connection.transform.vz))
+                    connection.avatarController.update(delta, frustum, connection.transform.position, connection.transform.horizontalVelocity, connection.animation[0], connection.animation[1])
                 }
-            
             }
         })
     }

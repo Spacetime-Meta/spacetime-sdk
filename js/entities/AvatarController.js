@@ -102,7 +102,6 @@ class AvatarController extends THREE.Object3D {
 
             this.model = responseObject.scene;
             this.model.scale.set(0.2, 0.2, 0.2);
-            // this.model = SkeletonUtils.clone(this.model);
             this.model.traverse(child => {
                 if (child.isMesh) {
                     child.geometry = child.geometry.clone();
@@ -117,9 +116,7 @@ class AvatarController extends THREE.Object3D {
                 }
             });
             this.scene.add(this.model);
-            // if(loadAnimation) { 
             loadAnimation(); 
-            // }
         });
     }
 
@@ -161,8 +158,6 @@ class AvatarController extends THREE.Object3D {
         this.model.position.y -= this.size / 2 + 1.25;
         this.model.quaternion.copy(this.quaternion);
     }
-
-
 }
 
 export { AvatarController };

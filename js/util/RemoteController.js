@@ -1,15 +1,18 @@
+import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import localProxy from "./localProxy.js";
 import goLivePanel from '../UiElements/goLivePanel.js';
 import peerIdDisplay from '../UiElements/peerIdDisplay.js';
 import chatBox from '../UiElements/chatBox.js';
 import friendManagement from '../UiElements/buttons/friendManagement.js';
+import { AvatarController } from '../entities/AvatarController.js';
 
 // PeerJs is injected in the window
 const Peer = window.Peer;
 
 class RemoteController {
-    constructor() {
+    constructor(scene) {
         this.connections = [];
+        this.scene = scene;
         
         goLivePanel(this);
 
@@ -61,8 +64,8 @@ class RemoteController {
         this.addMessageToChatBox('[RemoteController] new connection to peer: ' + newConnection.peer)
         this.connections.push(newConnection);
         
+        // not sure why this is needed but if we dont give the connection some time it wont send the message
         setTimeout(() => {
-            // not sure why this is needed but if we dont give the connection some time it wont send the message
             newConnection.send('{"type":"spawn", "pathname":"'+window.location.pathname+'"}')
         }, 1000);
         
@@ -82,12 +85,25 @@ class RemoteController {
         }
         if(typeof jsonData.type !== 'undefined') {
             switch(jsonData.type) {
+                
+                case "transform":
+                    connection.transform = jsonData.transform;
+                    // console.log(connection.transform)
+                    break;
+                
                 case "chat": 
                     this.addMessageToChatBox(connection.peer+": "+jsonData.message)
                     break;
+                
                 case "spawn":
                     if(jsonData.pathname === window.location.pathname) {
-                        console.log("would spawn: "+connection.peer)
+                        this.addMessageToChatBox("[RemoteController] Spawning: "+connection.peer);
+
+                        // Spawn the other player
+                        connection.avatarController = new AvatarController("../../glb/animations/animation.glb", "../../glb/avatars/yBot.glb", this.scene);
+
+                        // At this point, start sending position and velocity data. To do this, we add the 'needUpdate' tag to our connection
+                        connection.needUpdate = true;
                     }  
                     break;
             }
@@ -116,7 +132,25 @@ class RemoteController {
         chat.innerHTML = chat.innerHTML + "<br>" + message;
     }
 
+    update(delta, frustum) {
+        this.connections.forEach(connection => {
+            if(connection.needUpdate) {
+                const p = window.player.position;
+                const v = window.player.horizontalVelocity;
+                connection.send('{"type":"transform", "transform":{"x":"'+p.x+'", "y":"'+p.y+'", "z":"'+p.z+'", "vx":"'+v.x+'", "vy":"'+v.y+'", "vz":"'+v.z+'"}}')
 
+                //read and apply the transform
+                // console.log(connection);
+
+                if(typeof connection.transform !== 'undefined'){
+                    connection.avatarController.update(delta, frustum,
+                                                   new Vector3(connection.transform.x, connection.transform.y, connection.transform.z),
+                                                   new Vector3(connection.transform.vx, connection.transform.vy, connection.transform.vz))
+                }
+            
+            }
+        })
+    }
 }
 
 export { RemoteController }

@@ -16,6 +16,8 @@ class PlayerLocal extends CapsuleEntity {
         this.position.y = y;
         this.position.z = z;
 
+        this.horizontalVelocity = new Vector3();
+
         this.jumped = 0;
         this.friction = 0.975;
     }

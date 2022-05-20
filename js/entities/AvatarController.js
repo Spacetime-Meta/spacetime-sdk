@@ -12,10 +12,10 @@ class AvatarController extends THREE.Object3D {
         super();
         this.scene = scene;
         this.animations = {};
-        this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
-
         this.quaternion90deg = new THREE.Quaternion();
         this.quaternion90deg.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), Math.PI / 2 );
+        
+        this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
     }
 
     get animations() {

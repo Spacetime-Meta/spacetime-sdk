@@ -127,6 +127,17 @@ class RemoteController {
             this.onConnectionConnect(newConnection);
         })
     }
+    
+    disconnectPeer(peerId) {
+        console.log("[RemoteController] Trying disconnect to peer: " + peerId);
+        this.connections.forEach((connection, index) => {
+            if(connection.peer === peerId) {
+                connection.close();
+                this.connections.splice(index, 1);
+            }
+        })
+        this.addMessageToChatBox('[RemoteController] disconnect to peer: ' + peerId);
+    }
 
     sendChatMessage(message) {
         this.connections.forEach(connection => {
@@ -153,6 +164,16 @@ class RemoteController {
                 }
             }
         })
+    }
+    updateFriendList() {
+        let tempList = localProxy.friendList;
+        this.connections.forEach(connection => {
+            let peerId = connection.peer;
+            if(localProxy.friendList.indexOf(peerId) <= -1) {
+                tempList.push(peerId);
+            }
+        })
+        localProxy.friendList = tempList;
     }
 }
 

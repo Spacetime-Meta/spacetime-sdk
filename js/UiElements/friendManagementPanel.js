@@ -20,11 +20,16 @@ const friendManagementPanel = function(remoteController) {
         color: '#00FFF0'
     })
     
-
-
     const friendList = document.createElement("ul");
     friendList.id = "friendList";
+    Object.assign(friendList.style, {
+        overflow: 'scroll',
+        maxHeight: '100px',
+        overflowX: 'hidden',
+        overflowY: 'auto'
+    })
 
+    remoteController.updateFriendList();
     localProxy.friendList.forEach(friend => {
         friendListElement(friend, friendList);
     })
@@ -33,7 +38,27 @@ const friendManagementPanel = function(remoteController) {
         const friendDisplay = document.createElement("li");
         friendDisplay.id = friend;
         friendDisplay.innerHTML = friend;
+        
+        const removeBtn = document.createElement("b");
+        removeBtn.innerHTML = "     &#9746;";
+        Object.assign(removeBtn.style, {
+            cursor: 'pointer'
+        })
+        removeBtn.addEventListener('click', () => {
+            //remove id from list
+            let tempList = localProxy.friendList;
+            const index = tempList.indexOf(friend);
+            if (index > -1) tempList.splice(index, 1);
+            localProxy.friendList = tempList;
+            //remove from page
+            friendDisplay.parentNode.removeChild(friendDisplay);
+            //disconnect
+            remoteController.disconnectPeer(friend);
+        });
+        
+        friendDisplay.appendChild(removeBtn);
         parent.appendChild(friendDisplay);
+        
     }
 
     const closeButton = document.createElement("button");
@@ -52,6 +77,7 @@ const friendManagementPanel = function(remoteController) {
 
         // get value of the input field
         const remotePeerId = remotePeerIdInput.value;
+        remotePeerIdInput.value = '';
         
         // tell remoteController to try connect
         remoteController.connectToPeer(remotePeerId);

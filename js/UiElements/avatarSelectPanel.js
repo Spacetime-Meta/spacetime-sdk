@@ -20,7 +20,6 @@ const avatarSelectPanel = function () {
     element.innerHTML = "avatars"
 
     toggleButton(element);
-    avatarButton("Vanguard", element, '../../../glb/avatars/vanguard.glb')
     avatarButton("xBot", element, '../../../glb/avatars/xBot.glb')
     avatarButton("yBot", element, '../../../glb/avatars/yBot.glb')
 

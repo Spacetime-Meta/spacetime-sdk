@@ -20,7 +20,7 @@ const graphicTierButton = function(graphicTier, onClick) {
         color: '#00FFF0'
     })
 
-    element.innerHTML = "Graphics: " + settings[graphicTier];
+    element.innerHTML = "Light: " + settings[graphicTier];
 
     element.addEventListener("click", onClick);
     

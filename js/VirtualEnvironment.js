@@ -105,8 +105,8 @@ class VirtualEnvironment {
         avatarSelectPanel();
     }
 
-    loadTerrain(terrainPath, x, y, z){
-        this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z);
+    loadTerrain(terrainPath, x, y, z, format){
+        this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z, format);
     }
 
     generateTerrain(seed) {

@@ -1,5 +1,6 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
+import { FBXLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/FBXLoader.js';
 import * as BufferGeometryUtils from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/utils/BufferGeometryUtils.js';
 import { MeshBVH, MeshBVHVisualizer } from './three-mesh-bvh.js';
 import { ImprovedNoise } from 'https://threejs.org/examples/jsm/math/ImprovedNoise.js';
@@ -9,7 +10,8 @@ const worldWidth = 256, worldDepth = 256;
 class TerrainController {
     
     constructor(){
-        this.loader = new GLTFLoader();
+        this.FBXLoader = new FBXLoader();
+        this.GLTFLoader = new GLTFLoader();
         this.terrain = new THREE.Object3D();
         this.collider;
         this.bloomScene = new THREE.Scene();
@@ -109,36 +111,51 @@ class TerrainController {
 
     }
 
-    loadTerrain(URL, scene, x, y, z){
-        this.loader.load(URL, (object) => {
-            this.terrain = object.scene;
-            this.terrain.position.set(x, y, z);
-            this.terrain.traverse(object => {
-                if (object.isMesh) {
-                    object.castShadow = true;
-                    object.receiveShadow = true;
-                    object.material.roughness = 1;
-                    if (object.material.map) {
-                        object.material.map.anisotropy = 16;
-                        object.material.map.needsUpdate = true;
-                    }
-                    const cloned = new THREE.Mesh(object.geometry, object.material);
-                    object.getWorldPosition(cloned.position);
-                    //object.updateMatrixWorld();
-                    if (object.material.emissive && (object.material.emissive.r > 0 || object.material.emissive.g > 0 || object.material.color.b > 0)) {
-                        /* object.updateMatrixWorld();
-                            cloned.matrix.copy(object.matrixWorld);*/
-                        this.bloomScene.attach(cloned);
-                    }
-                }
-                if (object.isLight) {
-                    object.parent.remove(object);
-                }
-            });
+    loadTerrain(URL, scene, x, y, z, format){
+        switch (format) {
+            case "fbx":
+                this.FBXLoader.load(URL, (responseObject) => {
+                    this.handleLoadedTerrain(responseObject, scene, x, y, z);
+                })
+                break;
+        
+            case "glb":
+                this.GLTFLoader.load(URL, (responseObject) => {
+                    this.handleLoadedTerrain(responseObject.scene, scene, x, y, z);
+                })
+                break;
+        }
+    }
 
-            scene.add(this.terrain);
-            this.generateCollider(scene);
-        })
+    handleLoadedTerrain(terrain, scene, x, y, z) {
+        console.log(terrain)
+        this.terrain = terrain;
+        this.terrain.position.set(x, y, z);
+        this.terrain.traverse(object => {
+            if (object.isMesh) {
+                object.castShadow = true;
+                object.receiveShadow = true;
+                object.material.roughness = 1;
+                if (object.material.map) {
+                    object.material.map.anisotropy = 16;
+                    object.material.map.needsUpdate = true;
+                }
+                const cloned = new THREE.Mesh(object.geometry, object.material);
+                object.getWorldPosition(cloned.position);
+                //object.updateMatrixWorld();
+                if (object.material.emissive && (object.material.emissive.r > 0 || object.material.emissive.g > 0 || object.material.color.b > 0)) {
+                    /* object.updateMatrixWorld();
+                        cloned.matrix.copy(object.matrixWorld);*/
+                    this.bloomScene.attach(cloned);
+                }
+            }
+            if (object.isLight) {
+                object.parent.remove(object);
+            }
+        });
+
+        scene.add(this.terrain);
+        this.generateCollider(scene);
     }
 
     generateCollider(scene){
@@ -169,7 +186,7 @@ class TerrainController {
     }
 
     newSolidGeometriesFromSource(scene, url, x, y, z, scaleFactor) {
-        this.loader.load(url, (responseObject) => {
+        this.GLTFLoader.load(url, (responseObject) => {
             setTimeout(() => {   
                 console.log("load new stuff")
                 responseObject.scene.scale.set(3.75 * scaleFactor, 3.75 * scaleFactor, 3.75 * scaleFactor)

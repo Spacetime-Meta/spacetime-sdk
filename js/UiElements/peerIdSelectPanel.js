@@ -1,7 +1,9 @@
+import goLivePanel from "./goLivePanel.js";
+
 const peerIdSelectPanel = function(remoteController) {
     const peerIdSelectPanel = document.createElement("div");
     peerIdSelectPanel.id = "peerIdSelectPanel";
-    peerIdSelectPanel.innerHTML = "Select a peer ID";
+    peerIdSelectPanel.innerHTML = "Create your Peer ID";
 
     Object.assign(peerIdSelectPanel.style, {
         position: 'absolute',
@@ -17,8 +19,6 @@ const peerIdSelectPanel = function(remoteController) {
         zIndex: 100,
         color: '#00FFF0'
     })
-    
-    
 
     const peerIdInput =  document.createElement("input");
     peerIdInput.id = "peerIdInput";
@@ -32,8 +32,16 @@ const peerIdSelectPanel = function(remoteController) {
         peerIdSelectPanel.remove()
     })
 
+    const closeButton = document.createElement("button");
+    closeButton.innerHTML = "close"
+    closeButton.addEventListener('click', () => {
+        peerIdSelectPanel.remove();
+        goLivePanel(remoteController);
+    })
+
     peerIdSelectPanel.appendChild(peerIdInput);
     peerIdSelectPanel.appendChild(acceptPeerIdButton);
+    peerIdSelectPanel.appendChild(closeButton);
     document.body.appendChild(peerIdSelectPanel); 
 }
 

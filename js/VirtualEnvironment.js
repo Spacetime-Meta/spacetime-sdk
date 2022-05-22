@@ -189,14 +189,28 @@ class VirtualEnvironment {
     }
 
     newVideoDisplayPlane(url, width, height, x, y, z, rotationY) {
-        const video = document.getElementById( 'video' );
-        video.play();
+        const video = document.createElement('video');
+        video.id = url; // give unique id to support multiple players
+        video.loop = true;
+        video.crossOrigin = "anonymous";
+        video.playsinline = true;
+        video.style.display = "none";
 
-        const texture = new THREE.VideoTexture( video );
+        const source =  document.createElement('source')
+        source.src = url;
+        source.type = 'video/mp4';
+
+        video.appendChild(source);
+        document.body.appendChild(video)
+
+        document.body.addEventListener('click', () => {video.play()})
 
         const mesh = new THREE.Mesh( 
             new THREE.PlaneGeometry( width, height ), 
-            new THREE.MeshLambertMaterial({ color: 0xffffff, map: texture }) 
+            new THREE.MeshLambertMaterial({ 
+                color: 0xffffff, 
+                map: new THREE.VideoTexture( video ) 
+            }) 
         );
         mesh.position.set(x,y,z)
         mesh.rotateY(rotationY)

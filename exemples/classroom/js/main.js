@@ -10,7 +10,7 @@ function init() {
     virtualEnvironment.spawnPlayer('../../../glb/avatars/yBot.glb', 0, 70, 0);
     
     setTimeout(() => {
-        virtualEnvironment.newVideoDisplayPlane('../textures/whitepaper.mp4', 200, 100, 72, 90, 95, - Math.PI / 2);
+        virtualEnvironment.newVideoDisplayPlane('../classroom/textures/mapFirstDemo.mp4', 200, 100, 72, 90, 95, - Math.PI / 2);
     }, 100)
 }
 

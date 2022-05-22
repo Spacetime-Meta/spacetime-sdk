@@ -111,27 +111,27 @@ class TerrainController {
 
     }
 
-    loadTerrain(URL, scene, x, y, z, format){
+    loadTerrain(URL, scene, x, y, z, format, scaleFactor){
         switch (format) {
             case "fbx":
                 this.FBXLoader.load(URL, (responseObject) => {
-                    this.handleLoadedTerrain(responseObject, scene, x, y, z);
+                    this.handleLoadedTerrain(responseObject, scene, x, y, z, scaleFactor);
                 })
                 break;
         
             case "glb":
                 this.GLTFLoader.load(URL, (responseObject) => {
-                    this.handleLoadedTerrain(responseObject.scene, scene, x, y, z);
+                    this.handleLoadedTerrain(responseObject.scene, scene, x, y, z, scaleFactor);
                 })
                 break;
         }
     }
 
-    handleLoadedTerrain(terrain, scene, x, y, z) {
+    handleLoadedTerrain(terrain, scene, x, y, z, scaleFactor) {
         console.log(terrain)
         this.terrain = terrain;
         this.terrain.position.set(x, y, z);
-        this.terrain.scale.set(0.2, 0.2, 0.2)
+        this.terrain.scale.set(scaleFactor, scaleFactor, scaleFactor)
         this.terrain.traverse(object => {
             if (object.isMesh) {
                 object.castShadow = true;

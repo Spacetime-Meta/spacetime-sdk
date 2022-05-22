@@ -6,7 +6,7 @@ let virtualEnvironment = new VirtualEnvironment();
 // then fill your world with the stuff you want
 init();
 function init() {
-    virtualEnvironment.loadTerrain('../../../fbx/terrains/classRoom.fbx', 0, 0, 0, "fbx")
+    virtualEnvironment.loadTerrain('../../../fbx/terrains/classRoom.fbx', 0, 0, 0, "fbx", 0.2)
     virtualEnvironment.spawnPlayer('../../../glb/avatars/yBot.glb', 0, 70, 0)
 }
 

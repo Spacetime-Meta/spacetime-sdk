@@ -94,6 +94,8 @@ class RemoteController {
                         horizontalVelocity: new Vector3(jsonData.transform.horizontalVelocity.x, 0, jsonData.transform.horizontalVelocity.z)
                     }
                     connection.animation = jsonData.animation
+
+                    connection.needUpdate = true;
                     break;
                 
                 case "chat": 
@@ -162,9 +164,12 @@ class RemoteController {
                 if(typeof connection.transform !== 'undefined'){
                     connection.avatarController.update(delta, frustum, connection.transform.position, connection.transform.horizontalVelocity, connection.animation[0], connection.animation[1])
                 }
+
+                connection.needUpdate = false;
             }
         })
     }
+
     updateFriendList() {
         let tempList = localProxy.friendList;
         this.connections.forEach(connection => {

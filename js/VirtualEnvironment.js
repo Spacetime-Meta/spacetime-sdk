@@ -28,9 +28,7 @@ class VirtualEnvironment {
         if(navigator.userAgentData.mobile) {
             mobileBlocker();
         }
-        else {
-            this.loading();
-        }
+        this.loading();
         this.scene = new THREE.Scene();
         // ===== loading =====
 
@@ -112,8 +110,8 @@ class VirtualEnvironment {
         avatarSelectPanel();
     }
 
-    loadTerrain(terrainPath, x, y, z, format){
-        this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z, format);
+    loadTerrain(terrainPath, x, y, z, format, scaleFactor = 1){
+        this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z, format, scaleFactor);
     }
 
     generateTerrain(seed) {

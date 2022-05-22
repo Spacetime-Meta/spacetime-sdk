@@ -8,7 +8,6 @@ import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
 import loadingPage from './UiElements/loadingPage.js';
-import mobileBlocker from './UiElements/mobileBlocker.js';
 import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
 import blocker from './UiElements/blocker.js';
 import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
@@ -25,13 +24,8 @@ const clock = new THREE.Clock();
 
 class VirtualEnvironment {
     constructor() {
-        if(navigator.userAgentData.mobile) {
-            mobileBlocker();
-        }
-        this.loading();
-        this.scene = new THREE.Scene();
         // ===== loading =====
-
+        this.loading();
         
         this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
 
@@ -44,6 +38,7 @@ class VirtualEnvironment {
         document.body.appendChild(this.renderer.domElement);
 
         // ===== scene =====
+        this.scene = new THREE.Scene();
         const scene = this.scene;
         this.scene.background = new THREE.Color(0x69e6f4);
         this.scene.fog = new THREE.Fog(0x69e6f4, 1600, 2000);
@@ -187,11 +182,40 @@ class VirtualEnvironment {
         if(graphicTierButtonElement !== null) {
             graphicTierButtonElement.innerHTML = "Light: " + settings[graphicTier];
         }
-        
     }
 
     newSolidGeometriesFromSource(url, x, y, z, scaleFactor){
         this.terrainController.newSolidGeometriesFromSource(this.scene, url, x, y, z, scaleFactor)
+    }
+
+    newVideoDisplayPlane(url, width, height, x, y, z, rotationY) {
+        const video = document.createElement('video');
+        video.id = url; // give unique id to support multiple players
+        video.loop = true;
+        video.crossOrigin = "anonymous";
+        video.playsinline = true;
+        video.style.display = "none";
+
+        const source =  document.createElement('source')
+        source.src = url;
+        source.type = 'video/mp4';
+
+        video.appendChild(source);
+        document.body.appendChild(video)
+
+        document.body.addEventListener('click', () => {video.play()})
+
+        const mesh = new THREE.Mesh( 
+            new THREE.PlaneGeometry( width, height ), 
+            new THREE.MeshLambertMaterial({ 
+                color: 0xffffff, 
+                map: new THREE.VideoTexture( video ) 
+            }) 
+        );
+        mesh.position.set(x,y,z)
+        mesh.rotateY(rotationY)
+
+        this.scene.add( mesh )
     }
 
     increaseGraphicSettings() {

@@ -1,4 +1,5 @@
 import goLivePanel from "./goLivePanel.js";
+import peerIdDisplay from "./peerIdDisplay.js";
 
 const peerIdSelectPanel = function(remoteController) {
     const peerIdSelectPanel = document.createElement("div");
@@ -38,7 +39,14 @@ const peerIdSelectPanel = function(remoteController) {
     closeButton.innerHTML = "close"
     closeButton.addEventListener('click', () => {
         peerIdSelectPanel.remove();
-        goLivePanel(remoteController);
+
+        // verify if the user already has a PeerId
+        if(remoteController.peer.id) {
+            peerIdDisplay(remoteController.peer.id, remoteController)
+        }
+        else {
+            goLivePanel(remoteController);
+        }
     })
 
     peerIdSelectPanel.appendChild(peerIdInput);

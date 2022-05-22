@@ -8,6 +8,7 @@ import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
 import loadingPage from './UiElements/loadingPage.js';
+import mobileBlocker from './UiElements/mobileBlocker.js';
 import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
 import blocker from './UiElements/blocker.js';
 import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
@@ -24,9 +25,15 @@ const clock = new THREE.Clock();
 
 class VirtualEnvironment {
     constructor() {
+        if(navigator.userAgentData.mobile) {
+            mobileBlocker();
+        }
+        else {
+            this.loading();
+        }
         this.scene = new THREE.Scene();
         // ===== loading =====
-        this.loading();
+
         
         this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
 

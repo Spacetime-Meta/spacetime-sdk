@@ -131,6 +131,7 @@ class TerrainController {
         console.log(terrain)
         this.terrain = terrain;
         this.terrain.position.set(x, y, z);
+        this.terrain.scale.set(0.2, 0.2, 0.2)
         this.terrain.traverse(object => {
             if (object.isMesh) {
                 object.castShadow = true;

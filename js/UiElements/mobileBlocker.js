@@ -15,7 +15,7 @@ const mobileBlocker = function() {
     style += 'align-items: center;';
 
     //======attach style====
-    loadingScreen.style.cssText = style;
+    mobileBlocker.style.cssText = style;
 
     //======loading======
     var mobileBlockerText = document.createElement('div');
@@ -24,7 +24,7 @@ const mobileBlocker = function() {
 
     //======append loading page====
     mobileBlocker.appendChild(mobileBlockerText);
-    document.body.appendChild(loadingScreen);
+    document.body.appendChild(mobileBlocker);
 }
 
 export default mobileBlocker;

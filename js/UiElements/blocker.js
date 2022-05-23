@@ -21,6 +21,10 @@ const blocker = function(onClick) {
     instructions.innerHTML = "<b>WASD</b> move, <b>SHIFT</b> run, <b>SPACE</b> jump, <b>V</b> view";
     element.appendChild(instructions);
 
+    const videoInstructions = document.createElement("p");
+    videoInstructions.innerHTML = "<b>P</b> play/pause, <b>R</b> rewind";
+    element.appendChild(videoInstructions);
+
     document.body.appendChild(element);
 
     const bTag = document.getElementsByTagName("b");

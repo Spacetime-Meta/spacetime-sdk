@@ -203,7 +203,22 @@ class VirtualEnvironment {
         video.appendChild(source);
         document.body.appendChild(video)
 
-        document.body.addEventListener('click', () => {video.play()})
+        // document.body.addEventListener('click', () => {video.play()})
+        document.onkeydown = function(e) {
+            if (e.keyCode == 80 && !this.videoHasPlayed) {
+                //p - play 
+                video.play();
+                this.videoHasPlayed = true;
+            } else if (e.keyCode == 80 && this.videoHasPlayed) {
+                //p - pause
+                this.videoHasPlayed = false;
+                video.pause();
+            } else if (e.keyCode == 82) {
+                //r - rewind video
+                video.currentTime(0);
+            }
+
+        }
 
         const mesh = new THREE.Mesh( 
             new THREE.PlaneGeometry( width, height ), 

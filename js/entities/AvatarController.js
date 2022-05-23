@@ -149,10 +149,8 @@ class AvatarController extends THREE.Object3D {
     }
 
     updateFacingDirection(horizontalVelocity) {
-        if(horizontalVelocity.length() > 0.001){
-            this.lookAt(this.position.x + horizontalVelocity.x, 0, this.position.z + horizontalVelocity.z)
-            this.quaternion.multiply(this.quaternion90deg)
-        }
+        this.lookAt(this.position.x + horizontalVelocity.x, 0, this.position.z + horizontalVelocity.z)
+        this.quaternion.multiply(this.quaternion90deg)
 
         this.model.position.copy(this.position);
         this.model.position.y -= this.size / 2 + 1.25;

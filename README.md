@@ -4,11 +4,19 @@ The Spacetime standard kit is meant to allow developers to deploy complete and c
 
 ## Examples
 
-The standard kit comes with 2 demo world to help you get started, see what is possible and understand the code.
-1. Base template
-2. Spawn planet
+The standard kit comes with a few demo worlds to get you started. With these examples, you see what is possible and understand the code.
+1. Classroom
+2. Base Template
+3. Spawn Planet
+4. Floor is Lava
+5. Terrain Generation
 
 Do not forget to keep the examples up to date as the codebase gets more advanced. 
+
+## Environments
+There are two environments for the Standard Kit:
+1. **Production:** Deployed on Github pages from the `main` branch [View deployment](https://spacetime-meta.github.io/spacetime-standard-kit/)
+2. **Development:** Deployed on Netlify from the `develop` branch [View deployment](https://stdkit-dev.netlify.app/)
 
 ## Development
 
@@ -39,12 +47,6 @@ git push
 ```
 
 At this point you can go on the Github website and open a pull request to merge your changes into the develop branch.
- 
-## Environments
-There are two environments for the Standard Kit:
-1. **Production:** Deployed on Github pages from the main branch [View deployment](https://spacetime-meta.github.io/spacetime-standard-kit/)
-2. **Development:** Deployed on Netlify from the develop branch [View deployment](https://stdkit-dev.netlify.app/)
-
 
 ## Useful Visual Studio Code Extensions
 1. To edit the UML diagrams direcly in your Visual Studio Code, we strongly recommend the [drawio extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).

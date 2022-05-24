@@ -1,0 +1,53 @@
+body {
+    background: #000 !important;
+}
+.card {
+    border: 1px solid #ffe804;
+}
+.card-login {
+    margin-top: 130px;
+    padding: 18px;
+    max-width: 30rem;
+    border-radius: 25px;
+}
+
+.card-header {
+    color: #fff;
+    /*background: #ff0000;*/
+    font-family: sans-serif;
+    font-size: 20px;
+    font-weight: 600 !important;
+    margin-top: 10px;
+    border-bottom: 0;
+}
+
+.btn-outline-danger {
+    color: #fff;
+    font-size: 18px;
+    background-color: #ffe804;
+    background-image: none;
+    border-color: #ffe804;
+}
+
+.wrapper {
+    border: 2px solid #ffe804;
+    border-radius: 25px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+button {
+    background: #85858d;
+    font-size: 18px;
+    color: #ffe804;
+    font-weight: bold; 
+}
+
+button:hover {
+    color: #fff; 
+}
+
+#error {
+    color: #ffe804;
+    font-style: italic;
+}

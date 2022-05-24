@@ -42,8 +42,8 @@ At this point you can go on the Github website and open a pull request to merge 
  
 ## Environments
 There are two environments for the Standard Kit:
-1. **Production:** Deployed on Github pages from the main branch [View deployment](https://spacetime-meta.github.io/spacetime-standard-kit/)
-2. **Development:** Deployed on Netlify from the develop branch [View deployment](https://stdkit-dev.netlify.app/)
+1. **Master:** Deployed on Github pages from the main branch [View deployment](https://spacetime-meta.github.io/spacetime-standard-kit/)
+2. **Develop:** Deployed on Netlify from the develop branch [View deployment](https://stdkit-dev.netlify.app/)
 
 
 ## Useful Visual Studio Code Extensions

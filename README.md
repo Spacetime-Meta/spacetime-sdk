@@ -2,6 +2,17 @@
 
 The Spacetime standard kit is meant to allow developers to deploy complete and compatible virtual environments without worrying about the integration of common metaverse features.
 
+If you are new to Spacetime metaverse you can visit the most recent version here. 
+
+## Metaverse Map: 
+
+Every planet in [this universe](https://www.spacetimemeta.io/#/map) is owned by users from the community with the exeption of spawn planet (0,0,0). This map is used to connect 3D environnemnts together. Ownership of a location is verifiable on the Cardano blockchain. For more information on this matter join our discord 
+
+The spacetime-standard-kit are the controls you experience when you enter spawn planet (0,0,0). This codebase will be free to use by our community and partners. 
+
+To improve decentralization in the metaverse and help us create a better experience for the community, you can contribute to this project (see section CONTRIBUTION) 
+
+
 ## Examples
 
 The standard kit comes with a few demo worlds to get you started. With these examples, you see what is possible and understand the code.

@@ -115,7 +115,7 @@ class VirtualEnvironment {
     
     spawnPlayer(avatarPath, x, y, z) {
         this.entities = [];
-        this.player = new PlayerLocal('../../../glb/animations/animation.glb', avatarPath, this.scene, x, y, z);
+        this.player = new PlayerLocal('../../../resources/animations/animation.glb', avatarPath, this.scene, x, y, z);
         window.player = this.player;
         this.scene.add(this.player);
         

@@ -3,7 +3,9 @@ The Spacetime standard kit provide developers with turnkey virtual environments.
 
 We are making this codebase open source and free to use by our [community]([discord-url]) members and partners in order to facilitate the standardization of the metaverse.
 
-[![Discord][discord]][discord-url] 
+[![Discord][discord]][discord-url] ![Twitter Follow][twitter]  
+![GitHub][licence] ![GitHub release (latest by date)][version] ![GitHub top language](https://img.shields.io/github/languages/top/Spacetime-Meta/spacetime-standard-kit)  
+![GitHub issues](https://img.shields.io/github/issues-raw/Spacetime-Meta/spacetime-standard-kit) ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/Spacetime-Meta/spacetime-standard-kit) 
 
 ---
 
@@ -42,5 +44,8 @@ If everything works properly, you should see something like [this base template]
 
 [discord-url]: https://discord.gg/w6CzHy35E2
 [discord]: https://img.shields.io/discord/685241246557667386
+[licence]: https://img.shields.io/github/license/Spacetime-Meta/spacetime-standard-kit
+[version]: https://img.shields.io/github/v/release/Spacetime-Meta/spacetime-standard-kit
 [three]: (https://github.com/mrdoob/three.js)
 [peerjs]: (https://github.com/peers/peerjs)
+[twitter]: https://img.shields.io/twitter/follow/Spacetime_Meta?style=social

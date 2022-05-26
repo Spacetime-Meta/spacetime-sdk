@@ -180,6 +180,12 @@ class TerrainController {
         this.collider.visible = false;
         scene.add(this.collider);
 
+        /* The following lines of code are used to debug the BVH collider. 
+         * Uncomment these lines to visualize the BVH collider. 
+         * More information on Bounding Volume Hierarchy (BVH):
+         * https://en.wikipedia.org/wiki/Bounding_volume_hierarchy
+        */
+       
         // const visualizer = new MeshBVHVisualizer(this.collider, 10);
         // visualizer.visible = true;
         // visualizer.update();

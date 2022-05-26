@@ -44,6 +44,25 @@ git push
 
 At this point you can go on the Github website and open a pull request to merge your changes into the develop branch.
 
+## Comments
+Please do not leave random commented lines of code, remove them or explain clearly, in a comment above, why this is pertinent.
+
+The most acceptable reason to leave a commented line of code is for debugging. Here is an example in the `TerrainController`:
+```javascript
+/* The following lines of code are used to debug the BVH collider. 
+ * Uncomment these lines to visualize the BVH collider. 
+ * More information on Bounding Volume Hierarchy (BVH):
+ * https://en.wikipedia.org/wiki/Bounding_volume_hierarchy
+ */
+
+// const visualizer = new MeshBVHVisualizer(this.collider, 10);
+// visualizer.visible = true;
+// visualizer.update();
+// scene.add(visualizer);
+```
+Here, the visualizer is commented out since it is not needed in production but is very useful in development. For this reason, It can stay there for developers to uncomment when needed.
+
+
 ## Useful Visual Studio Code Extensions
 1. To edit the UML diagrams direcly in your Visual Studio Code, we strongly recommend the [drawio extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).
 2. To easily test your changes in the examples, we recommend the [live server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).

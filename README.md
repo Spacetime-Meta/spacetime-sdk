@@ -1,64 +1,46 @@
-# Welcome to the Spacetime Standard Kit
+# Spacetime Standard Kit 
+The Spacetime standard kit provide developers with turnkey virtual environments. This package will provide multiple metaverse features like multiplayer, custom avatars, vehicle and blockchain connection. 
 
-The Spacetime standard kit is meant to allow developers to deploy complete and compatible virtual environments without worrying about the integration of common metaverse features.
+We are making this codebase open source and free to use by our [community]([discord-url]) members and partners in order to facilitate the standardization of the metaverse.
 
-If you are new to Spacetime metaverse you can visit the most recent version here. 
+[![Discord][discord]][discord-url] 
 
-## Metaverse Map: 
+---
 
-Every planet in [this universe](https://www.spacetimemeta.io/#/map) is owned by users from the community with the exeption of spawn planet (0,0,0). This map is used to connect 3D environnemnts together. Ownership of a location is verifiable on the Cardano blockchain. For more information on this matter join our discord 
+The environment are built using [ThreeJs]([three]).  
+The peer to peer multiplayer is built using [PeerJs]([peerjs]).
 
-The spacetime-standard-kit are the controls you experience when you enter spawn planet (0,0,0). This codebase will be free to use by our community and partners. 
+## Main Focus
 
-To improve decentralization in the metaverse and help us create a better experience for the community, you can contribute to this project (see section CONTRIBUTION) 
+This standard kit project was initially started to populate [this universe](https://www.spacetimemeta.io/#/map) with uniquely generated worlds. It has now extended to much more, as multiple other projects use our open source kit to create their own virtual environments and connect them to the spacetime metaverse. 
 
+**Partners and contributors should keep in mind that; even as the project gets more traction, our main focus will always be on populating the space chunks with complete worlds and valuable experiences. Also, every feature will be reviewed and developed in orientation to the spacetime meta roadmap.**
 
-## Examples
+## Basic Usage
 
-The standard kit comes with a few demo worlds to get you started. With these examples, you see what is possible and understand the code.
-1. Classroom
-2. Base Template
-3. Spawn Planet
-4. Floor is Lava
-5. Terrain Generation
+Create a simple environment with avatar, ui and multiplayer:
 
-Do not forget to keep the examples up to date as the codebase gets more advanced. 
+```javascript
+// start by creating a basic virtual environment
+let virtualEnvironment = new VirtualEnvironment();
 
-## Environments
-There are two environments for the Standard Kit:
-1. **Production:** Deployed on Github pages from the `main` branch [View deployment](https://spacetime-meta.github.io/spacetime-standard-kit/)
-2. **Development:** Deployed on Netlify from the `develop` branch [View deployment](https://stdkit-dev.netlify.app/)
+// fill your world with the stuff you want
+init();
+function init() {
+    virtualEnvironment.loadTerrain('terrain.glb');
+    virtualEnvironment.spawnPlayer('avatar.glb');
+}
 
-## Development
-
-To get started, you must first clone the repo on your local drive and navigate to the projects folder.
+// then start the animation
+animate();
+function animate() {
+    virtualEnvironment.update();
+    requestAnimationFrame(animate);
+}
 ```
-git clone https://github.com/Spacetime-Meta/spacetime-standard-kit.git
-cd spacetime-standard-kit
-```
+If everything works properly, you should see something like [this base template](https://stdkit-dev.netlify.app/exemples/base-template/index.html)
 
-Once you are ready to participate in the development of the standard kit, you must go to the [issue page](https://github.com/Spacetime-Meta/spacetime-standard-kit/issues) of the project and select an issues to work on. Once you choose, create a new branch for this issue. 
-
-**Do not forget to branch from develop!!**  
-*The develop branch is always the starting point when working on the project. If you want more information about branch management, i recommend reading this article: [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/)*
-
-after creating your issue branch, you can check it out in local
-```
-git fetch origin
-git checkout <your branch name>
-```
-
-At this point you can do the modifications you came to do. If you modify the class structure, do not forget to adapt the UML Class Diagram
-
-Once you are done with you modifications, you can commit and push your changes to your branch origin.
-```
-git add .
-git commit -m "<your commit message>"
-git push
-```
-
-At this point you can go on the Github website and open a pull request to merge your changes into the develop branch.
-
-## Useful Visual Studio Code Extensions
-1. To edit the UML diagrams direcly in your Visual Studio Code, we strongly recommend the [drawio extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).
-2. To easily test your changes in the examples, we recommend the [live server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
+[discord-url]: https://discord.gg/w6CzHy35E2
+[discord]: https://img.shields.io/discord/685241246557667386
+[three]: (https://github.com/mrdoob/three.js)
+[peerjs]: (https://github.com/peers/peerjs)

@@ -20,12 +20,13 @@ const avatarSelectPanel = function () {
     element.innerHTML = "avatars"
 
     toggleButton(element);
-    avatarButton("xBot", element, '../../../glb/avatars/xBot.glb')
-    avatarButton("yBot", element, '../../../glb/avatars/yBot.glb')
-
+    avatarButton("female", element, '../../../resources/avatars/megan.glb', '../../../resources/animations/megan@animation.glb')
+    avatarButton("xBot", element, '../../../resources/avatars/xBot.glb', '../../../resources/animations/animation.glb')
+    avatarButton("yBot", element, '../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb')
+    
     document.body.appendChild(element);
     
-    function avatarButton(name, parent, avatarUrl) {
+    function avatarButton(name, parent, avatarUrl, animationUrl) {
         const avatarButtonElement = document.createElement("div");
         avatarButtonElement.id = "avatarPanel"+name;
         avatarButtonElement.className = "avatar";
@@ -41,7 +42,7 @@ const avatarSelectPanel = function () {
         avatarButtonElement.innerHTML = name
 
         avatarButtonElement.addEventListener("click", () => {
-            window.player.avatarController.changeAvatar(avatarUrl, '../../../glb/animations/animation.glb')
+            window.player.avatarController.changeAvatar(avatarUrl, animationUrl)
         })
 
         parent.appendChild(avatarButtonElement)

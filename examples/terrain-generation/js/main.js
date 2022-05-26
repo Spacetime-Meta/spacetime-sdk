@@ -7,7 +7,7 @@ let virtualEnvironment = new VirtualEnvironment();
 init();
 function init() {
     virtualEnvironment.generateTerrain(0)
-    virtualEnvironment.spawnPlayer('../../../resources/avatars/yBot.glb', 0, 500, 0)
+    virtualEnvironment.spawnPlayer('../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb', 0, 500, 0)
 }
 
 // then start the animation

@@ -28,7 +28,6 @@ class AvatarController extends THREE.Object3D {
 
     play(anim, time = 0.5) {
         if (anim === this.current) {
-            console.log(this.current);
             return;
         }
         if (performance.now() - this.lastChange < 250) {

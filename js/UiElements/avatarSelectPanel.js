@@ -8,7 +8,7 @@ const avatarSelectPanel = function () {
         top: '2px',
         right: 'calc(100% - 2px)',
         transform: 'translate(100%, 0)',
-        width: '150px',
+        width: '200px',
         textAlign: 'center',
         border: '1px solid #00FFF0',
         boxSizing: 'border-box',
@@ -21,6 +21,8 @@ const avatarSelectPanel = function () {
 
     toggleButton(element);
     avatarButton("female", element, '../../../resources/avatars/megan.glb', '../../../resources/animations/megan@animation.glb')
+    avatarButton("male", element, '../../../resources/avatars/josh.glb', '../../../resources/animations/josh@animation.glb')
+    avatarButton("business man", element, '../../../resources/avatars/joe.glb', '../../../resources/animations/joe@animation.glb')
     avatarButton("xBot", element, '../../../resources/avatars/xBot.glb', '../../../resources/animations/animation.glb')
     avatarButton("yBot", element, '../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb')
     

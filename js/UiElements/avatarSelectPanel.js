@@ -23,6 +23,7 @@ const avatarSelectPanel = function () {
     avatarButton("female", element, '../../../resources/avatars/megan.glb', '../../../resources/animations/megan@animation.glb')
     avatarButton("male", element, '../../../resources/avatars/josh.glb', '../../../resources/animations/josh@animation.glb')
     avatarButton("business man", element, '../../../resources/avatars/joe.glb', '../../../resources/animations/joe@animation.glb')
+    avatarButton("vanguard", element, '../../../resources/avatars/vanguard.glb', '../../../resources/animations/animation.glb')
     avatarButton("xBot", element, '../../../resources/avatars/xBot.glb', '../../../resources/animations/animation.glb')
     avatarButton("yBot", element, '../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb')
     
@@ -35,7 +36,7 @@ const avatarSelectPanel = function () {
 
         Object.assign(avatarButtonElement.style, {
             border: '1px solid #00FFF0',
-            display: 'block',
+            display: 'none',
             padding: '5px',
             margin: '2px',
             cursor: 'pointer'
@@ -63,10 +64,10 @@ const avatarSelectPanel = function () {
             for(let i = 0; i < avatarElements.length; i++) {
                 if(avatarElements[i].style.display === 'block') {
                     avatarElements[i].style.display = 'none';
-                    toggleBtnElement.innerHTML = "&#x25B2;";
+                    toggleBtnElement.innerHTML = "&#x25BC;";
                 }else {
                     avatarElements[i].style.display = 'block';
-                    toggleBtnElement.innerHTML = "&#x25BC;";
+                    toggleBtnElement.innerHTML = "&#x25B2;";
                 }
             }
         })

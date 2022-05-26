@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="bAAXgGwKLryCuVSAvFsi" name="Page-1">
-        <mxGraphModel dx="1354" dy="2214" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="2000" dy="2390" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -33,7 +33,7 @@
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-46" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
                     <mxGeometry y="170" width="326" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="GosrUJCcwg7DmdABZyiW-18" value="createUiElements()&#10;newSolidGeometriesFromSource(url, x, y, z, scaleFactor)&#10;loadTerrain(terrainPath, x, y, z)&#10;generateTerrain(seed)&#10;spawnPlayer(avatarPath)&#10;setShadowLightTier(graphicTier)&#10;setGraphicsSetting(graphicTier)&#10;increaseGraphicSettings()&#10;getLocation()&#10;spawnOtherPlayer(avatarPath)&#10;moveOtherPlayer(x,y,z)&#10;update()&#10;loading()&#10;newVideoDisplayPlane(url, width, height, x, y, z, rotationY)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
+                <mxCell id="GosrUJCcwg7DmdABZyiW-18" value="createUiElements()&#10;newSolidGeometriesFromSource(url, x, y, z, scaleFactor)&#10;loadTerrain(terrainPath, x, y, z)&#10;generateTerrain(seed)&#10;spawnPlayer(avatarPath, animationPath, x, y, z)&#10;setShadowLightTier(graphicTier)&#10;setGraphicsSetting(graphicTier)&#10;increaseGraphicSettings()&#10;getLocation()&#10;spawnOtherPlayer(avatarPath)&#10;moveOtherPlayer(x,y,z)&#10;update()&#10;loading()&#10;newVideoDisplayPlane(url, width, height, x, y, z, rotationY)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
                     <mxGeometry y="178" width="326" height="218" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-48" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=8;" parent="1" edge="1">

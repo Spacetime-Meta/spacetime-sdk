@@ -113,9 +113,9 @@ class VirtualEnvironment {
         this.terrainController.generateTerrain(this.scene, seed);
     }
     
-    spawnPlayer(avatarPath, x, y, z) {
+    spawnPlayer(avatarPath, animationPath, x, y, z) {
         this.entities = [];
-        this.player = new PlayerLocal('../../../resources/animations/animation.glb', avatarPath, this.scene, x, y, z);
+        this.player = new PlayerLocal(animationPath, avatarPath, this.scene, x, y, z);
         window.player = this.player;
         this.scene.add(this.player);
         

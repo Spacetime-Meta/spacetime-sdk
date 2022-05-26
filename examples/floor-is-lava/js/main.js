@@ -8,7 +8,7 @@ let virtualEnvironment = new VirtualEnvironment();
 // then fill your world with the stuff you want
 init();
 function init() {
-    virtualEnvironment.spawnPlayer('../../../resources/avatars/yBot.glb', 0, 50, 0)
+    virtualEnvironment.spawnPlayer('../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb', 0, 50, 0)
     
     setTimeout(() => {
         virtualEnvironment.newSolidGeometriesFromSource('../../../resources/objects/rock_platform.glb', 0, 20, 1000, 16);

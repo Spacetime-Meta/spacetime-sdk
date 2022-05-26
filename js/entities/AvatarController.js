@@ -44,6 +44,7 @@ class AvatarController extends THREE.Object3D {
 
     update(delta, frustum, position, horizontalVelocity, anim, time = 0.5) {
         this.position.copy(position);
+        if(!this.model) return; 
         this.updateFacingDirection(horizontalVelocity)
     
         if(this.mixer){

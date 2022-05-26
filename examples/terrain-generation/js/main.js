@@ -7,20 +7,12 @@ let virtualEnvironment = new VirtualEnvironment();
 init();
 function init() {
     virtualEnvironment.generateTerrain(0)
-    virtualEnvironment.spawnPlayer('../../../glb/avatars/yBot.glb', 0, 500, 0)
+    virtualEnvironment.spawnPlayer('../../../resources/avatars/yBot.glb', 0, 500, 0)
 }
 
-if (!window.requestPostAnimationFrame) {
-    window.requestPostAnimationFrame = function(task) {
-        requestAnimationFrame(() => {
-            setTimeout(task, 0);
-        });
-    }
-}
-
+// then start the animation
+animate();
 function animate() {
-    requestPostAnimationFrame(animate);
-
     virtualEnvironment.update();
+    requestAnimationFrame(animate);
 }
-requestPostAnimationFrame(animate);

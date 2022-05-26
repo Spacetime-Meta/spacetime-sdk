@@ -38,7 +38,7 @@ function animate() {
     requestAnimationFrame(animate);
 }
 ```
-If everything works properly, you should see something like [this base template](https://stdkit-dev.netlify.app/exemples/base-template/index.html)
+If everything works properly, you should see something like [this base template](https://stdkit-dev.netlify.app/examples/base-template/index.html)
 
 [discord-url]: https://discord.gg/w6CzHy35E2
 [discord]: https://img.shields.io/discord/685241246557667386

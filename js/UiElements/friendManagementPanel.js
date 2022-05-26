@@ -13,11 +13,10 @@ const friendManagementPanel = function(remoteController) {
         left: 'calc(50% - 150px)',
         width: '300px',
         textAlign: 'center',
-        border: '1px solid #00FFF0',
-        boxSizing: 'border-box',
-        borderRadius: '10px',
+        border: "1px solid rgba(256, 256, 256, 0.3)",
+        background: "rgba(0, 0, 0, 0.2)",
         zIndex: 100,
-        color: '#00FFF0'
+        color: "rgba(256, 256, 256, 0.8)",
     })
     
     const friendList = document.createElement("ul");

@@ -6,18 +6,15 @@ const friendManagement = function(remoteController) {
 
     Object.assign(element.style, {
         position: 'absolute',
-        padding: '10px',
-        top: '50px',
-        left: 'calc(100% - 2px)',
-        transform: 'translate(-100%, 0)',
-        width: '150px',
-        textAlign: 'center',
-        border: '1px solid #00FFF0',
-        boxSizing: 'border-box',
-        borderRadius: '10px',
+        padding: '2px',
+        top: '0',
+        right: '0',
+        border: "1px solid rgba(256, 256, 256, 0.3)",
+        background: "rgba(0, 0, 0, 0.2)",
         cursor: 'pointer',
+        fontSize: "x-small",
         zIndex: 100,
-        color: '#00FFF0'
+        color: "rgba(256, 256, 256, 0.8)"
     })
     element.innerHTML = "Manage Friends"
 

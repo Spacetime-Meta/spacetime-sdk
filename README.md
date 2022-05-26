@@ -9,8 +9,12 @@ We are making this codebase open source and free to use by our [community]([disc
 
 ---
 
-The environment are built using [ThreeJs]([three]).  
-The peer to peer multiplayer is built using [PeerJs]([peerjs]).
+The environments are built using [ThreeJs]([three]).  
+[![GitHub Repo stars](https://img.shields.io/github/stars/mrdoob/three.js?label=ThreeJS%20-%20Stars&style=social)][three]  
+
+The peer to peer multiplayer is built using [PeerJs]([peerjs]).  
+[![GitHub Repo stars](https://img.shields.io/github/stars/peers/peerjs?label=PeerJS%20-%20Stars&style=social)][peerjs]
+
 
 ## Main Focus
 
@@ -43,7 +47,7 @@ function animate() {
 If everything works properly, you should see something like [this base template](https://stdkit-dev.netlify.app/examples/base-template/index.html)
 
 [discord-url]: https://discord.gg/w6CzHy35E2
-[discord]: https://img.shields.io/discord/685241246557667386
+[discord]: https://img.shields.io/discord/685241246557667386?logo=discord
 [licence]: https://img.shields.io/github/license/Spacetime-Meta/spacetime-standard-kit
 [version]: https://img.shields.io/github/v/release/Spacetime-Meta/spacetime-standard-kit
 [three]: (https://github.com/mrdoob/three.js)

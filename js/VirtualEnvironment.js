@@ -8,9 +8,10 @@ import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
 import loadingPage from './UiElements/loadingPage.js';
-import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
+// import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
 import blocker from './UiElements/blocker.js';
 import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
+import controlInstructions from './UiElements/controlInstructions.js';
 
 const LOW = 0;
 const MEDIUM = 1;
@@ -27,7 +28,8 @@ class VirtualEnvironment {
         // ===== loading =====
         this.loading();
         
-        this.graphicTier = localProxy.tier !== undefined ? localProxy.tier : 0;
+        // until complete removal of the graphic tier setting, keep this section commented
+        this.graphicTier = 2; //localProxy.tier !== undefined ? localProxy.tier : 0;
 
         // ===== renderer =====
         this.renderer = new THREE.WebGLRenderer({ alpha: true });
@@ -97,12 +99,13 @@ class VirtualEnvironment {
     } // -- end constructor
 
     createUiElements() {
-        graphicTierButton(this.graphicTier, () => {this.increaseGraphicSettings()});
+        // graphicTierButton(this.graphicTier, () => {this.increaseGraphicSettings()});
         blocker(() => {
             this.controls.lock()
-            document.getElementById('blocker').style.display = "none";
+            document.getElementById('blockerWrapper').style.display = "none";
         });
-        avatarSelectPanel();
+        // avatarSelectPanel();
+        controlInstructions();
     }
 
     loadTerrain(terrainPath, x, y, z, format, scaleFactor = 1){
@@ -152,7 +155,7 @@ class VirtualEnvironment {
 
         this.controls.addEventListener('unlock', () => {
             window.player.keys = {};
-            document.getElementById("blocker").style.display = 'block';
+            document.getElementById("blockerWrapper").style.display = 'block';
         });
     }
 

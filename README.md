@@ -14,7 +14,7 @@ The peer to peer multiplayer is built using [PeerJs]([peerjs]).
 
 ## Main Focus
 
-This standard kit project was initially started to populate [this universe](https://www.spacetimemeta.io/#/map) with uniquely generated worlds. It has now extended to much more, as multiple other projects use our open source kit to create their own virtual environments and connect them to the spacetime metaverse. 
+This standard kit project was initially started to populate [this universe](https://www.spacetimemeta.io/#/map) with uniquely generated worlds. It has now extended to much more. As multiple other projects use our open source kit to create their own virtual environments and connect them to the spacetime metaverse. 
 
 **Partners and contributors should keep in mind that; even as the project gets more traction, our main focus will always be on populating the space chunks with complete worlds and valuable experiences. Also, every feature will be reviewed and developed in orientation to the spacetime meta roadmap.**
 

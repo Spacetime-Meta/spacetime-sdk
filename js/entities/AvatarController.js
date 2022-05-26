@@ -13,14 +13,6 @@ class AvatarController extends THREE.Object3D {
         this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
     }
 
-    get animations() {
-        return this._animations;
-    }
-
-    set animations(newAnimations) {
-        this._animations = newAnimations;
-    }
-
     play(anim, time = 0.5) {
         
         if (anim !== this.current && (performance.now() - this.lastChange) >= 250) {
@@ -39,31 +31,31 @@ class AvatarController extends THREE.Object3D {
                 this.animations[this.current].play();
             }
         }
-
     }
 
     update(delta, frustum, position, horizontalVelocity, anim, time = 0.5) {
-        this.position.copy(position);
-        this.updateFacingDirection(horizontalVelocity)
-    
+        
+        // use the mixer as only signal that everything is properly loaded
         if(this.mixer){
+            this.position.copy(position);
+            this.updateFacingDirection(horizontalVelocity)
             this.play(anim, time);
             this.mixer.update(delta);
-        }
-
-
-        this.model.traverse(child => {
-            if (child.isMesh) {
-                
-                child.material.opacity = this.opacity;
-                
-                if (this.opacity < 1) {
-                    child.material.transparent = true;
-                } else {
-                    child.material.transparent = false;
+        
+            // this part should not happen on every update, only when user changes the view
+            this.model.traverse(child => {
+                if (child.isMesh) {
+                    
+                    child.material.opacity = this.opacity;
+                    
+                    if (this.opacity < 1) {
+                        child.material.transparent = true;
+                    } else {
+                        child.material.transparent = false;
+                    }
                 }
-            }
-        })
+            })
+        }        
     }
 
     changeAvatar(avatarUrl, animationsUrl) {

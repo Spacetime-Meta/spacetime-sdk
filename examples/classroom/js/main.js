@@ -7,7 +7,7 @@ let virtualEnvironment = new VirtualEnvironment();
 init();
 function init() {
     virtualEnvironment.loadTerrain('../../../resources/terrains/classroom.fbx', 0, 0, 0, "fbx", 0.2);
-    virtualEnvironment.spawnPlayer('../../../resources/avatars/yBot.glb', 0, 70, 0);
+    virtualEnvironment.spawnPlayer('../../../resources/avatars/megan.glb', '../../../resources/animations/megan@animation.glb', 0, 70, 0);
     
     setTimeout(() => {
         virtualEnvironment.newVideoDisplayPlane('../classroom/textures/mapFirstDemo.mp4', 200, 100, 72, 90, 95, - Math.PI / 2);

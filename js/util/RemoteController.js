@@ -19,7 +19,7 @@ class RemoteController {
         // check if the user has a peerID in the local storage
         if(typeof localProxy.peerId !== 'undefined'){
             this.peer = new Peer(localProxy.peerId);
-            console.log("[RemoteController] Trying to create peer: " + localProxy.peerId)
+            console.log("[info] Trying to create peer: " + localProxy.peerId)
             this.peer.on('open', () => {
                 document.getElementById("goLivePanel").remove()
                 this.onConnectionOpen()
@@ -38,7 +38,7 @@ class RemoteController {
     onConnectionOpen() {
         chatBox(this);
 
-        this.addMessageToChatBox("[RemoteController] Peer created with id: "+localProxy.peerId);
+        this.addMessageToChatBox("[info] Peer created with id: "+localProxy.peerId);
         peerIdDisplay(localProxy.peerId, this)
         friendManagement(this);
 
@@ -61,7 +61,7 @@ class RemoteController {
     }
 
     onConnectionConnect(newConnection) {
-        this.addMessageToChatBox('[RemoteController] new connection to peer: ' + newConnection.peer)
+        this.addMessageToChatBox('[info] new connection to peer: ' + newConnection.peer)
         this.connections.push(newConnection);
         
         // not sure why this is needed but if we dont give the connection some time it wont send the message
@@ -106,7 +106,7 @@ class RemoteController {
 
                     // first verify that both users are in the same world
                     if(jsonData.pathname === window.location.pathname) {
-                        this.addMessageToChatBox("[RemoteController] Spawning: "+connection.peer);
+                        this.addMessageToChatBox("[info] Spawning: "+connection.peer);
 
                         // Spawn the other player
                         connection.avatarController = new AvatarController("../../glb/animations/animation.glb", "../../glb/avatars/yBot.glb", this.scene);
@@ -121,7 +121,7 @@ class RemoteController {
     }
 
     connectToPeer(peerId) {
-        console.log("[RemoteController] Trying connection to peer: " + peerId);
+        console.log("[info] Trying connection to peer: " + peerId);
         const newConnection = this.peer.connect(peerId);
 
         // on new connection establish
@@ -131,21 +131,21 @@ class RemoteController {
     }
     
     disconnectPeer(peerId) {
-        console.log("[RemoteController] Trying disconnect to peer: " + peerId);
+        console.log("[info] Trying disconnect to peer: " + peerId);
         this.connections.forEach((connection, index) => {
             if(connection.peer === peerId) {
                 connection.close();
                 this.connections.splice(index, 1);
             }
         })
-        this.addMessageToChatBox('[RemoteController] disconnect to peer: ' + peerId);
+        this.addMessageToChatBox('[info] disconnect to peer: ' + peerId);
     }
 
     sendChatMessage(message) {
         this.connections.forEach(connection => {
             connection.send('{"type":"chat","message":"'+message+'"}');
         })
-        this.addMessageToChatBox(localProxy.peerId+": "+message)
+        this.addMessageToChatBox("["+localProxy.peerId+"] "+message)
     }
 
     addMessageToChatBox(message) {

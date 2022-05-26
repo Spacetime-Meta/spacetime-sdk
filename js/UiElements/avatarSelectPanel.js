@@ -4,17 +4,16 @@ const avatarSelectPanel = function () {
 
     Object.assign(element.style, {
         position: 'absolute',
-        padding: '10px',
-        top: '2px',
-        right: 'calc(100% - 2px)',
-        transform: 'translate(100%, 0)',
-        width: '200px',
+        padding: '2px',
+        top: '0',
+        left: '0',
         textAlign: 'center',
-        border: '1px solid #00FFF0',
+        border: "1px solid rgba(256, 256, 256, 0.3)",
+        background: "rgba(0, 0, 0, 0.2)",
         boxSizing: 'border-box',
-        borderRadius: '10px',
         zIndex: 100,
-        color: '#00FFF0'
+        color: 'rgba(256, 256, 256, 0.8)',
+        fontSize: "x-small"
     })
 
     element.innerHTML = "avatars"
@@ -27,15 +26,13 @@ const avatarSelectPanel = function () {
     avatarButton("xBot", element, '../../../resources/avatars/xBot.glb', '../../../resources/animations/animation.glb')
     avatarButton("yBot", element, '../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb')
     
-    document.body.appendChild(element);
-    
     function avatarButton(name, parent, avatarUrl, animationUrl) {
         const avatarButtonElement = document.createElement("div");
         avatarButtonElement.id = "avatarPanel"+name;
         avatarButtonElement.className = "avatar";
 
         Object.assign(avatarButtonElement.style, {
-            border: '1px solid #00FFF0',
+            border: '1px solid rgba(256, 256, 256, 0.8)',
             display: 'none',
             padding: '5px',
             margin: '2px',
@@ -56,7 +53,9 @@ const avatarSelectPanel = function () {
         toggleBtnElement.id = "toggle";
         Object.assign(toggleBtnElement.style, {
             cursor: 'pointer',
-            float: 'right'
+            float: 'right',
+            paddingLeft: '5px',
+            paddingRight: '5px'
         })
         toggleBtnElement.innerHTML = "&#x25BC;";
         toggleBtnElement.addEventListener("click", () => {
@@ -73,6 +72,8 @@ const avatarSelectPanel = function () {
         })
         parent.appendChild(toggleBtnElement)
     }
+
+    return element;
 }
 
 export default avatarSelectPanel;

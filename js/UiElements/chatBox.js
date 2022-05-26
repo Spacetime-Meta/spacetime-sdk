@@ -7,15 +7,16 @@ const chatBox = function(remoteController) {
         bottom: '2px',
         left: '2px',
         boxSizing: 'border-box',
+        fontSize: "x-small",
         zIndex: 100
     })
 
     const chatDisplay = document.createElement("div");
     chatDisplay.id = "chatDisplay";
     Object.assign(chatDisplay.style, {
-        color: 'turquoise',
+        color: 'rgba(256, 256, 256, 0.8)',
         maxHeight: '200px',
-        maxWidth: '500px',
+        maxWidth: '250px',
         overflow: 'scroll',
         overflowX: 'hidden',
         overflowY: 'auto',
@@ -31,7 +32,7 @@ const chatBox = function(remoteController) {
         }
     })
     Object.assign(inputBar.style, {
-        width: '300px'
+        width: '200px'
     })
 
     const sendButton = document.createElement("button");

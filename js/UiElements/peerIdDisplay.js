@@ -6,14 +6,15 @@ const peerIdDisplay = function(peerId, remoteController) {
 
     Object.assign(element.style, {
         position: 'absolute',
-        bottom: '2px',
-        left: 'calc(50% - 150px)',
-        width: '300px',
-        textAlign: 'center',
-        boxSizing: 'border-box',
+        bottom: '0px',
+        padding: '2px',
+        right: '0',
         cursor: 'pointer',
+        border: "1px solid rgba(256, 256, 256, 0.3)",
+        background: "rgba(0, 0, 0, 0.2)",
         zIndex: 100,
-        color: '#00FFF0'
+        color: 'rgba(256, 256, 256, 0.8)',
+        fontSize: "x-small"
     })
 
     element.innerHTML = "Peer ID: " + peerId;

@@ -99,12 +99,10 @@ class VirtualEnvironment {
     } // -- end constructor
 
     createUiElements() {
-        // graphicTierButton(this.graphicTier, () => {this.increaseGraphicSettings()});
         blocker(() => {
             this.controls.lock()
             document.getElementById('blockerWrapper').style.display = "none";
         });
-        // avatarSelectPanel();
         controlInstructions();
     }
 

@@ -6,8 +6,8 @@ let virtualEnvironment = new VirtualEnvironment();
 // then fill your world with the stuff you want
 init();
 function init() {
-    virtualEnvironment.generateTerrain(0)
-    virtualEnvironment.spawnPlayer('../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb', 0, 500, 0)
+    virtualEnvironment.generateTerrain(Math.random())
+    virtualEnvironment.spawnPlayer('../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb', 0, 1000, 0)
 }
 
 // then start the animation

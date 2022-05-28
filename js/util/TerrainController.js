@@ -7,9 +7,9 @@ import { TerrainGenerator } from './TerrainGenerator.js';
 
 class TerrainController {
     
-    constructor(){
-        this.FBXLoader = new FBXLoader();
-        this.GLTFLoader = new GLTFLoader();
+    constructor(manager){
+        this.FBXLoader = new FBXLoader(manager);
+        this.GLTFLoader = new GLTFLoader(manager);
         this.terrain = new THREE.Object3D();
         this.collider;
         this.bloomScene = new THREE.Scene();

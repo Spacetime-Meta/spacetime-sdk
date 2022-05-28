@@ -20,18 +20,19 @@ class AvatarController extends THREE.Object3D {
         if (anim !== this.current && (performance.now() - this.lastChange) >= 250) {
             this.lastChange = performance.now();
             
-            if (this.current !== "none") {
+            if (this.current !== "none" && typeof this.animations[this.current] !== 'undefined') {
                 this.animations[this.current].fadeOut(time);
             }
-
+            
             this.current = anim;
-
-            if (this.current !== "none") {
+            if(typeof this.animations[this.current] !== 'undefined'){
                 this.animations[this.current].enabled = true;
                 this.animations[this.current].reset();
                 this.animations[this.current].fadeIn(time);
                 this.animations[this.current].play();
             }
+            
+            
         }
     }
 
@@ -92,8 +93,8 @@ class AvatarController extends THREE.Object3D {
             if(typeof this.model == 'undefined') return;
             this.current = "none";
             this.animations = {
-                "idle": gltf.animations[2],
                 "walk": gltf.animations[1],
+                "idle": gltf.animations[2],
                 "run": gltf.animations[3],
                 "jump": gltf.animations[4],
                 "fall": gltf.animations[5]
@@ -105,7 +106,6 @@ class AvatarController extends THREE.Object3D {
             this.lastChange = performance.now() - 250;
             this.delta = 0;
             this.play("idle", 0);
-            this.jumpTick = 0;
             this.opacity = 1;
         });
     }

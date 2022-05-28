@@ -19,7 +19,6 @@ class PlayerLocal extends CapsuleEntity {
 
         this.horizontalVelocity = new Vector3();
 
-        this.jumped = 0;
         this.friction = 0.975;
     }
     
@@ -60,16 +59,11 @@ class PlayerLocal extends CapsuleEntity {
         if (this.keys["d"]) {
             this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(this.speedFactor * delta));
         }
-        this.jumped -= 0.2;
-        if (this.keys[" "]) {
-            if (this.onGround && this.jumped <= 0) {
-                this.jumped = 20;
-            }
-        }
-        if (this.jumped > 0 && this.jumped < 1) {
+        if (this.keys[" "] && this.onGround) {
             this.velocity.y = 150.0;
-            this.jumped = 0;
+            this.setAnimationParameters("jump", 0);
         }
+
         super.update(delta, collider);
 
         if (this.position.y < -1000) {
@@ -83,21 +77,6 @@ class PlayerLocal extends CapsuleEntity {
                 this.position.z -= Math.cos(toEntity) * (size - this.position.distanceTo(entity.position));
             }
         });
-        const invMat = new Matrix4();
-        const raycaster = new Raycaster(this.position, new Vector3(0, -1, 0));
-        invMat.copy(collider.matrixWorld).invert();
-        raycaster.ray.applyMatrix4(invMat);
-        const hit = collider.geometry.boundsTree.raycastFirst(raycaster.ray);
-        if (hit) {
-            hit.point.applyMatrix4(collider.matrixWorld);
-            if (hit.point.distanceTo(this.position) < this.size + this.radius + 25) {
-                this.groundBelow = true;
-            } else {
-                this.groundBelow = false;
-            }
-        } else {
-            this.groundBelow = false;
-        }
 
         this.updateCurrentAnimation()
         if(typeof this.avatarController !== "undefined"){
@@ -113,27 +92,20 @@ class PlayerLocal extends CapsuleEntity {
         }
         this.lastPosition = this.position.clone();
 
-
-        if (player.jumped > 0 && this.jumpTick === 0) {
-            this.setAnimationParameters("jump", 0.25);
-        } else {
-            if (this.positionChange.y < -0.25 && !player.groundBelow) {
-                this.setAnimationParameters("fall", 0.25);
-            } else {
-                if ((this.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
-                    if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
-                        if(player.keys["shift"]){ this.setAnimationParameters("run"); }
-                        else { this.setAnimationParameters("walk"); }
-                    } else {
-                        this.setAnimationParameters("idle");
-                    }
+        if(this.onGround) {
+            if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
+                if(player.keys["shift"]){ 
+                    this.setAnimationParameters("run"); 
+                } else { 
+                    this.setAnimationParameters("walk"); 
                 }
+            } else {
+                this.setAnimationParameters("idle");
             }
-        }
-        if (this.current === "jump") {
-            this.jumpTick += delta;
         } else {
-            this.jumpTick = 0;
+            if(this.positionChange.y < -0.5) {
+                this.setAnimationParameters("fall", 0.25);
+            }
         }
     }
 

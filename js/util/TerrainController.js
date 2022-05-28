@@ -3,9 +3,7 @@ import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/l
 import { FBXLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/FBXLoader.js';
 import * as BufferGeometryUtils from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/utils/BufferGeometryUtils.js';
 import { MeshBVH, MeshBVHVisualizer } from './three-mesh-bvh.js';
-import { ImprovedNoise } from 'https://threejs.org/examples/jsm/math/ImprovedNoise.js';
-
-const worldWidth = 256, worldDepth = 256;
+import { TerrainGenerator } from './TerrainGenerator.js';
 
 class TerrainController {
     
@@ -16,99 +14,11 @@ class TerrainController {
         this.collider;
         this.bloomScene = new THREE.Scene();
         this.geometries = [];
+        this.terrainGenerator = new TerrainGenerator();
     }
 
     generateTerrain(scene, seed) {
-        const terrainHeights = this.generateHeight( worldWidth, worldDepth , seed);
-        
-        const geometry = new THREE.PlaneGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
-        geometry.rotateX( - Math.PI / 2 );
-        
-        const vertices = geometry.attributes.position.array;
-        for ( let i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
-            vertices[ j + 1 ] = terrainHeights[ i ] * 10;
-        }
-
-        const texture = new THREE.CanvasTexture( this.generateTexture( terrainHeights, worldWidth, worldDepth ) );
-        texture.wrapS = THREE.ClampToEdgeWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-        const terrainMaterial = new THREE.MeshBasicMaterial( { map: texture } );
-        this.terrain = new THREE.Mesh( geometry, terrainMaterial );
-        scene.add( this.terrain );
-
-        this.generateCollider(scene)
-    }
-
-    generateHeight( width, height , seed) {
-        window.Math.random = function () {
-            const x = Math.sin( seed ++ ) * 10000;
-            return x - Math.floor( x );
-        };
-
-        const size = width * height, data = new Uint8Array( size );
-        const perlin = new ImprovedNoise(), z = Math.random() * 100;
-        let quality = 1;
-
-        for ( let j = 0; j < 4; j ++ ) {
-            for ( let i = 0; i < size; i ++ ) {
-                const x = i % width, y = ~ ~ ( i / width );
-                data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
-            }
-            quality *= 5;
-        }
-        return data;
-    }
-
-    generateTexture( data, width, height ) {
-
-        let context, image, imageData;
-
-        const canvas = document.createElement( 'canvas' );
-        canvas.width = width;
-        canvas.height = height;
-
-        context = canvas.getContext( '2d' );
-        context.fillStyle = '#000';
-        context.fillRect( 0, 0, width, height );
-
-        image = context.getImageData( 0, 0, canvas.width, canvas.height );
-        imageData = image.data;
-
-        for ( let i = 0, j = 0, l = imageData.length; i < l; i += 4, j ++ ) {
-            imageData[ i ] = 0;
-            imageData[ i + 1 ] = 256  * ( 0.5 + data[ j + 1 ] * 0.001 );
-            imageData[ i + 2 ] = 0;
-        }
-
-        context.putImageData( image, 0, 0 );
-
-        // Scaled 4x
-
-        const canvasScaled = document.createElement( 'canvas' );
-        canvasScaled.width = width * 4;
-        canvasScaled.height = height * 4;
-
-        context = canvasScaled.getContext( '2d' );
-        context.scale( 4, 4 );
-        context.drawImage( canvas, 0, 0 );
-
-        image = context.getImageData( 0, 0, canvasScaled.width, canvasScaled.height );
-        imageData = image.data;
-
-        for ( let i = 0, l = imageData.length; i < l; i += 4 ) {
-
-            const v = ~ ~ ( Math.random() * 5 );
-
-            imageData[ i ] += v;
-            imageData[ i + 1 ] += v;
-            imageData[ i + 2 ] += v;
-
-        }
-
-        context.putImageData( image, 0, 0 );
-
-        return canvasScaled;
-
+        this.terrain = this.terrainGenerator.generateTerrain(scene, seed, this)
     }
 
     loadTerrain(URL, scene, x, y, z, format, scaleFactor){
@@ -143,10 +53,7 @@ class TerrainController {
                 }
                 const cloned = new THREE.Mesh(object.geometry, object.material);
                 object.getWorldPosition(cloned.position);
-                //object.updateMatrixWorld();
                 if (object.material.emissive && (object.material.emissive.r > 0 || object.material.emissive.g > 0 || object.material.color.b > 0)) {
-                    /* object.updateMatrixWorld();
-                        cloned.matrix.copy(object.matrixWorld);*/
                     this.bloomScene.attach(cloned);
                 }
             }
@@ -177,7 +84,7 @@ class TerrainController {
         this.collider.material.wireframe = true;
         this.collider.material.opacity = 0.5;
         this.collider.material.transparent = true;
-        this.collider.visible = false;
+        this.collider.visible = false; // toggle this value to see the collider
         scene.add(this.collider);
 
         /* The following lines of code are used to debug the BVH collider. 

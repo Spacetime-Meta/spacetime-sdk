@@ -17,14 +17,14 @@ class RemoteController {
         goLivePanel(this);
 
         // check if the user has a peerID in the local storage
-        if(typeof localProxy.peerId !== 'undefined'){
-            this.peer = new Peer(localProxy.peerId);
-            console.log("[info] Trying to create peer: " + localProxy.peerId)
-            this.peer.on('open', () => {
-                document.getElementById("goLivePanel").remove()
-                this.onConnectionOpen()
-            })
-        }
+        // if(typeof localProxy.peerId !== 'undefined'){
+        //     this.peer = new Peer(localProxy.peerId);
+        //     console.log("[info] Trying to create peer: " + localProxy.peerId)
+        //     this.peer.on('open', () => {
+        //         document.getElementById("goLivePanel").remove()
+        //         this.onConnectionOpen()
+        //     })
+        // }
     }
 
     createPeerWithId(peerId){

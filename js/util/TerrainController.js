@@ -18,9 +18,7 @@ class TerrainController {
     }
 
     generateTerrain(scene, seed) {
-        this.terrain = this.terrainGenerator.terrain({});
-        scene.add( this.terrain );
-        this.generateCollider(scene)
+        this.terrain = this.terrainGenerator.generateTerrain(scene, seed, this)
     }
 
     loadTerrain(URL, scene, x, y, z, format, scaleFactor){

@@ -3,8 +3,9 @@ import * as SkeletonUtils from 'https://cdn.skypack.dev/three@0.136.0/examples/j
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
 
 class AvatarController extends THREE.Object3D {
-    constructor(animationURL, avatarURL, scene) {
+    constructor(animationURL, avatarURL, manager, scene) {
         super();
+        this.loader = new GLTFLoader(manager);
         this.scene = scene;
         this.animations = {};
         this.quaternion90deg = new THREE.Quaternion();
@@ -63,8 +64,7 @@ class AvatarController extends THREE.Object3D {
     }
 
     loadAvatar(avatarURL, loadAnimation) {
-        const loader = new GLTFLoader();
-        loader.load(avatarURL, (responseObject) => {
+        this.loader.load(avatarURL, (responseObject) => {
             
             this.scene.remove(this.model)
 
@@ -86,8 +86,7 @@ class AvatarController extends THREE.Object3D {
     }
 
     loadAnimations(animationURL) {
-        const loader = new GLTFLoader();
-        loader.load(animationURL, (gltf) => {
+        this.loader.load(animationURL, (gltf) => {
             if(typeof this.model == 'undefined') return;
             this.current = "none";
             this.animations = {

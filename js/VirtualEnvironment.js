@@ -13,6 +13,9 @@ import blocker from './UiElements/blocker.js';
 import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
 import controlInstructions from './UiElements/controlInstructions.js';
 
+import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
+import { FBXLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/FBXLoader.js';
+
 const LOW = 0;
 const MEDIUM = 1;
 const HIGH = 2;
@@ -74,7 +77,7 @@ class VirtualEnvironment {
         this.createUiElements();
 
         // ===== Terrain Controller
-        this.terrainController = new TerrainController();
+        this.terrainController = new TerrainController(this.loadingManager);
 
         // ===== setup resize listener ==========
         window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
@@ -118,7 +121,7 @@ class VirtualEnvironment {
     
     spawnPlayer(avatarPath, animationPath, x, y, z) {
         this.entities = [];
-        this.player = new PlayerLocal(animationPath, avatarPath, this.scene, x, y, z);
+        this.player = new PlayerLocal(animationPath, avatarPath, this.loadingManager ,this.scene, x, y, z);
         window.player = this.player;
         this.scene.add(this.player);
         
@@ -250,13 +253,20 @@ class VirtualEnvironment {
     spawnOtherPlayer(avatarPath){ }
 
     loading() {
-        loadingPage(true);
-        var intervalId = window.setInterval(function() {
-            if (typeof document.getElementsByTagName('body')[0] !== 'undefined') {
-                window.clearInterval(intervalId);
-                loadingPage(false);
-            }
-        }, 1000);
+        loadingPage();
+        const progressBar = document.getElementById('progress-bar');
+        const progressBarContainer = document.querySelector('.progress-bar-container');
+
+        // ===== loading manager =====
+        this.loadingManager = new THREE.LoadingManager();
+        
+        this.loadingManager.onProgress = function(url, loaded, total) {
+            progressBar.value = loaded/total * 100;
+        }
+
+        this.loadingManager.onLoad = function() {
+            progressBarContainer.style.display = 'none';
+        }
     }
     
     update() {

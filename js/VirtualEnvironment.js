@@ -7,7 +7,7 @@ import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
-import loadingPage from './UiElements/loadingPage.js';
+import {loadingBar, loadingPage} from './UiElements/loadingPage.js';
 // import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
 import blocker from './UiElements/blocker.js';
 import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
@@ -74,7 +74,7 @@ class VirtualEnvironment {
         this.createUiElements();
 
         // ===== Terrain Controller
-        this.terrainController = new TerrainController();
+        this.terrainController = new TerrainController(this.loadingManager);
 
         // ===== setup resize listener ==========
         window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
@@ -118,7 +118,7 @@ class VirtualEnvironment {
     
     spawnPlayer(avatarPath, animationPath, x, y, z) {
         this.entities = [];
-        this.player = new PlayerLocal(animationPath, avatarPath, this.scene, x, y, z);
+        this.player = new PlayerLocal(animationPath, avatarPath, this.loadingManager ,this.scene, x, y, z);
         window.player = this.player;
         this.scene.add(this.player);
         
@@ -250,13 +250,11 @@ class VirtualEnvironment {
     spawnOtherPlayer(avatarPath){ }
 
     loading() {
-        loadingPage(true);
-        var intervalId = window.setInterval(function() {
-            if (typeof document.getElementsByTagName('body')[0] !== 'undefined') {
-                window.clearInterval(intervalId);
-                loadingPage(false);
-            }
-        }, 1000);
+        // ===== loading manager =====
+        this.loadingManager = new THREE.LoadingManager();
+
+        loadingPage();
+        loadingBar(this.loadingManager);
     }
     
     update() {

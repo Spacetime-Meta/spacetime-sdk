@@ -1,10 +1,12 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
-import * as SkeletonUtils from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/utils/SkeletonUtils.js';
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
+import { loadingBar } from '../UiElements/loadingPage.js';
 
 class AvatarController extends THREE.Object3D {
-    constructor(animationURL, avatarURL, scene) {
+    constructor(animationURL, avatarURL, manager, scene) {
         super();
+        this.loader = new GLTFLoader(manager);
+        this.manager = manager;
         this.scene = scene;
         this.animations = {};
         this.quaternion90deg = new THREE.Quaternion();
@@ -59,12 +61,12 @@ class AvatarController extends THREE.Object3D {
     }
 
     changeAvatar(avatarUrl, animationsUrl) {
+        loadingBar(this.manager);
         this.loadAvatar(avatarUrl, () => this.loadAnimations(animationsUrl));
     }
 
     loadAvatar(avatarURL, loadAnimation) {
-        const loader = new GLTFLoader();
-        loader.load(avatarURL, (responseObject) => {
+        this.loader.load(avatarURL, (responseObject) => {
             
             this.scene.remove(this.model)
 
@@ -86,8 +88,7 @@ class AvatarController extends THREE.Object3D {
     }
 
     loadAnimations(animationURL) {
-        const loader = new GLTFLoader();
-        loader.load(animationURL, (gltf) => {
+        this.loader.load(animationURL, (gltf) => {
             if(typeof this.model == 'undefined') return;
             this.current = "none";
             this.animations = {

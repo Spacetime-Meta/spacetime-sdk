@@ -1,38 +1,55 @@
-const loadingPage = function(waiting) {
-    var loadingScreen;
-    if(document.getElementById('loading-screen')) {
-        loadingScreen = document.getElementById('loading-screen');
-        loadingScreen.style.display = waiting ? 'flex' : 'none';
-        return;
-    }
-    loadingScreen = document.createElement('div');
-    loadingScreen.id = 'loading-screen';
+const loadingPage = function() {
+    const progressBarContainer = document.createElement("div");
+    progressBarContainer.className = 'progress-bar-container';
 
-    //======style====
-    var style = 'position: absolute;';
-    style += 'height: 100%;';
-    style += 'width: 100%;';
-    style +=  waiting ?'display: flex;' : 'display: none;';
-    style += 'color: turquoise;';
-    style += 'background-color: black;';
-    style += 'z-index: 1000;';
-    style += 'flex-direction: row;';
-    style += 'justify-content: center;';
-    style += 'align-items: center;';
+    Object.assign(progressBarContainer.style, {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 100
+    });
 
-    //======attach style====
-    loadingScreen.style.cssText = style;
+    const title = document.createElement('label');
+    title.innerHTML = "Loading....";
+    Object.assign(title.style, {
+        color: 'rgba(256, 256, 256, 0.8)',
+        fontSize: "x-small"
+    });
 
-    //======loading======
-    var loadingDiv = document.createElement('div');
-    loadingDiv.id = 'loading';
-    loadingDiv.innerHTML = 'Loading...';
+    const progress = document.createElement('progress');
+    progress.id = 'progress-bar';
+    progress.value = 0;
+    progress.max = 100;
 
-    //======append loading page====
-    loadingScreen.appendChild(loadingDiv);
-    document.body.appendChild(loadingScreen);
+    Object.assign(progress.style, {
+        width: '30%',
+        marginTop: '0.5%',
+        height: '2%'
+    });
 
-    return waiting;
+    progressBarContainer.appendChild(title);
+    progressBarContainer.appendChild(progress);
+    document.body.appendChild(progressBarContainer);
+
 }
 
-export default loadingPage;
+const loadingBar = function(manager) {
+    const progressBar = document.getElementById('progress-bar');
+    const progressBarContainer = document.querySelector('.progress-bar-container');
+    progressBarContainer.style.display = 'flex';
+
+    manager.onProgress = function(url, loaded, total) {
+        progressBar.value = loaded/total * 100;
+    }
+
+    manager.onLoad = function() {
+        progressBarContainer.style.display = 'none';
+    }
+}
+
+export {loadingPage, loadingBar};

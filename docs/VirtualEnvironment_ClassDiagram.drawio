@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="bAAXgGwKLryCuVSAvFsi" name="Page-1">
-        <mxGraphModel dx="2000" dy="2390" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1987" dy="2390" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -130,16 +130,16 @@
                     <mxGeometry y="216" width="202" height="43" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-88" value="PlayerLocal" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-                    <mxGeometry x="1466" y="346" width="263" height="266" as="geometry"/>
+                    <mxGeometry x="1466" y="346" width="322" height="266" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-89" value="playerDirection: THREE.Vector3&#10;keys: Object&#10;avatarController: AvatarController&#10;visible: Bool&#10;position.y: Number&#10;position.z: Number&#10;jumped: Number&#10;friction: Number&#10;speedFactor: Number" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-88" vertex="1">
-                    <mxGeometry y="26" width="263" height="137" as="geometry"/>
+                    <mxGeometry y="26" width="322" height="137" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-90" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-88" vertex="1">
-                    <mxGeometry y="163" width="263" height="8" as="geometry"/>
+                    <mxGeometry y="163" width="322" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-91" value="constructor(animationURL, avatarURL, scene)&#10;getForwardVector(camera)&#10;getSideVector(camera)&#10; update(delta, camera, collider, entities)&#10;updateCurrentAnimation()&#10;setAnimationParameters(anim, time = 0.5)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-88" vertex="1">
-                    <mxGeometry y="171" width="263" height="95" as="geometry"/>
+                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-91" value="constructor(animationURL, avatarURL, manager, scene)&#10;getForwardVector(camera)&#10;getSideVector(camera)&#10; update(delta, camera, collider, entities)&#10;updateCurrentAnimation()&#10;setAnimationParameters(anim, time = 0.5)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-88" vertex="1">
+                    <mxGeometry y="171" width="322" height="95" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-120" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=diamondThin;endFill=1;endSize=16;strokeWidth=1;" parent="1" source="7TFr1C6rGWP-Rq-zpPYZ-88" target="7TFr1C6rGWP-Rq-zpPYZ-44" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -159,7 +159,7 @@
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-105" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-103" vertex="1">
                     <mxGeometry y="77" width="344" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-106" value="constructor(animationURL, avatarURL, scene)&#10;get animations&#10;set animations(newAnimations)&#10;update(delta, frustum, fpsCamera)&#10;play(anim, time)&#10;changeAvatar(avatarUrl, animationsUrl)&#10;updateBox()&#10;loadAvatar(avatarURL, loadAnimation)&#10;loadAnimations(animationURL)&#10;updateFacingDirection(horizontalVelocity)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-103" vertex="1">
+                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-106" value="constructor(animationURL, avatarURL, manager, scene)&#10;get animations&#10;set animations(newAnimations)&#10;update(delta, frustum, fpsCamera)&#10;play(anim, time)&#10;changeAvatar(avatarUrl, animationsUrl)&#10;updateBox()&#10;loadAvatar(avatarURL, loadAnimation)&#10;loadAnimations(animationURL)&#10;updateFacingDirection(horizontalVelocity)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-103" vertex="1">
                     <mxGeometry y="85" width="344" height="161" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-115" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;endSize=16;strokeWidth=1;" parent="1" source="7TFr1C6rGWP-Rq-zpPYZ-6" target="7TFr1C6rGWP-Rq-zpPYZ-103" edge="1">
@@ -282,7 +282,7 @@
                 <mxCell id="16" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="14" vertex="1">
                     <mxGeometry y="113" width="355" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="17" value="constructor()&#10;loadTerrain(URL, scene, x, y, z)&#10;generateTerrain(scene, seed)&#10;generateHeight(width, height, seed)&#10;generateTexture( data, width, height )&#10;generateCollider(scene)&#10;newSolidGeometriesFromSource(scene, url, x, y, z, scaleFactor)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="14" vertex="1">
+                <mxCell id="17" value="constructor(manager)&#10;loadTerrain(URL, scene, x, y, z)&#10;generateTerrain(scene, seed)&#10;generateHeight(width, height, seed)&#10;generateTexture( data, width, height )&#10;generateCollider(scene)&#10;newSolidGeometriesFromSource(scene, url, x, y, z, scaleFactor)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="14" vertex="1">
                     <mxGeometry y="121" width="355" height="114" as="geometry"/>
                 </mxCell>
                 <mxCell id="21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=diamondThin;endFill=1;endSize=16;strokeWidth=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="14" target="7TFr1C6rGWP-Rq-zpPYZ-44" edge="1">

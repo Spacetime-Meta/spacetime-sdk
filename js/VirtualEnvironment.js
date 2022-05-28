@@ -7,14 +7,11 @@ import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import localProxy from "./util/localProxy.js";
-import loadingPage from './UiElements/loadingPage.js';
+import {loadingBar, loadingPage} from './UiElements/loadingPage.js';
 // import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
 import blocker from './UiElements/blocker.js';
 import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
 import controlInstructions from './UiElements/controlInstructions.js';
-
-import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
-import { FBXLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/FBXLoader.js';
 
 const LOW = 0;
 const MEDIUM = 1;
@@ -253,20 +250,11 @@ class VirtualEnvironment {
     spawnOtherPlayer(avatarPath){ }
 
     loading() {
-        loadingPage();
-        const progressBar = document.getElementById('progress-bar');
-        const progressBarContainer = document.querySelector('.progress-bar-container');
-
         // ===== loading manager =====
         this.loadingManager = new THREE.LoadingManager();
-        
-        this.loadingManager.onProgress = function(url, loaded, total) {
-            progressBar.value = loaded/total * 100;
-        }
 
-        this.loadingManager.onLoad = function() {
-            progressBarContainer.style.display = 'none';
-        }
+        loadingPage();
+        loadingBar(this.loadingManager);
     }
     
     update() {

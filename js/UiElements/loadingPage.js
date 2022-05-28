@@ -1,5 +1,4 @@
 const loadingPage = function() {
-    
     const progressBarContainer = document.createElement("div");
     progressBarContainer.className = 'progress-bar-container';
 
@@ -39,4 +38,18 @@ const loadingPage = function() {
 
 }
 
-export default loadingPage;
+const loadingBar = function(manager) {
+    const progressBar = document.getElementById('progress-bar');
+    const progressBarContainer = document.querySelector('.progress-bar-container');
+    progressBarContainer.style.display = 'flex';
+
+    manager.onProgress = function(url, loaded, total) {
+        progressBar.value = loaded/total * 100;
+    }
+
+    manager.onLoad = function() {
+        progressBarContainer.style.display = 'none';
+    }
+}
+
+export {loadingPage, loadingBar};

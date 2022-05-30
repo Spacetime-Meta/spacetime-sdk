@@ -86,7 +86,7 @@ class VirtualEnvironment {
         }
 
         // ===== setupMultiplayer =====
-        this.remoteController = new RemoteController(this.scene);
+        this.remoteController = new RemoteController(this.loadingManager, this.scene);
 
 
         // ===== others =====

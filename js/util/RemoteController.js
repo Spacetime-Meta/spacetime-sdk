@@ -5,14 +5,18 @@ import peerIdDisplay from '../UiElements/peerIdDisplay.js';
 import chatBox from '../UiElements/chatBox.js';
 import friendManagement from '../UiElements/buttons/friendManagement.js';
 import { AvatarController } from '../entities/AvatarController.js';
+import { toggleCallBox, callBox, addCamera } from '../UiElements/callBox.js';
 
 // PeerJs is injected in the window
 const Peer = window.Peer;
 
 class RemoteController {
-    constructor(scene) {
+    constructor(manager, scene) {
         this.connections = [];
         this.scene = scene;
+        this.manager = manager;
+        this.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        if(!this.getUserMedia) console.log('Your browser doesn\'t support getUserMedia.');
         
         goLivePanel(this);
 
@@ -31,8 +35,12 @@ class RemoteController {
         localProxy.peerId = peerId;
         this.peer = new Peer(peerId);
         this.peer.on('open', () => {
-            this.onConnectionOpen()
+            this.onConnectionOpen();
         });
+        // add video call box
+        callBox(this);
+        // listen for a call
+        this.answer();
     }
 
     onConnectionOpen() {
@@ -109,7 +117,7 @@ class RemoteController {
                         this.addMessageToChatBox("[info] Spawning: "+connection.peer);
 
                         // Spawn the other player
-                        connection.avatarController = new AvatarController("../../glb/animations/animation.glb", "../../glb/avatars/yBot.glb", this.scene);
+                        connection.avatarController = new AvatarController("../../../resources/animations/animation.glb", "../../../resources/avatars/yBot.glb", this.manager, this.scene);
 
                         /* At this point, we want to start sending data to this peer so he can display us. 
                          * To do this, we add the 'needUpdate' tag to our connection and the update method will take care of it */
@@ -161,7 +169,7 @@ class RemoteController {
 
                 connection.send('{"type":"stream", "transform":{ "position":{"x":'+position.x+', "y":'+position.y+', "z":'+position.z+'}, "horizontalVelocity": {"x":'+horizontalVelocity.x+', "y":0, "z":'+horizontalVelocity.z+'}}, "animation": ["'+window.player.currentAnimation+'", '+window.player.currentAnimationTime+']}');
 
-                if(typeof connection.transform !== 'undefined'){
+                if(typeof connection.transform !== 'undefined' && connection.avatarController){
                     connection.avatarController.update(delta, frustum, connection.transform.position, connection.transform.horizontalVelocity, connection.animation[0], connection.animation[1])
                 }
 
@@ -179,6 +187,38 @@ class RemoteController {
             }
         })
         localProxy.friendList = tempList;
+    }
+
+    call(peerId) {
+        let o = this;
+        this.getUserMedia({video: true, audio: true}, function(stream) {
+            var call = o.peer.call(peerId, stream);
+            call.on('stream', function(incomingStream) {
+                addCamera(incomingStream);
+            });
+          }, function(err) {
+                console.log('Failed to get local stream' ,err);
+          });
+    }
+
+    answer() {
+        let o = this;
+        this.peer.on('call', function(call) {
+            o.getUserMedia({video: true, audio: true}, function(stream) {
+              call.answer(stream); // Answer the call with an A/V stream.
+              call.on('stream', function(incomingStream) {
+                addCamera(incomingStream);
+              });
+            }, function(err) {
+                    console.log('Failed to get local stream' ,err);
+            });
+        });
+    }
+
+    endcall() {
+        call.on('close', function() {
+            toggleCallBox();
+        });
     }
 }
 

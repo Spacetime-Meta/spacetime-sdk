@@ -3,11 +3,10 @@ import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/l
 import { loadingBar } from '../UiElements/loadingPage.js';
 
 class AvatarController extends THREE.Object3D {
-    constructor(animationURL, avatarURL, manager, scene) {
+    constructor(animationURL, avatarURL, manager) {
         super();
         this.loader = new GLTFLoader(manager);
         this.manager = manager;
-        this.scene = scene;
         this.animations = {};
         this.quaternion90deg = new THREE.Quaternion();
         this.quaternion90deg.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), -Math.PI / 2 );
@@ -69,7 +68,7 @@ class AvatarController extends THREE.Object3D {
     loadAvatar(avatarURL, loadAnimation) {
         this.loader.load(avatarURL, (responseObject) => {
             
-            this.scene.remove(this.model)
+            mainScene.remove(this.model)
 
             this.radius = 2.5;
             this.size = 30;
@@ -83,7 +82,7 @@ class AvatarController extends THREE.Object3D {
                     child.frustumCulled = false;
                 }
             });
-            this.scene.add(this.model);
+            mainScene.add(this.model);
             loadAnimation(); 
         });
     }

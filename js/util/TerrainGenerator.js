@@ -31,7 +31,7 @@ class TerrainGenerator {
     }
 
     terrain(options) {
-        var defaultOptions = {
+        const defaultOptions = {
             after: null,
             easing: function(x){return x},
             heightmap: this.diamondSquare,
@@ -50,11 +50,11 @@ class TerrainGenerator {
             ySize: 4096,
             _mesh: null, // internal only
         };
-        for (var opt in defaultOptions) {
-            if (defaultOptions.hasOwnProperty(opt)) {
-                options[opt] = typeof options[opt] === 'undefined' ? defaultOptions[opt] : options[opt];
-            }
+        for (let opt in defaultOptions) {
+            options[opt] = typeof options[opt] === 'undefined' ? defaultOptions[opt] : options[opt];
         }
+
+        // build the material
         options.material = options.material || new THREE.MeshBasicMaterial({ color: 0xee6633 });
     
         const plane = new THREE.PlaneGeometry(options.xSize, options.ySize, options.xSegments, options.ySegments)

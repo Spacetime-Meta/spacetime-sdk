@@ -1,5 +1,4 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
-import { PointerLockControls } from './util/PointerLockControls.js';
 import { TerrainController } from './util/TerrainController.js';
 import { RemoteController } from './util/RemoteController.js';
 
@@ -18,6 +17,7 @@ const MEDIUM = 1;
 const HIGH = 2;
 const ULTRA = 3;
 const settings = ["Low", "Medium", "High", "Ultra"];
+const DEFAULT = "default";
 
 let shadowLight;
 
@@ -40,10 +40,9 @@ class VirtualEnvironment {
         document.body.appendChild(this.renderer.domElement);
 
         // ===== scene =====
-        this.scene = new THREE.Scene();
-        const scene = this.scene;
-        this.scene.background = new THREE.Color(0x69e6f4);
-        this.scene.fog = new THREE.Fog(0x69e6f4, 1600, 2000);
+        window.mainScene = new THREE.Scene();
+        mainScene.background = new THREE.Color(0x69e6f4);
+        mainScene.fog = new THREE.Fog(0x69e6f4, 1600, 2000);
 
         // ===== camera =====
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
@@ -52,20 +51,22 @@ class VirtualEnvironment {
         this.dummyCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
         this.dummyCamera.position.y = 1.6;
         this.dummyCamera.lookAt(0, 1.7, -1);
+        this.cameraPosition = new THREE.Vector3();
+        this.cameraTarget = new THREE.Vector3();
 
         // ===== lights =====
         const light = new THREE.HemisphereLight(0xffeeff, 0x777788, 1);
         light.position.set(0.5, 1, 0.75);
-        this.scene.add(light);
+        mainScene.add(light);
 
         if (this.graphicTier !== LOW) {
             shadowLight = new DefaultDirectionalLight(this.graphicTier);
-            this.scene.add(shadowLight);
-            this.scene.add(shadowLight.target);
+            mainScene.add(shadowLight);
+            mainScene.add(shadowLight.target);
         }
 
         // ===== shaders =====
-        this.composer = new DefaultComposer(this.renderer, this.scene, this.camera);
+        this.composer = new DefaultComposer(this.renderer, mainScene, this.camera);
 
         // ===== graphic settings =====
         this.setGraphicsSetting(this.graphicTier);
@@ -86,89 +87,40 @@ class VirtualEnvironment {
         }
 
         // ===== setupMultiplayer =====
-        this.remoteController = new RemoteController(this.loadingManager, this.scene);
+        this.remoteController = new RemoteController(this.loadingManager, mainScene);
 
-
-        // ===== others =====
-        this.cameraPosition = new THREE.Vector3();
-        this.cameraTarget = new THREE.Vector3();
-        this.fpsControls = new THREE.Vector4(0.01, Math.PI - 0.01, 0.01, 1);
-        this.thirdPersonControls = new THREE.Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 40, 0.2);
-        this.controlVector = this.thirdPersonControls.clone();
-        this.targetControlVector = this.thirdPersonControls;
     } // -- end constructor
 
     createUiElements() {
-        blocker(() => {
-            this.controls.lock()
-            document.getElementById('blockerWrapper').style.display = "none";
-        });
+        blocker();
         controlInstructions();
     }
 
     loadTerrain(terrainPath, x, y, z, format, scaleFactor = 1){
-        this.terrainController.loadTerrain(terrainPath, this.scene, x, y, z, format, scaleFactor);
+        this.terrainController.loadTerrain(terrainPath, mainScene, x, y, z, format, scaleFactor);
     }
 
     generateTerrain(seed) {
-        this.terrainController.generateTerrain(this.scene, seed);
+        this.terrainController.generateTerrain(mainScene, seed);
     }
     
     spawnPlayer(avatarPath, animationPath, x, y, z) {
-        this.entities = [];
-        this.player = new PlayerLocal(animationPath, avatarPath, this.loadingManager ,this.scene, x, y, z);
-        window.player = this.player;
-        this.scene.add(this.player);
-        
-        // ===== controls =====
-        this.controls = new PointerLockControls(this.dummyCamera, document.body);
-        this.controls.sensitivityY = 0.002;
-        this.controls.minPolarAngle = 0.01; 
-        this.controls.maxPolarAngle = Math.PI - 0.25;
-        this.scene.add(this.controls.getObject());
-
-        document.addEventListener('keydown', (event) => {
-            if(this.controls.isLocked) {
-                if (event.key === "v") {
-                    if (this.targetControlVector === this.thirdPersonControls) {
-                        this.targetControlVector = this.fpsControls;
-                        this.controls.sensitivityY = -0.002;
-                    } else {
-                        this.targetControlVector = this.thirdPersonControls;
-                        this.controls.sensitivityY = 0.002;
-                    }
-                }
-                this.player.keys[event.key.toLowerCase()] = true;
-            }
-        });
-        document.addEventListener('keyup', (event) => {
-            this.player.keys[event.key.toLowerCase()] = false;
-        });
-
-        window.addEventListener('keydown', (e) => {
-            if (e.keyCode === 32 && e.target === document.body) {
-                e.preventDefault();
-            }
-        });
-
-        this.controls.addEventListener('unlock', () => {
-            window.player.keys = {};
-            document.getElementById("blockerWrapper").style.display = 'block';
-        });
+        window.player = new PlayerLocal(this.dummyCamera, animationPath, avatarPath, this.loadingManager, x, y, z);
+        mainScene.add(player);
     }
 
     setShadowLightTier(graphicTier) {
         if (shadowLight) {
-            this.scene.remove(shadowLight.target);
-            this.scene.remove(shadowLight);
+            mainScene.remove(shadowLight.target);
+            mainScene.remove(shadowLight);
             shadowLight.dispose();
             shadowLight.shadow.dispose();
         }
 
         if (graphicTier !== LOW) {
             shadowLight = new DefaultDirectionalLight(this.graphicTier);
-            this.scene.add(shadowLight);
-            this.scene.add(shadowLight.target);
+            mainScene.add(shadowLight);
+            mainScene.add(shadowLight.target);
         } else {
             shadowLight = undefined;
         }
@@ -177,7 +129,7 @@ class VirtualEnvironment {
     setGraphicsSetting(graphicTier) {
         this.graphicTier = graphicTier;
         this.setShadowLightTier(graphicTier);
-        this.composer.setGraphicsSetting(graphicTier, this.renderer, this.scene);
+        this.composer.setGraphicsSetting(graphicTier, this.renderer, mainScene);
 
         const graphicTierButtonElement = document.getElementById("graphicTierButton");
         if(graphicTierButtonElement !== null) {
@@ -186,7 +138,7 @@ class VirtualEnvironment {
     }
 
     newSolidGeometriesFromSource(url, x, y, z, scaleFactor){
-        this.terrainController.newSolidGeometriesFromSource(this.scene, url, x, y, z, scaleFactor)
+        this.terrainController.newSolidGeometriesFromSource(mainScene, url, x, y, z, scaleFactor)
     }
 
     newVideoDisplayPlane(url, width, height, x, y, z, rotationY) {
@@ -231,7 +183,7 @@ class VirtualEnvironment {
         mesh.position.set(x,y,z)
         mesh.rotateY(rotationY)
 
-        this.scene.add( mesh )
+        mainScene.add( mesh )
     }
 
     increaseGraphicSettings() {
@@ -262,40 +214,35 @@ class VirtualEnvironment {
         if (this.terrainController.collider) {
             
             for (let i = 0; i < 5; i++) {
-                this.player.update(delta / 5, this.dummyCamera, this.terrainController.collider, this.entities, frustum, this.dummyCamera, this.controlVector);
-                this.camera.position.copy(this.player.position);
-                this.entities.forEach(entity => {
-                    entity.update(delta / 5, frustum);
-                })
+                player.update(delta / 5, this.dummyCamera, this.terrainController.collider, frustum, this.dummyCamera, player.controlVector);
+                this.camera.position.copy(player.position);
             }
             
-            this.camera.position.copy(this.player.position);
+            this.camera.position.copy(player.position);
             const dir = this.dummyCamera.getWorldDirection(new THREE.Vector3());
-            this.camera.position.add(dir.multiplyScalar(this.controlVector.z));
-            this.camera.lookAt(this.player.position);
+            this.camera.position.add(dir.multiplyScalar(player.controlVector.z));
+            this.camera.lookAt(player.position);
             const invMat = new THREE.Matrix4();
-            const raycaster = new THREE.Raycaster(this.player.position.clone(), this.camera.position.clone().sub(this.player.position.clone()).normalize());
+            const raycaster = new THREE.Raycaster(player.position.clone(), this.camera.position.clone().sub(player.position.clone()).normalize());
             invMat.copy(this.terrainController.collider.matrixWorld).invert();
             raycaster.ray.applyMatrix4(invMat);
             const hit = this.terrainController.collider.geometry.boundsTree.raycastFirst(raycaster.ray);
             if (hit) {
-                this.camera.position.copy(this.player.position);
+                this.camera.position.copy(player.position);
                 const dir = this.dummyCamera.getWorldDirection(new THREE.Vector3());
-                this.camera.position.add(dir.multiplyScalar(Math.min(hit.point.distanceTo(this.player.position), this.controlVector.z * 1.25) * 0.8));
-                this.camera.lookAt(this.player.position);
+                this.camera.position.add(dir.multiplyScalar(Math.min(hit.point.distanceTo(player.position), player.controlVector.z * 1.25) * 0.8));
+                this.camera.lookAt(player.position);
             }
-            this.cameraPosition.lerp(this.camera.position, this.controlVector.w);
-            this.cameraTarget.lerp(this.player.position, this.controlVector.w);
+            this.cameraPosition.lerp(this.camera.position, player.controlVector.w);
+            this.cameraTarget.lerp(player.position, player.controlVector.w);
             this.camera.position.copy(this.cameraPosition);
             this.camera.lookAt(this.cameraTarget);
-            this.controlVector.lerp(this.targetControlVector, 0.1);
+            
         }
 
         this.remoteController.update(delta, frustum);
 
-
-
-        this.scene.fog.needsUpdate = true;
+        mainScene.fog.needsUpdate = true;
 
         if (this.graphicTier !== LOW) {
             shadowLight.update(this.camera);
@@ -304,7 +251,7 @@ class VirtualEnvironment {
         if (this.graphicTier > LOW) {
             this.renderer.setRenderTarget(this.composer.defaultTexture);
             this.renderer.clear();
-            this.renderer.render(this.scene, this.camera);
+            this.renderer.render(mainScene, this.camera);
             this.renderer.setRenderTarget(this.composer.bloomTexture);
             this.renderer.clear();
             this.renderer.render(this.terrainController.bloomScene, this.camera);

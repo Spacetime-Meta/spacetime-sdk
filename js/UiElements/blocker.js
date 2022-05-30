@@ -1,6 +1,6 @@
 import avatarSelectPanel from './avatarSelectPanel.js';
 
-const blocker = function(onClick) {
+const blocker = function() {
 
     const blockerWrapper = document.createElement("div");
     blockerWrapper.id = "blockerWrapper";
@@ -13,7 +13,10 @@ const blocker = function(onClick) {
 
     const blocker = document.createElement("div");
     blocker.id = "blocker";
-    blocker.addEventListener('click', onClick)
+    blocker.addEventListener('click', () => {
+        player.controls.lock()
+        document.getElementById('blockerWrapper').style.display = "none";
+    })
 
     Object.assign(blocker.style, {
         width: "100%",

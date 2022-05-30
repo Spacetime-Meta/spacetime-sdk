@@ -1,25 +1,68 @@
 import { CapsuleEntity } from "./CapsuleEntity.js";
-import { Vector3, Matrix4, Raycaster } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
+import { PointerLockControls } from '../util/PointerLockControls.js';
+import { Vector3, Vector4, Matrix4, Raycaster } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { AvatarController } from './AvatarController.js';
 
 class PlayerLocal extends CapsuleEntity {
-    constructor(animationURL, avatarURL, manager, scene, x, y, z) {
+    constructor(camera, animationURL, avatarURL, manager, x, y, z) {
         super(5, 30);
+
+        this.fpsControls = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
+        this.thirdPersonControls = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 40, 0.2);
+        this.controlVector = this.thirdPersonControls.clone();
+        this.targetControlVector = this.thirdPersonControls;
 
         this.playerDirection = new Vector3();
         this.positionChange = new Vector3();
         this.keys = {};
 
-        this.avatarController = new AvatarController(animationURL, avatarURL, manager, scene);
+        this.avatarController = new AvatarController(animationURL, avatarURL, manager);
+        this.setupControls(camera);
 
         this.speedFactor = 1; // 1 is the default walk speed
         this.visible = false;
+        this.position.x = x;
         this.position.y = y;
         this.position.z = z;
 
         this.horizontalVelocity = new Vector3();
 
         this.friction = 0.975;
+    }
+
+    setupControls(camera) {
+        this.controls = new PointerLockControls(camera, document.body);
+        this.controls.sensitivityY = -0.002;
+        this.controls.minPolarAngle = 0.01; 
+        this.controls.maxPolarAngle = Math.PI - 0.25;
+        mainScene.add(this.controls.getObject());
+
+        document.addEventListener('keyup', (event) => {
+            this.keys[event.key.toLowerCase()] = false;
+        });
+        document.addEventListener('keydown', (event) => {
+            if(player.controls.isLocked) {
+                if (event.key === "v") {
+                    if (this.targetControlVector === this.thirdPersonControls) {
+                        this.targetControlVector = this.fpsControls;
+                    } else {
+                        this.targetControlVector = this.thirdPersonControls;
+                    }
+                }
+                if (event.keyCode === 32 && event.target === document.body) {
+                    event.preventDefault();
+                }
+                player.keys[event.key.toLowerCase()] = true;
+            }
+        });
+
+        window.addEventListener('keydown', (event) => {
+
+        });
+
+        this.controls.addEventListener('unlock', () => {
+            document.getElementById("blockerWrapper").style.display = 'block';
+        });
     }
     
     getForwardVector = function(camera) {
@@ -39,7 +82,7 @@ class PlayerLocal extends CapsuleEntity {
         return this.playerDirection;
     }
 
-    update(delta, camera, collider, entities, frustum, dummyCamera, controlVector) {
+    update(delta, camera, collider, frustum, dummyCamera) {
 
         // speedFactor depending on the run/walk state
         this.speedFactor = this.keys["shift"] ? 3 : 1;
@@ -69,20 +112,14 @@ class PlayerLocal extends CapsuleEntity {
         if (this.position.y < -1000) {
             this.position.set(0, 40, -30);
         }
-        entities.forEach(entity => {
-            const size = this.radius + entity.radius;
-            if (this.position.distanceTo(entity.position) < size) {
-                const toEntity = Math.atan2(entity.position.x - this.position.x, entity.position.z - this.position.z);
-                this.position.x -= Math.sin(toEntity) * (size - this.position.distanceTo(entity.position));
-                this.position.z -= Math.cos(toEntity) * (size - this.position.distanceTo(entity.position));
-            }
-        });
 
         this.updateCurrentAnimation()
         if(typeof this.avatarController !== "undefined"){
             this.avatarController.update(delta, frustum, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
-            this.avatarController.opacity = (controlVector.z - 0.01) / (40 - 0.01);
+            this.avatarController.opacity = (this.controlVector.z - 0.01) / (40 - 0.01);
         }
+
+        this.controlVector.lerp(this.targetControlVector, 0.1);
     }
 
     updateCurrentAnimation() {
@@ -93,8 +130,8 @@ class PlayerLocal extends CapsuleEntity {
         this.lastPosition = this.position.clone();
 
         if(this.onGround) {
-            if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
-                if(player.keys["shift"]){ 
+            if (this.keys["w"] || this.keys["s"] || this.keys["a"] || this.keys["d"]) {
+                if(this.keys["shift"]){ 
                     this.setAnimationParameters("run"); 
                 } else { 
                     this.setAnimationParameters("walk"); 

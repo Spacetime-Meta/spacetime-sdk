@@ -54,8 +54,20 @@ const friendManagementPanel = function(remoteController) {
             //disconnect
             remoteController.disconnectPeer(friend);
         });
+
+        const callBtn = document.createElement('b');
+        callBtn.innerHTML = "      &#9742;";
+        Object.assign(callBtn.style, {
+            cursor: 'pointer'
+        })
+        callBtn.addEventListener('click', () => {
+            //call audio
+            remoteController.call(friend);
+        });
         
+        friendDisplay.appendChild(callBtn);
         friendDisplay.appendChild(removeBtn);
+
         parent.appendChild(friendDisplay);
         
     }

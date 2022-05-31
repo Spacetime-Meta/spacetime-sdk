@@ -1,109 +1,128 @@
 import { CapsuleEntity } from "./CapsuleEntity.js";
-import { Vector3, Matrix4, Raycaster } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
+import { PointerLockControls } from '../util/PointerLockControls.js';
+import { Vector3, Vector4, Matrix4, Raycaster } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { AvatarController } from './AvatarController.js';
 
 class PlayerLocal extends CapsuleEntity {
-    constructor(animationURL, avatarURL, manager, scene, x, y, z) {
+    constructor(params, camera, loadingManager) {
         super(5, 30);
+        this.spawnPoint = typeof params.spawn === "undefined" ? {x: 0, y:0, z:0} : params.spawn;
+        this.position.x = this.spawnPoint.x;
+        this.position.y = this.spawnPoint.y;
+        this.position.z = this.spawnPoint.z;
 
+
+        this.camera = camera;
+        this.fpsControls = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
+        this.thirdPersonControls = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 40, 0.2);
+        this.controlVector = this.thirdPersonControls.clone();
+        this.targetControlVector = this.thirdPersonControls;
+        this.horizontalVelocity = new Vector3();
         this.playerDirection = new Vector3();
         this.positionChange = new Vector3();
         this.keys = {};
 
-        this.avatarController = new AvatarController(animationURL, avatarURL, manager, scene);
-
         this.speedFactor = 1; // 1 is the default walk speed
         this.visible = false;
-        this.position.y = y;
-        this.position.z = z;
 
-        this.horizontalVelocity = new Vector3();
-
-        this.jumped = 0;
         this.friction = 0.975;
+        
+        this.avatarController = new AvatarController(loadingManager);
+        this.avatarController.spawnAvatar(params);
+        this.setupControls(this.camera);
+    }
+
+    setupControls() {
+        this.controls = new PointerLockControls(this.camera, document.body);
+        this.controls.sensitivityY = -0.002;
+        this.controls.minPolarAngle = 0.01; 
+        this.controls.maxPolarAngle = Math.PI - 0.25;
+        mainScene.add(this.controls.getObject());
+
+        document.addEventListener('keyup', (event) => {
+            this.keys[event.key.toLowerCase()] = false;
+        });
+        document.addEventListener('keydown', (event) => {
+            if(player.controls.isLocked) {
+                if (event.key === "v") {
+                    if (this.targetControlVector === this.thirdPersonControls) {
+                        this.targetControlVector = this.fpsControls;
+                    } else {
+                        this.targetControlVector = this.thirdPersonControls;
+                    }
+                }
+                if (event.keyCode === 32 && event.target === document.body) {
+                    event.preventDefault();
+                }
+                player.keys[event.key.toLowerCase()] = true;
+            }
+        });
+
+        window.addEventListener('keydown', (event) => {
+
+        });
+
+        this.controls.addEventListener('unlock', () => {
+            document.getElementById("blockerWrapper").style.display = 'block';
+        });
     }
     
-    getForwardVector = function(camera) {
-        camera.getWorldDirection(this.playerDirection);
+    getForwardVector() {
+        this.camera.getWorldDirection(this.playerDirection);
         this.playerDirection.y = 0;
         this.playerDirection.normalize();
         this.playerDirection.multiplyScalar(-1);
         return this.playerDirection;
     }
     
-    getSideVector = function(camera) {
-        camera.getWorldDirection(this.playerDirection);
+    getSideVector() {
+        this.camera.getWorldDirection(this.playerDirection);
         this.playerDirection.y = 0;
         this.playerDirection.normalize();
-        this.playerDirection.cross(camera.up);
+        this.playerDirection.cross(this.camera.up);
         this.playerDirection.multiplyScalar(-1);
         return this.playerDirection;
     }
 
-    update(delta, camera, collider, entities, frustum, dummyCamera, controlVector) {
+    update(delta, collider) {
 
         // speedFactor depending on the run/walk state
         this.speedFactor = this.keys["shift"] ? 3 : 1;
 
         if (this.keys["w"]) {
-            this.horizontalVelocity.add(this.getForwardVector(camera).multiplyScalar(this.speedFactor * delta));
+            this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(this.speedFactor * delta));
         }
 
         if (this.keys["s"]) {
-            this.horizontalVelocity.add(this.getForwardVector(camera).multiplyScalar(-this.speedFactor * delta));
+            this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(-this.speedFactor * delta));
         }
 
         if (this.keys["a"]) {
-            this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(-this.speedFactor * delta));
+            this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(-this.speedFactor * delta));
         }
 
         if (this.keys["d"]) {
-            this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(this.speedFactor * delta));
+            this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(this.speedFactor * delta));
         }
-        this.jumped -= 0.2;
-        if (this.keys[" "]) {
-            if (this.onGround && this.jumped <= 0) {
-                this.jumped = 20;
-            }
-        }
-        if (this.jumped > 0 && this.jumped < 1) {
+        if (this.keys[" "] && this.onGround) {
             this.velocity.y = 150.0;
-            this.jumped = 0;
+            this.setAnimationParameters("jump", 0);
         }
-        super.update(delta, collider);
+
+       super.update(delta, collider);
 
         if (this.position.y < -1000) {
-            this.position.set(0, 40, -30);
-        }
-        entities.forEach(entity => {
-            const size = this.radius + entity.radius;
-            if (this.position.distanceTo(entity.position) < size) {
-                const toEntity = Math.atan2(entity.position.x - this.position.x, entity.position.z - this.position.z);
-                this.position.x -= Math.sin(toEntity) * (size - this.position.distanceTo(entity.position));
-                this.position.z -= Math.cos(toEntity) * (size - this.position.distanceTo(entity.position));
-            }
-        });
-        const invMat = new Matrix4();
-        const raycaster = new Raycaster(this.position, new Vector3(0, -1, 0));
-        invMat.copy(collider.matrixWorld).invert();
-        raycaster.ray.applyMatrix4(invMat);
-        const hit = collider.geometry.boundsTree.raycastFirst(raycaster.ray);
-        if (hit) {
-            hit.point.applyMatrix4(collider.matrixWorld);
-            if (hit.point.distanceTo(this.position) < this.size + this.radius + 25) {
-                this.groundBelow = true;
-            } else {
-                this.groundBelow = false;
-            }
-        } else {
-            this.groundBelow = false;
+            this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);
+            this.velocity = new Vector3();
         }
 
         this.updateCurrentAnimation()
         if(typeof this.avatarController !== "undefined"){
-            this.avatarController.update(delta, frustum, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
-            this.avatarController.opacity = (controlVector.z - 0.01) / (40 - 0.01);
+            this.avatarController.update(delta, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
+            this.avatarController.opacity = (this.controlVector.z - 0.01) / (40 - 0.01);
         }
+
+        this.controlVector.lerp(this.targetControlVector, 0.1);
     }
 
     updateCurrentAnimation() {
@@ -113,27 +132,20 @@ class PlayerLocal extends CapsuleEntity {
         }
         this.lastPosition = this.position.clone();
 
-
-        if (player.jumped > 0 && this.jumpTick === 0) {
-            this.setAnimationParameters("jump", 0.25);
-        } else {
-            if (this.positionChange.y < -0.25 && !player.groundBelow) {
-                this.setAnimationParameters("fall", 0.25);
-            } else {
-                if ((this.current !== "jump" || this.jumpTick > 1) && !player.keys[" "]) {
-                    if (player.keys["w"] || player.keys["s"] || player.keys["a"] || player.keys["d"]) {
-                        if(player.keys["shift"]){ this.setAnimationParameters("run"); }
-                        else { this.setAnimationParameters("walk"); }
-                    } else {
-                        this.setAnimationParameters("idle");
-                    }
+        if(this.onGround) {
+            if (this.keys["w"] || this.keys["s"] || this.keys["a"] || this.keys["d"]) {
+                if(this.keys["shift"]){ 
+                    this.setAnimationParameters("run"); 
+                } else { 
+                    this.setAnimationParameters("walk"); 
                 }
+            } else {
+                this.setAnimationParameters("idle");
             }
-        }
-        if (this.current === "jump") {
-            this.jumpTick += delta;
         } else {
-            this.jumpTick = 0;
+            if(this.positionChange.y < -0.5) {
+                this.setAnimationParameters("fall", 0.25);
+            }
         }
     }
 

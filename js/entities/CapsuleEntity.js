@@ -12,8 +12,7 @@ class CapsuleEntity extends THREE.Object3D {
         this.segment = new THREE.Line3(new THREE.Vector3(), new THREE.Vector3(0, -size, 0.0));
         this.friction = 0.99;
     }
-    update(delta, bvh) {
-        const collider = bvh;
+    update(delta, collider) {
         this.velocity.y += this.onGround ? 0 : delta * this.gravity;
         this.position.addScaledVector(this.velocity, delta);
         this.position.add(this.horizontalVelocity);

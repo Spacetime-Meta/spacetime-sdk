@@ -7,7 +7,18 @@ let virtualEnvironment = new VirtualEnvironment();
 init();
 function init() {
     virtualEnvironment.loadTerrain('../../../resources/terrains/classroom.fbx', 0, 0, 0, "fbx", 0.2);
-    virtualEnvironment.spawnPlayer('../../../resources/avatars/megan.glb', '../../../resources/animations/megan@animation.glb', 0, 70, 0);
+    virtualEnvironment.spawnPlayer({
+        avatarPath: '../../../resources/avatars/megan.glb',
+        animationPath: '../../../resources/animations/megan@animation.glb',
+        animationMapping: {
+            walk: 1,
+            idle: 2,
+            run: 3,
+            jump: 4,
+            fall: 5
+        },
+        spawn: {x: 0, y: 70, z: 0}
+    });
     
     setTimeout(() => {
         virtualEnvironment.newVideoDisplayPlane('../classroom/textures/mapFirstDemo.mp4', 200, 100, 72, 90, 95, - Math.PI / 2);

@@ -38,7 +38,7 @@ class RemoteController {
             this.onConnectionOpen();
         });
         // add video call box
-        callBox(this);
+        callBox(this, peerId);
         // listen for a call
         this.answer();
     }
@@ -199,9 +199,6 @@ class RemoteController {
                 o.sendChatMessage(`Calling ${call.peer}`);
                 addCamera(call.peer, incomingStream);
             });
-            call.on('close', function() {
-                o.endcall();
-            });
           }, function(err) {
                 console.log('Failed to get local stream' ,err);
           });
@@ -227,8 +224,8 @@ class RemoteController {
     endcall() {
         if(this.currentCall) {
             this.sendChatMessage(`End call with ${this.currentCall.peer}`);
-            toggleCallBox();
             this.currentCall.close();
+            toggleCallBox();
         } 
     }
 }

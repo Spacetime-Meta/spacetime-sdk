@@ -74,7 +74,7 @@ class RemoteController {
         
         // not sure why this is needed but if we dont give the connection some time it wont send the message
         setTimeout(() => {
-            newConnection.send('{"type":"spawn", "pathname":"'+window.location.pathname+'"}')
+            newConnection.send(this.jsonMessageFormatter("spawn"));
         }, 1000);
         
 
@@ -94,38 +94,36 @@ class RemoteController {
         if(typeof jsonData.type !== 'undefined') {
             switch(jsonData.type) {
                 
-                case "stream":
-                    /* To maintain synchronization in the environment, we do not update the avatar controller every time we receive the stream information.
-                     * Instead we simply update the connections data and the update method will tak care of updating the avatarController only once per render cycle. */
-                    connection.transform = {
-                        position: new Vector3(jsonData.transform.position.x, jsonData.transform.position.y, jsonData.transform.position.z),
-                        horizontalVelocity: new Vector3(jsonData.transform.horizontalVelocity.x, 0, jsonData.transform.horizontalVelocity.z)
-                    }
-                    connection.animation = jsonData.animation
-
-                    connection.needUpdate = true;
-                    break;
-                
-                case "chat": 
-                    this.addMessageToChatBox(connection.peer+": "+jsonData.message)
-                    break;
-                
-                case "spawn":
-
-                    // first verify that both users are in the same world
+                 case "spawn":
                     if(jsonData.pathname === window.location.pathname) {
                         this.addMessageToChatBox("[info] Spawning: "+connection.peer);
 
                         // Spawn the other player
-                        connection.avatarController = new AvatarController("../../../resources/animations/animation.glb", "../../../resources/avatars/yBot.glb", this.manager, this.scene);
+                        connection.avatarController = new AvatarController(this.manager);
+                        connection.avatarController.spawnAvatar({})
+                    }
 
-                        /* At this point, we want to start sending data to this peer so he can display us. 
-                         * To do this, we add the 'needUpdate' tag to our connection and the update method will take care of it */
-                        connection.needUpdate = true;
-                    }  
+                case "stream":
+                    /* To maintain synchronization in the environment, we do not update the avatar controller every time we receive the stream information.
+                     * Instead we simply update the connections data and the update method will tak care of updating the avatarController only once per render cycle. */
+                    this.handleNewTransform(connection, jsonData);
+                    break;
+                
+                case "chat": 
+                    this.addMessageToChatBox("["+connection.peer+"] "+jsonData.message)
                     break;
             }
         }
+    }
+
+    handleNewTransform(connection, jsonData) {
+        connection.transform = {
+            position: new Vector3(jsonData.transform.position.x, jsonData.transform.position.y, jsonData.transform.position.z),
+            horizontalVelocity: new Vector3(jsonData.transform.horizontalVelocity.x, 0, jsonData.transform.horizontalVelocity.z)
+        }
+        connection.animation = jsonData.animation
+
+        connection.needUpdate = true;
     }
 
     connectToPeer(peerId) {
@@ -164,10 +162,10 @@ class RemoteController {
     update(delta) {
         this.connections.forEach(connection => {
             if(connection.needUpdate) {
-                const position = window.player.position;
-                const horizontalVelocity = window.player.horizontalVelocity;
+                const position = player.position;
+                const horizontalVelocity = player.horizontalVelocity;
 
-                connection.send('{"type":"stream", "transform":{ "position":{"x":'+position.x+', "y":'+position.y+', "z":'+position.z+'}, "horizontalVelocity": {"x":'+horizontalVelocity.x+', "y":0, "z":'+horizontalVelocity.z+'}}, "animation": ["'+window.player.currentAnimation+'", '+window.player.currentAnimationTime+']}');
+                connection.send(this.jsonMessageFormatter("stream"));
 
                 if(typeof connection.transform !== 'undefined' && connection.avatarController){
                     connection.avatarController.update(delta, connection.transform.position, connection.transform.horizontalVelocity, connection.animation[0], connection.animation[1])
@@ -230,6 +228,24 @@ class RemoteController {
             toggleCallBox();
             this.currentCall.close();
         } 
+    }
+
+    jsonMessageFormatter(type) {
+        let jsonMessage = {type: type}
+        switch(type){
+            case "spawn":
+                jsonMessage.pathname = window.location.pathname;
+            case "stream":
+                jsonMessage.transform = {
+                    position: player.position,
+                    horizontalVelocity: player.horizontalVelocity
+                }; 
+                jsonMessage.animation = [
+                    window.player.currentAnimation,
+                    window.player.currentAnimationTime
+                ];
+        }
+        return JSON.stringify(jsonMessage);
     }
 }
 

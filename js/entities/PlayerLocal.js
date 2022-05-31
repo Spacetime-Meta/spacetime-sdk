@@ -24,8 +24,6 @@ class PlayerLocal extends CapsuleEntity {
 
         this.speedFactor = 1; // 1 is the default walk speed
         this.visible = false;
-
-        this.friction = 0.975;
         
         this.avatarController = new AvatarController(loadingManager);
         this.avatarController.spawnAvatar(params);
@@ -40,7 +38,7 @@ class PlayerLocal extends CapsuleEntity {
         mainScene.add(this.controls.getObject());
 
         document.addEventListener('keyup', (event) => {
-            this.keys[event.key.toLowerCase()] = false;
+            delete this.keys[event.key.toLowerCase()];
         });
         document.addEventListener('keydown', (event) => {
             if(player.controls.isLocked) {
@@ -86,28 +84,34 @@ class PlayerLocal extends CapsuleEntity {
 
     update(delta, collider) {
 
-        // speedFactor depending on the run/walk state
-        this.speedFactor = this.keys["shift"] ? 3 : 1;
+        if(Object.keys(this.keys).length > 0){
+            // speedFactor depending on the run/walk state
+            this.speedFactor = this.keys["shift"] ? 3 : 1;
 
-        if (this.keys["w"]) {
-            this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(this.speedFactor * delta));
+            if (this.keys["w"]) {
+                this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(this.speedFactor * delta));
+            }
+
+            if (this.keys["s"]) {
+                this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(-this.speedFactor * delta));
+            }
+
+            if (this.keys["a"]) {
+                this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(-this.speedFactor * delta));
+            }
+
+            if (this.keys["d"]) {
+                this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(this.speedFactor * delta));
+            }
+            if (this.keys[" "] && this.onGround) {
+                this.velocity.y = 150.0;
+                this.setAnimationParameters("jump", 0);
+            }
+        } else {
+            this.horizontalVelocity.multiplyScalar(0);
         }
 
-        if (this.keys["s"]) {
-            this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(-this.speedFactor * delta));
-        }
-
-        if (this.keys["a"]) {
-            this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(-this.speedFactor * delta));
-        }
-
-        if (this.keys["d"]) {
-            this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(this.speedFactor * delta));
-        }
-        if (this.keys[" "] && this.onGround) {
-            this.velocity.y = 150.0;
-            this.setAnimationParameters("jump", 0);
-        }
+        
 
        super.update(delta, collider);
 

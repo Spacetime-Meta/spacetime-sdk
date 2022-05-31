@@ -192,12 +192,6 @@ class VirtualEnvironment {
         this.setGraphicsSetting(this.graphicTier)
     }
 
-    getLocation(){ }
-
-    moveOtherPlayer(x,y,z){ }
-
-    spawnOtherPlayer(avatarPath){ }
-
     loading() {
         // ===== loading manager =====
         this.loadingManager = new THREE.LoadingManager();

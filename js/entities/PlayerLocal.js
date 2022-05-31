@@ -112,8 +112,10 @@ class PlayerLocal extends CapsuleEntity {
         }
 
         
-
-       super.update(delta, collider);
+        for(let i=0; i<5; i++){
+            super.update(delta/5, collider);
+        }
+       
 
         if (this.position.y < -1000) {
             this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);

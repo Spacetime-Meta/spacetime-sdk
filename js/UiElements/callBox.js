@@ -1,4 +1,4 @@
-const callBox = function(remoteController) {
+const callBox = function(remoteController, peerId) {
     const box = document.createElement('div');
     box.id = 'call-box';
     box.style.display = 'flex';
@@ -19,7 +19,6 @@ const callBox = function(remoteController) {
     endBtn.addEventListener('click', (e) => {
         e.preventDefault();
         remoteController.endcall();
-        toggleCallBox;
     });
 
     box.appendChild(endBtn);

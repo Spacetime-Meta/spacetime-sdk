@@ -192,9 +192,15 @@ class RemoteController {
     call(peerId) {
         let o = this;
         this.getUserMedia({video: true, audio: true}, function(stream) {
+            addCamera(localProxy.peerId, stream);
             var call = o.peer.call(peerId, stream);
+            o.currentCall = call;
             call.on('stream', function(incomingStream) {
-                addCamera(incomingStream);
+                o.sendChatMessage(`Calling ${call.peer}`);
+                addCamera(call.peer, incomingStream);
+            });
+            call.on('close', function() {
+                o.endcall();
             });
           }, function(err) {
                 console.log('Failed to get local stream' ,err);
@@ -205,9 +211,12 @@ class RemoteController {
         let o = this;
         this.peer.on('call', function(call) {
             o.getUserMedia({video: true, audio: true}, function(stream) {
-              call.answer(stream); // Answer the call with an A/V stream.
+              addCamera(localProxy.peerId, stream);
+              call.answer(stream);
+              o.currentCall = call;
               call.on('stream', function(incomingStream) {
-                addCamera(incomingStream);
+                o.sendChatMessage(`Received a call from ${call.peer}`);
+                addCamera(call.peer, incomingStream);
               });
             }, function(err) {
                     console.log('Failed to get local stream' ,err);
@@ -216,9 +225,11 @@ class RemoteController {
     }
 
     endcall() {
-        call.on('close', function() {
+        if(this.currentCall) {
+            this.sendChatMessage(`End call with ${this.currentCall.peer}`);
             toggleCallBox();
-        });
+            this.currentCall.close();
+        } 
     }
 }
 

@@ -19,14 +19,14 @@ const avatarSelectPanel = function () {
     element.innerHTML = "avatars"
 
     toggleButton(element);
-    avatarButton("female", element, '../../../resources/avatars/megan.glb', '../../../resources/animations/megan@animation.glb')
-    avatarButton("male", element, '../../../resources/avatars/josh.glb', '../../../resources/animations/josh@animation.glb')
-    avatarButton("business man", element, '../../../resources/avatars/joe.glb', '../../../resources/animations/joe@animation.glb')
-    avatarButton("vanguard", element, '../../../resources/avatars/vanguard.glb', '../../../resources/animations/animation.glb')
-    avatarButton("xBot", element, '../../../resources/avatars/xBot.glb', '../../../resources/animations/animation.glb')
-    avatarButton("yBot", element, '../../../resources/avatars/yBot.glb', '../../../resources/animations/animation.glb')
+    avatarButton("female", element, '../../../resources/avatars/megan.glb', '../../../resources/animations/megan@animation.glb', { walk: 1, idle: 2, run: 3, jump: 4, fall: 5 })
+    avatarButton("male", element, '../../../resources/avatars/josh.glb', '../../../resources/animations/josh@animation.glb', { walk: 1, idle: 2, run: 3, jump: 4, fall: 5 })
+    avatarButton("business man", element, '../../../resources/avatars/joe.glb', '../../../resources/animations/joe@animation.glb', { walk: 1, idle: 2, run: 3, jump: 4, fall: 5 })
+    avatarButton("vanguard", element, '../../../resources/avatars/vanguard.glb', '../../../resources/animations/defaultAvatar.glb', { walk: 1, idle: 2, run: 3, jump: 5, fall: 4 })
+    avatarButton("xBot", element, '../../../resources/avatars/xBot.glb', '../../../resources/animations/defaultAvatar.glb', { walk: 1, idle: 2, run: 3, jump: 5, fall: 4 })
+    avatarButton("yBot", element, '../../../resources/avatars/yBot.glb', '../../../resources/animations/defaultAvatar.glb', { walk: 1, idle: 2, run: 3, jump: 5, fall: 4 })
     
-    function avatarButton(name, parent, avatarUrl, animationUrl) {
+    function avatarButton(name, parent, avatarUrl, animationUrl, animationMapping) {
         const avatarButtonElement = document.createElement("div");
         avatarButtonElement.id = "avatarPanel"+name;
         avatarButtonElement.className = "avatar";
@@ -42,7 +42,7 @@ const avatarSelectPanel = function () {
         avatarButtonElement.innerHTML = name
 
         avatarButtonElement.addEventListener("click", () => {
-            window.player.avatarController.changeAvatar(avatarUrl, animationUrl)
+            window.player.avatarController.changeAvatar(avatarUrl, animationUrl, animationMapping)
         })
 
         parent.appendChild(avatarButtonElement)

@@ -161,7 +161,7 @@ class RemoteController {
         chat.innerHTML = chat.innerHTML + "<br>" + message;
     }
 
-    update(delta, frustum) {
+    update(delta) {
         this.connections.forEach(connection => {
             if(connection.needUpdate) {
                 const position = window.player.position;
@@ -170,7 +170,7 @@ class RemoteController {
                 connection.send('{"type":"stream", "transform":{ "position":{"x":'+position.x+', "y":'+position.y+', "z":'+position.z+'}, "horizontalVelocity": {"x":'+horizontalVelocity.x+', "y":0, "z":'+horizontalVelocity.z+'}}, "animation": ["'+window.player.currentAnimation+'", '+window.player.currentAnimationTime+']}');
 
                 if(typeof connection.transform !== 'undefined' && connection.avatarController){
-                    connection.avatarController.update(delta, frustum, connection.transform.position, connection.transform.horizontalVelocity, connection.animation[0], connection.animation[1])
+                    connection.avatarController.update(delta, connection.transform.position, connection.transform.horizontalVelocity, connection.animation[0], connection.animation[1])
                 }
 
                 connection.needUpdate = false;

@@ -104,8 +104,8 @@ class VirtualEnvironment {
         this.terrainController.generateTerrain(mainScene, seed);
     }
     
-    spawnPlayer(avatarPath, animationPath, x, y, z) {
-        window.player = new PlayerLocal(this.dummyCamera, animationPath, avatarPath, this.loadingManager, x, y, z);
+    spawnPlayer(params) {
+        window.player = new PlayerLocal(params, this.dummyCamera, this.loadingManager);
         mainScene.add(player);
     }
 
@@ -156,7 +156,6 @@ class VirtualEnvironment {
         video.appendChild(source);
         document.body.appendChild(video)
 
-        // document.body.addEventListener('click', () => {video.play()})
         document.onkeydown = function(e) {
             if (e.keyCode == 80 && !this.videoHasPlayed) {
                 //p - play 
@@ -209,14 +208,10 @@ class VirtualEnvironment {
     
     update() {
         const delta = Math.min(clock.getDelta(), 0.1);
-        const frustum = new THREE.Frustum();
-        frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse));
         if (this.terrainController.collider) {
             
-            for (let i = 0; i < 5; i++) {
-                player.update(delta / 5, this.dummyCamera, this.terrainController.collider, frustum, this.dummyCamera, player.controlVector);
-                this.camera.position.copy(player.position);
-            }
+            player.update(delta, this.terrainController.collider);
+            this.camera.position.copy(player.position);
             
             this.camera.position.copy(player.position);
             const dir = this.dummyCamera.getWorldDirection(new THREE.Vector3());
@@ -240,7 +235,7 @@ class VirtualEnvironment {
             
         }
 
-        this.remoteController.update(delta, frustum);
+        this.remoteController.update(delta);
 
         mainScene.fog.needsUpdate = true;
 

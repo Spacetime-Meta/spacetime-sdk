@@ -2,16 +2,25 @@ import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1W
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
 import { loadingBar } from '../UiElements/loadingPage.js';
 
+const DEFAULT_AVATAR_PATH = '../../../resources/avatars/yBot.glb';
+const DEFAULT_ANIMATION_PATH = '../../../resources/animations/defaultAvatar.glb';
+const DEFAULT_ANIMATION_MAPPING = { walk: 1, idle: 2, run: 3, jump: 5, fall: 4 };
+
 class AvatarController extends THREE.Object3D {
-    constructor(animationURL, avatarURL, manager) {
+    constructor(manager) {//animationURL, avatarURL, keyMap
         super();
         this.loader = new GLTFLoader(manager);
         this.manager = manager;
         this.animations = {};
         this.quaternion90deg = new THREE.Quaternion();
         this.quaternion90deg.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), -Math.PI / 2 );
-        
-        this.loadAvatar(avatarURL, () => this.loadAnimations(animationURL));
+    }
+
+    spawnAvatar(params) {
+        params.avatarPath = typeof params.avatarPath === "undefined" ? DEFAULT_AVATAR_PATH : params.avatarPath;
+        params.animationPath = typeof params.animationPath === "undefined" ? DEFAULT_ANIMATION_PATH : params.animationPath;
+        params.animationMapping = typeof params.animationMapping === "undefined" ? DEFAULT_ANIMATION_MAPPING : params.animationMapping;
+        this.loadAvatar(params.avatarPath, () => this.loadAnimations(params.animationPath, params.animationMapping));
     }
 
     play(anim, time = 0.5) {
@@ -35,7 +44,7 @@ class AvatarController extends THREE.Object3D {
         }
     }
 
-    update(delta, frustum, position, horizontalVelocity, anim, time = 0.5) {
+    update(delta, position, horizontalVelocity, anim, time = 0.5) {
         
         // use the mixer as only signal that everything is properly loaded
         if(this.mixer){
@@ -60,9 +69,9 @@ class AvatarController extends THREE.Object3D {
         }        
     }
 
-    changeAvatar(avatarUrl, animationsUrl) {
+    changeAvatar(avatarUrl, animationsUrl, animationMapping) {
         loadingBar(this.manager);
-        this.loadAvatar(avatarUrl, () => this.loadAnimations(animationsUrl));
+        this.loadAvatar(avatarUrl, () => this.loadAnimations(animationsUrl, animationMapping));
     }
 
     loadAvatar(avatarURL, loadAnimation) {
@@ -87,16 +96,18 @@ class AvatarController extends THREE.Object3D {
         });
     }
 
-    loadAnimations(animationURL) {
+
+
+    loadAnimations(animationURL, animationMapping) {
         this.loader.load(animationURL, (gltf) => {
             if(typeof this.model == 'undefined') return;
             this.current = "none";
             this.animations = {
-                "walk": gltf.animations[1],
-                "idle": gltf.animations[2],
-                "run": gltf.animations[3],
-                "jump": gltf.animations[4],
-                "fall": gltf.animations[5]
+                "walk": gltf.animations[animationMapping.walk],
+                "idle": gltf.animations[animationMapping.idle],
+                "run": gltf.animations[animationMapping.run],
+                "jump": gltf.animations[animationMapping.jump],
+                "fall": gltf.animations[animationMapping.fall]
             };
             this.mixer = new THREE.AnimationMixer(this.model);
             Object.entries(this.animations).forEach(([anim, clip]) => {

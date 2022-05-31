@@ -4,34 +4,36 @@ import { Vector3, Vector4, Matrix4, Raycaster } from 'https://cdn.skypack.dev/pi
 import { AvatarController } from './AvatarController.js';
 
 class PlayerLocal extends CapsuleEntity {
-    constructor(camera, animationURL, avatarURL, manager, x, y, z) {
+    constructor(params, camera, loadingManager) {
         super(5, 30);
+        this.spawnPoint = typeof params.spawn === "undefined" ? {x: 0, y:0, z:0} : params.spawn;
+        this.position.x = this.spawnPoint.x;
+        this.position.y = this.spawnPoint.y;
+        this.position.z = this.spawnPoint.z;
 
+
+        this.camera = camera;
         this.fpsControls = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
         this.thirdPersonControls = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 40, 0.2);
         this.controlVector = this.thirdPersonControls.clone();
         this.targetControlVector = this.thirdPersonControls;
-
+        this.horizontalVelocity = new Vector3();
         this.playerDirection = new Vector3();
         this.positionChange = new Vector3();
         this.keys = {};
 
-        this.avatarController = new AvatarController(animationURL, avatarURL, manager);
-        this.setupControls(camera);
-
         this.speedFactor = 1; // 1 is the default walk speed
         this.visible = false;
-        this.position.x = x;
-        this.position.y = y;
-        this.position.z = z;
-
-        this.horizontalVelocity = new Vector3();
 
         this.friction = 0.975;
+        
+        this.avatarController = new AvatarController(loadingManager);
+        this.avatarController.spawnAvatar(params);
+        this.setupControls(this.camera);
     }
 
-    setupControls(camera) {
-        this.controls = new PointerLockControls(camera, document.body);
+    setupControls() {
+        this.controls = new PointerLockControls(this.camera, document.body);
         this.controls.sensitivityY = -0.002;
         this.controls.minPolarAngle = 0.01; 
         this.controls.maxPolarAngle = Math.PI - 0.25;
@@ -65,57 +67,58 @@ class PlayerLocal extends CapsuleEntity {
         });
     }
     
-    getForwardVector = function(camera) {
-        camera.getWorldDirection(this.playerDirection);
+    getForwardVector() {
+        this.camera.getWorldDirection(this.playerDirection);
         this.playerDirection.y = 0;
         this.playerDirection.normalize();
         this.playerDirection.multiplyScalar(-1);
         return this.playerDirection;
     }
     
-    getSideVector = function(camera) {
-        camera.getWorldDirection(this.playerDirection);
+    getSideVector() {
+        this.camera.getWorldDirection(this.playerDirection);
         this.playerDirection.y = 0;
         this.playerDirection.normalize();
-        this.playerDirection.cross(camera.up);
+        this.playerDirection.cross(this.camera.up);
         this.playerDirection.multiplyScalar(-1);
         return this.playerDirection;
     }
 
-    update(delta, camera, collider, frustum, dummyCamera) {
+    update(delta, collider) {
 
         // speedFactor depending on the run/walk state
         this.speedFactor = this.keys["shift"] ? 3 : 1;
 
         if (this.keys["w"]) {
-            this.horizontalVelocity.add(this.getForwardVector(camera).multiplyScalar(this.speedFactor * delta));
+            this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(this.speedFactor * delta));
         }
 
         if (this.keys["s"]) {
-            this.horizontalVelocity.add(this.getForwardVector(camera).multiplyScalar(-this.speedFactor * delta));
+            this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(-this.speedFactor * delta));
         }
 
         if (this.keys["a"]) {
-            this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(-this.speedFactor * delta));
+            this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(-this.speedFactor * delta));
         }
 
         if (this.keys["d"]) {
-            this.horizontalVelocity.add(this.getSideVector(camera).multiplyScalar(this.speedFactor * delta));
+            this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(this.speedFactor * delta));
         }
         if (this.keys[" "] && this.onGround) {
             this.velocity.y = 150.0;
             this.setAnimationParameters("jump", 0);
         }
 
-        super.update(delta, collider);
+       super.update(delta, collider);
 
         if (this.position.y < -1000) {
-            this.position.set(0, 40, -30);
+            this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);
+            this.velocity = new Vector3();
         }
 
         this.updateCurrentAnimation()
         if(typeof this.avatarController !== "undefined"){
-            this.avatarController.update(delta, frustum, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
+            this.avatarController.update(delta, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
             this.avatarController.opacity = (this.controlVector.z - 0.01) / (40 - 0.01);
         }
 

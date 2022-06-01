@@ -6,6 +6,7 @@ import chatBox from '../UiElements/chatBox.js';
 import friendManagement from '../UiElements/buttons/friendManagement.js';
 import { AvatarController } from '../entities/AvatarController.js';
 import { toggleCallBox, callBox, addCamera } from '../UiElements/callBox.js';
+import { PeerGroup } from './peerjs-groups.js';
 
 // PeerJs is injected in the window
 const Peer = window.Peer;

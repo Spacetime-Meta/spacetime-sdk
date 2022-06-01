@@ -1,3 +1,5 @@
+import roomSelectPanel from "./roomSelectPanel.js";
+
 const chatBox = function(remoteController) {
 
     const chatBoxWrapper = document.createElement("div");
@@ -47,9 +49,17 @@ const chatBox = function(remoteController) {
         input.value = "";
     }
 
+    const createRoomButton = document.createElement("button");
+    createRoomButton.id = "createRoomButton";
+    createRoomButton.innerHTML = "Create Room";
+    createRoomButton.addEventListener("click", () => {
+        roomSelectPanel(remoteController);
+    });
+
     chatBoxWrapper.appendChild(chatDisplay);
     chatBoxWrapper.appendChild(inputBar);
     chatBoxWrapper.appendChild(sendButton);
+    chatBoxWrapper.appendChild(createRoomButton);
 
     document.body.appendChild(chatBoxWrapper);
 }

@@ -2,7 +2,7 @@ import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1
 import localProxy from "./localProxy.js";
 import goLivePanel from '../UiElements/goLivePanel.js';
 import peerIdDisplay from '../UiElements/peerIdDisplay.js';
-import chatBox from '../UiElements/chatBox.js';
+import {chatBox, toggleConnectRoom} from '../UiElements/chatBox.js';
 import friendManagement from '../UiElements/buttons/friendManagement.js';
 import { AvatarController } from '../entities/AvatarController.js';
 import { toggleCallBox, callBox, addCamera } from '../UiElements/callBox.js';
@@ -272,10 +272,13 @@ class RemoteController {
         );
     
         group.addEventListener('connected', function (event) {
-            alertBox("Information", `Connected to ${event.sessionID}. Waiting for permission to join the conversation&hellip;`);
+            if(!event.administrator) {
+                alertBox("Information", `Connected to ${event.sessionID}. Waiting for permission to join the conversation&hellip;`);
+            }
         });
 
         group.addEventListener('joined', function (event) {        
+            me.addMessageToChatBox(`[Info] You're in room ${event.sessionID}`);
             me.addMessageToChatBox(`${event.userID} is present.`);
         });
 
@@ -307,6 +310,7 @@ class RemoteController {
         this.initializeNetworking();
         connected = true;
         group.connect(sessionId, localProxy.peerId);
+        toggleConnectRoom(this);
     }
 
     disconnectRoom() {
@@ -314,6 +318,7 @@ class RemoteController {
             group.disconnect();
             connected = false;
             this.addMessageToChatBox(`${localProxy.peerId}: has left this conversation`);
+            toggleConnectRoom(this);
         }
     }
 

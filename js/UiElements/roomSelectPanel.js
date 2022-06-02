@@ -1,7 +1,7 @@
 const roomSelectPanel = function(remoteController) {
     const roomSelectPanel = document.createElement("div");
     roomSelectPanel.id = "roomSelectPanel";
-    roomSelectPanel.innerHTML = "Create your Room";
+    roomSelectPanel.innerHTML = "Please provide or generate your room name";
 
     Object.assign(roomSelectPanel.style, {
         position: 'absolute',

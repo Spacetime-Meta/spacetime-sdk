@@ -55,8 +55,9 @@ const chatBox = function(remoteController) {
     createRoomButton.addEventListener("click", () => {
         if(remoteController.isConnected()) {
             remoteController.disconnectRoom();
+        }else {
+            roomSelectPanel(remoteController);
         }
-        roomSelectPanel(remoteController);
     });
 
     chatBoxWrapper.appendChild(chatDisplay);
@@ -67,4 +68,13 @@ const chatBox = function(remoteController) {
     document.body.appendChild(chatBoxWrapper);
 }
 
-export default chatBox;
+const toggleConnectRoom = function(remoteController) {
+    const createRoomButton = document.getElementById('createRoomButton');
+    if(remoteController.isConnected()) {
+        createRoomButton.innerHTML = "Disconnect";
+    } else {
+        createRoomButton.innerHTML = "Create Room";
+    }
+}
+
+export {chatBox, toggleConnectRoom};

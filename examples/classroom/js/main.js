@@ -8,8 +8,8 @@ init();
 function init() {
     virtualEnvironment.loadTerrain('../../../resources/terrains/classroom.fbx', 0, 0, 0, "fbx", 0.2);
     virtualEnvironment.spawnPlayer({
-        avatarPath: '../../../resources/avatars/megan.glb',
-        animationPath: '../../../resources/animations/megan@animation.glb',
+        avatarPath: '../../../resources/avatars/xBot.glb',
+        animationPath: '../../../resources/animations/animation.glb',
         animationMapping: {
             walk: 1,
             idle: 2,

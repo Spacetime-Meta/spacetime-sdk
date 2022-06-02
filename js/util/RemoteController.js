@@ -2,13 +2,24 @@ import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1
 import localProxy from "./localProxy.js";
 import goLivePanel from '../UiElements/goLivePanel.js';
 import peerIdDisplay from '../UiElements/peerIdDisplay.js';
-import chatBox from '../UiElements/chatBox.js';
+import {chatBox, toggleConnectRoom} from '../UiElements/chatBox.js';
 import friendManagement from '../UiElements/buttons/friendManagement.js';
 import { AvatarController } from '../entities/AvatarController.js';
 import { toggleCallBox, callBox, addCamera } from '../UiElements/callBox.js';
+import { PeerGroup } from './peerjs-groups.js';
+import alertBox from '../UiElements/alertBox.js';
 
 // PeerJs is injected in the window
 const Peer = window.Peer;
+const SIGNALLING_OPTIONS =  {
+    secure: 'wss://',
+    host: 'spacetime-peerserver.herokuapp.com',
+    port: 443
+};
+let connected = false;
+let group, myUserID;
+let joinRequests = [];
+
 
 class RemoteController {
     constructor(manager, scene) {
@@ -148,9 +159,14 @@ class RemoteController {
     }
 
     sendChatMessage(message) {
-        this.connections.forEach(connection => {
-            connection.send('{"type":"chat","message":"'+message+'"}');
-        })
+        if (connected) {
+            group.send(message);
+        } else {
+            this.connections.forEach(connection => {
+                connection.send('{"type":"chat","message":"'+message+'"}');
+            })
+        }
+        
         this.addMessageToChatBox("["+localProxy.peerId+"] "+message)
     }
 
@@ -243,6 +259,71 @@ class RemoteController {
                 ];
         }
         return JSON.stringify(jsonMessage);
+    }
+
+    initializeNetworking() {
+        let me = this;
+        group = new PeerGroup(
+            function (error) {
+                console.error(error.type + ': ' + error);
+                debugger;
+            },
+            SIGNALLING_OPTIONS
+        );
+    
+        group.addEventListener('connected', function (event) {
+            if(!event.administrator) {
+                alertBox("Information", `Connected to ${event.sessionID}. Waiting for permission to join the conversation&hellip;`);
+            }
+        });
+
+        group.addEventListener('joined', function (event) {        
+            me.addMessageToChatBox(`[Info] You're in room ${event.sessionID}`);
+            me.addMessageToChatBox(`${event.userID} is present.`);
+        });
+
+        group.addEventListener('joinrequest', function (event) {
+            joinRequests.push(event.userID);
+            if (joinRequests.length == 1) {
+                alertBox("Wants to Join the Conversation", `Do you want to accept ${event.userID}'s request to join?`, () => {
+                    var userID = joinRequests.shift();
+	                group.acceptUser(userID);
+                });
+            }
+        });
+    
+        group.addEventListener('userpresent', function (event) {
+            me.addMessageToChatBox(`${event.userID} is present.`);
+        });
+    
+        group.addEventListener('userleft', function (event) { 
+            me.addMessageToChatBox(`${event.userID} is left.`);
+        });
+    
+        group.addEventListener('message', function (event) {
+            me.addMessageToChatBox(`${event.userID}: ${event.message}`);
+        });
+    }
+
+    createRoom(sessionId) {
+        this.addMessageToChatBox(`[Info] accessing room ${sessionId}...`);
+        this.initializeNetworking();
+        connected = true;
+        group.connect(sessionId, localProxy.peerId);
+        toggleConnectRoom(this);
+    }
+
+    disconnectRoom() {
+        if(connected) {
+            group.disconnect();
+            connected = false;
+            this.addMessageToChatBox(`${localProxy.peerId}: has left this conversation`);
+            toggleConnectRoom(this);
+        }
+    }
+
+    isConnected() {
+        return group && connected;
     }
 }
 

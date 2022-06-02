@@ -53,6 +53,9 @@ const chatBox = function(remoteController) {
     createRoomButton.id = "createRoomButton";
     createRoomButton.innerHTML = "Create Room";
     createRoomButton.addEventListener("click", () => {
+        if(remoteController.isConnected()) {
+            remoteController.disconnectRoom();
+        }
         roomSelectPanel(remoteController);
     });
 

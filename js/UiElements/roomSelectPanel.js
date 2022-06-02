@@ -25,7 +25,7 @@ const roomSelectPanel = function(remoteController) {
     acceptButton.addEventListener('click', () => {
         const sessionId = sessionInput.value;
         if(sessionId) {
-            //TODO: create room or connect a room
+            remoteController.createRoom(sessionId);
             roomSelectPanel.remove()
         }
     })

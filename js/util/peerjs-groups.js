@@ -29,7 +29,7 @@ const ESCAPE_MAP = Object.freeze({
 	text.
 	@param {(string|undefined)} input The text to make safe.
 */
-function escapeHTML(input) {
+const escapeHTML = (input) => {
 	'use strict';
 	if (input !== undefined) {
 		return String(input).replace(/[&<>"']/g, function (match) {
@@ -749,4 +749,4 @@ class PeerGroup extends EventTarget {
 	}
 }
 
-export {PeerGroup};
+export {PeerGroup, escapeHTML};

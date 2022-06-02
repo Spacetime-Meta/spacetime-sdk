@@ -6,7 +6,7 @@ import chatBox from '../UiElements/chatBox.js';
 import friendManagement from '../UiElements/buttons/friendManagement.js';
 import { AvatarController } from '../entities/AvatarController.js';
 import { toggleCallBox, callBox, addCamera } from '../UiElements/callBox.js';
-import { PeerGroup } from './peerjs-groups.js';
+import { PeerGroup, escapeHTML } from './peerjs-groups.js';
 import alertBox from '../UiElements/alertBox.js';
 
 // PeerJs is injected in the window
@@ -159,20 +159,22 @@ class RemoteController {
     }
 
     sendChatMessage(message) {
+        let formatted = escapeHTML(message);
         if (connected) {
-            group.send(message);
+            group.send(formatted);
         } else {
             this.connections.forEach(connection => {
-                connection.send('{"type":"chat","message":"'+message+'"}');
+                connection.send('{"type":"chat","message":"'+formatted+'"}');
             })
         }
         
-        this.addMessageToChatBox("["+localProxy.peerId+"] "+message)
+        this.addMessageToChatBox("["+localProxy.peerId+"] "+formatted)
     }
 
     addMessageToChatBox(message) {
+        let formatted = escapeHTML(message);
         const chat = document.getElementById("chatDisplay");
-        chat.innerHTML = chat.innerHTML + "<br>" + message;
+        chat.innerHTML = chat.innerHTML + "<br>" + formatted;
     }
 
     update(delta) {

@@ -1,6 +1,4 @@
-import friendManagementPanel from '../friendManagementPanel.js';
-
-const friendManagement = function(remoteController) {
+const friendManagement = function(remoteController, friendManagementPanel) {    
     const element = document.createElement("div");
     element.id = "friendManagement";
 
@@ -19,7 +17,7 @@ const friendManagement = function(remoteController) {
     element.innerHTML = "Manage Friends"
 
     element.addEventListener('click', () => {
-        friendManagementPanel(remoteController);
+        friendManagementPanel.friendManagementPanelWrapper.style.display = "block";
     })
     
     document.body.appendChild(element); 

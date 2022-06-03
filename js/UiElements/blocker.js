@@ -14,7 +14,7 @@ const blocker = function() {
     const blocker = document.createElement("div");
     blocker.id = "blocker";
     blocker.addEventListener('click', () => {
-        player.controls.lock()
+        LOCAL_PLAYER.controls.lock()
         document.getElementById('blockerWrapper').style.display = "none";
     })
 

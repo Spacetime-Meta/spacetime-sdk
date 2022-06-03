@@ -77,7 +77,7 @@ class AvatarController extends THREE.Object3D {
     loadAvatar(avatarURL, loadAnimation) {
         this.loader.load(avatarURL, (responseObject) => {
             
-            mainScene.remove(this.model)
+            MAIN_SCENE.remove(this.model)
 
             this.radius = 2.5;
             this.size = 30;
@@ -91,12 +91,14 @@ class AvatarController extends THREE.Object3D {
                     child.frustumCulled = false;
                 }
             });
-            mainScene.add(this.model);
+            MAIN_SCENE.add(this.model);
             loadAnimation(); 
         });
     }
 
-
+    removeAvatar(){
+        MAIN_SCENE.remove(this.model);
+    }
 
     loadAnimations(animationURL, animationMapping) {
         this.loader.load(animationURL, (gltf) => {

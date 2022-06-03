@@ -35,7 +35,7 @@ class PlayerLocal extends CapsuleEntity {
         this.controls.sensitivityY = -0.002;
         this.controls.minPolarAngle = 0.01; 
         this.controls.maxPolarAngle = Math.PI - 0.25;
-        mainScene.add(this.controls.getObject());
+        MAIN_SCENE.add(this.controls.getObject());
 
         document.addEventListener('keyup', (event) => {
             delete this.keys[event.key.toLowerCase()];

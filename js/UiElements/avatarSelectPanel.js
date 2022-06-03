@@ -42,7 +42,7 @@ const avatarSelectPanel = function () {
         avatarButtonElement.innerHTML = name
 
         avatarButtonElement.addEventListener("click", () => {
-            window.player.avatarController.changeAvatar(avatarUrl, animationUrl, animationMapping)
+            LOCAL_PLAYER.avatarController.changeAvatar(avatarUrl, animationUrl, animationMapping)
         })
 
         parent.appendChild(avatarButtonElement)

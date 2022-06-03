@@ -4,6 +4,7 @@ import goLivePanel from '../UiElements/goLivePanel.js';
 import peerIdDisplay from '../UiElements/peerIdDisplay.js';
 import {chatBox, toggleConnectRoom} from '../UiElements/chatBox.js';
 import friendManagement from '../UiElements/buttons/friendManagement.js';
+import { friendManagementPanel } from '../UiElements/friendManagementPanel.js';
 import { AvatarController } from '../entities/AvatarController.js';
 import { toggleCallBox, callBox, addCamera } from '../UiElements/callBox.js';
 import { PeerGroup, escapeHTML } from './peerjs-groups.js';
@@ -22,16 +23,19 @@ let joinRequests = [];
 
 
 class RemoteController {
-    constructor(manager, scene) {
+    constructor(manager) {
         this.connections = [];
-        this.scene = scene;
         this.manager = manager;
         this.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         if(!this.getUserMedia) console.log('Your browser doesn\'t support getUserMedia.');
         
         goLivePanel(this);
 
-        // check if the user has a peerID in the local storage
+        /* The following lines check if the user has a peerID in the local storage
+         * and automatically creates a new peer if it finds one. This is a good feature for
+         * production but is very annoying when testing. please leave like this until next
+         * merge into the main branch.
+         */ 
         // if(typeof localProxy.peerId !== 'undefined'){
         //     this.peer = new Peer(localProxy.peerId);
         //     console.log("[info] Trying to create peer: " + localProxy.peerId)
@@ -59,19 +63,22 @@ class RemoteController {
 
         this.addMessageToChatBox("[info] Peer created with id: "+localProxy.peerId);
         peerIdDisplay(localProxy.peerId, this)
-        friendManagement(this);
+        this.friendManagementPanel = new friendManagementPanel(this);
+        friendManagement(this, this.friendManagementPanel);
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
             this.onConnectionConnect(newConnection)
         })
 
+        this.initFriendList()
+    }
+
+    initFriendList() {
         // try connect to friends
         if(typeof localProxy.friendList !== 'undefined'){
             localProxy.friendList.forEach(friend => {
-                if(friend !== localProxy.peerId){
-                    this.connectToPeer(friend)
-                }
+                this.connectToPeer(friend)
             })
         }
         else {
@@ -81,21 +88,27 @@ class RemoteController {
 
     onConnectionConnect(newConnection) {
         this.addMessageToChatBox('[info] new connection to peer: ' + newConnection.peer)
+                
+        newConnection.connectionStatus = 1;
         this.connections.push(newConnection);
         
         // not sure why this is needed but if we dont give the connection some time it wont send the message
         setTimeout(() => {
             newConnection.send(this.jsonMessageFormatter("spawn"));
-        }, 1000);
+        }, 1000);mainScene
         
 
         // listen to new data
         newConnection.on('data', (data) => {
             this.onReceiveData(newConnection, data)
         })
+
+        newConnection.on('close', ()=>{
+            this.onConnectionTimeOut(newConnection);
+        })
     }
 
-    onReceiveData(connection, data) {
+    onReceiveData(connection, data) {      
         let jsonData;
         try {
             jsonData = JSON.parse(data);
@@ -105,7 +118,8 @@ class RemoteController {
         if(typeof jsonData.type !== 'undefined') {
             switch(jsonData.type) {
                 
-                 case "spawn":
+                case "spawn":
+                    connection.connectionStatus = 2;
                     if(jsonData.pathname === window.location.pathname) {
                         this.addMessageToChatBox("[info] Spawning: "+connection.peer);
 
@@ -138,13 +152,35 @@ class RemoteController {
     }
 
     connectToPeer(peerId) {
-        console.log("[info] Trying connection to peer: " + peerId);
-        const newConnection = this.peer.connect(peerId);
+        if(peerId !== localProxy.peerId){
+            console.log("[info] Trying connection to peer: " + peerId);
+            const newConnection = this.peer.connect(peerId);
 
-        // on new connection establish
-        newConnection.on('open', () => {
-            this.onConnectionConnect(newConnection);
-        })
+            newConnection.connectionStatus = 1;
+
+            // on new connection establish
+            newConnection.on('open', () => {
+                this.onConnectionConnect(newConnection);
+            })
+
+            // kill the attempt after a certain delay
+            setTimeout(() => {
+                if(newConnection.connectionStatus === 1){
+                    this.onConnectionTimeOut(newConnection)
+                }
+            }, 3000);
+
+        } else {
+            console.warn("[RemoteController:connectToPeer] You are trying to connect to your own peerId. Current id: "+localProxy.peerId);
+        }
+    }
+
+    onConnectionTimeOut(connection) {
+        console.log("[info] No response from peer, connection time out: " + connection.peer);
+        connection.avatarController.removeAvatar();
+        const index = this.connections.indexOf(connection);
+        this.connections.splice(index,1);
+        connection.close();
     }
     
     disconnectPeer(peerId) {
@@ -180,8 +216,8 @@ class RemoteController {
     update(delta) {
         this.connections.forEach(connection => {
             if(connection.needUpdate) {
-                const position = player.position;
-                const horizontalVelocity = player.horizontalVelocity;
+                const position = LOCAL_PLAYER.position;
+                const horizontalVelocity = LOCAL_PLAYER.horizontalVelocity;
 
                 connection.send(this.jsonMessageFormatter("stream"));
 
@@ -252,12 +288,12 @@ class RemoteController {
                 jsonMessage.pathname = window.location.pathname;
             case "stream":
                 jsonMessage.transform = {
-                    position: player.position,
-                    horizontalVelocity: player.horizontalVelocity
+                    position: LOCAL_PLAYER.position,
+                    horizontalVelocity: LOCAL_PLAYER.horizontalVelocity
                 }; 
                 jsonMessage.animation = [
-                    window.player.currentAnimation,
-                    window.player.currentAnimationTime
+                    LOCAL_PLAYER.currentAnimation,
+                    LOCAL_PLAYER.currentAnimationTime
                 ];
         }
         return JSON.stringify(jsonMessage);

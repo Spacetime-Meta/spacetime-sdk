@@ -17,7 +17,7 @@ const SIGNALLING_OPTIONS =  {
     port: 443
 };
 let connected = false;
-let group, myUserID;
+let group;
 let joinRequests = [];
 
 
@@ -48,8 +48,6 @@ class RemoteController {
         this.peer.on('open', () => {
             this.onConnectionOpen();
         });
-        // add video call box
-        callBox(this, peerId);
         // listen for a call
         this.answer();
     }
@@ -206,13 +204,14 @@ class RemoteController {
     }
 
     call(peerId) {
-        let o = this;
+        let me = this;
+        callBox(me);
         this.getUserMedia({video: true, audio: true}, function(stream) {
             addCamera(localProxy.peerId, stream);
-            var call = o.peer.call(peerId, stream);
-            o.currentCall = call;
+            var call = me.peer.call(peerId, stream);
+            me.currentCall = call;
             call.on('stream', function(incomingStream) {
-                o.sendChatMessage(`Calling ${call.peer}`);
+                me.sendChatMessage(`Calling ${call.peer}`);
                 addCamera(call.peer, incomingStream);
             });
           }, function(err) {
@@ -221,14 +220,15 @@ class RemoteController {
     }
 
     answer() {
-        let o = this;
+        let me = this;
         this.peer.on('call', function(call) {
-            o.getUserMedia({video: true, audio: true}, function(stream) {
+            callBox(me);
+            me.getUserMedia({video: true, audio: true}, function(stream) {
               addCamera(localProxy.peerId, stream);
               call.answer(stream);
-              o.currentCall = call;
+              me.currentCall = call;
               call.on('stream', function(incomingStream) {
-                o.sendChatMessage(`Received a call from ${call.peer}`);
+                me.sendChatMessage(`Received a call from ${call.peer}`);
                 addCamera(call.peer, incomingStream);
               });
             }, function(err) {

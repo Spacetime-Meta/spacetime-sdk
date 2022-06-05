@@ -73,7 +73,7 @@ class VirtualEnvironment {
         this.setGraphicsSetting(this.graphicTier);
         
         // ===== UI =====
-        this.uiController = new UiController();
+        window.UI_CONTROLLER = new UiController();
 
         // ===== Terrain Controller
         this.terrainController = new TerrainController(this.loadingManager);

@@ -14,9 +14,10 @@ class PlayScreen extends UiElement {
             }
         })
 
-        document.body.appendChild(this.element);
-
         this.controlsInstructions = new ControlsInstructions(this);
+        this.appendChild(this.controlsInstructions);
+
+        document.body.appendChild(this.element);        
     }
 }
 export { PlayScreen }

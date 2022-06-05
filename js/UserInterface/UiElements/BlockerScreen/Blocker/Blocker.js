@@ -1,7 +1,7 @@
 import { UiElement } from "../../UiElement.js"
 
 class Blocker extends UiElement {
-    constructor(handleControlsLock){
+    constructor(){
         super({
             id: "blocker",
             style: {
@@ -11,7 +11,7 @@ class Blocker extends UiElement {
                 textAlign: "center",
                 color: "white"
             },
-            onClick: handleControlsLock
+            onClick: () => UI_CONTROLLER.handleControlsLock()
         })
     }
 }

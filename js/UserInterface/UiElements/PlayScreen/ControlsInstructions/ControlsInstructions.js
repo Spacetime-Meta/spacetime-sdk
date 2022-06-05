@@ -15,11 +15,11 @@ class ControlsInstructions extends UiElement {
                 display: "flex",
                 justifyContent: "center",
                 fontSize: "x-small"
-            },
-            parent: parent,
+            }
         })
 
         this.controlsDisplayBox = new ControlsDisplayBox(this.element)
+        this.appendChild(this.controlsDisplayBox);
     }
 }
 

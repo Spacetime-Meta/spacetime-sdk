@@ -8,7 +8,7 @@ class UiController {
      * one disappears when the controls are lock.
     */
     constructor() {
-        this.blockerScreen = new BlockerScreen(() => {this.handleControlsLock()});
+        this.blockerScreen = new BlockerScreen();
         this.playScreen = new PlayScreen();
     }
 
@@ -18,10 +18,10 @@ class UiController {
         this.playScreen.element.style.display = "block";
     }
 
-    // handleControlsLock () {
-    //     this.blockerScreen.element.style.display = "block";
-    //     this.playScreen.element.style.display = "none";
-    // }
+    handleControlsUnlock () {
+        this.blockerScreen.element.style.display = "block";
+        this.playScreen.element.style.display = "none";
+    }
 
     update() {}
 }

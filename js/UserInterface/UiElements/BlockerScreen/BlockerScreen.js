@@ -4,7 +4,7 @@ import { Blocker } from "./Blocker/Blocker.js";
 import { Menu } from "./Menu/Menu.js";
 
 class BlockerScreen extends UiElement {
-    constructor(handleControlsLock){
+    constructor(){
         super({
             id: "blockerScreen",
             style: {
@@ -15,7 +15,7 @@ class BlockerScreen extends UiElement {
             }
         })
 
-        this.blocker = new Blocker(handleControlsLock);
+        this.blocker = new Blocker();
         this.menu = new Menu()
 
         this.appendChildList([

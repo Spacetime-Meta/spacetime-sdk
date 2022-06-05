@@ -17,6 +17,17 @@ const peerIdDisplay = function(peerId, remoteController) {
         fontSize: "x-small"
     })
 
+    element.addEventListener('mouseover', () => {
+        Object.assign(element.style, {
+            cursor: 'pointer',
+            border: "2px solid rgba(256, 256, 256, 0.3)",
+            background: "rgba(0, 0, 0, 0.6)",
+            zIndex: 100,
+            color: 'rgba(256, 256, 256, 0.8)',
+            fontSize: "small"
+        })
+    })
+
     element.innerHTML = "Peer ID: " + peerId;
 
     element.addEventListener('click', () => {

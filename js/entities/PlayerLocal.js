@@ -41,7 +41,7 @@ class PlayerLocal extends CapsuleEntity {
             delete this.keys[event.key.toLowerCase()];
         });
         document.addEventListener('keydown', (event) => {
-            if(player.controls.isLocked) {
+            if(this.controls.isLocked) {
                 if (event.key === "v") {
                     if (this.targetControlVector === this.thirdPersonControls) {
                         this.targetControlVector = this.fpsControls;
@@ -52,7 +52,7 @@ class PlayerLocal extends CapsuleEntity {
                 if (event.keyCode === 32 && event.target === document.body) {
                     event.preventDefault();
                 }
-                player.keys[event.key.toLowerCase()] = true;
+                this.keys[event.key.toLowerCase()] = true;
             }
         });
 
@@ -61,7 +61,7 @@ class PlayerLocal extends CapsuleEntity {
         });
 
         this.controls.addEventListener('unlock', () => {
-            document.getElementById("blockerWrapper").style.display = 'block';
+            // UI_CONTROLLER.handleControlsUnlock()
         });
     }
     

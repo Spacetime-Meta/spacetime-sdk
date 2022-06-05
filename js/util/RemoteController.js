@@ -1,14 +1,14 @@
 import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import localProxy from "./localProxy.js";
-import goLivePanel from '../UiElements/goLivePanel.js';
-import peerIdDisplay from '../UiElements/peerIdDisplay.js';
-import {chatBox, toggleConnectRoom} from '../UiElements/chatBox.js';
-import friendManagement from '../UiElements/buttons/friendManagement.js';
-import { friendManagementPanel } from '../UiElements/friendManagementPanel.js';
+import goLivePanel from '../UserInterface/UiElements/goLivePanel.js';
+import peerIdDisplay from '../UserInterface/UiElements/peerIdDisplay.js';
+import {chatBox, toggleConnectRoom} from '../UserInterface/UiElements/chatBox.js';
+import friendManagement from '../UserInterface/buttons/friendManagement.js';
+import { friendManagementPanel } from '../UserInterface/UiElements/friendManagementPanel.js';
 import { AvatarController } from '../entities/AvatarController.js';
-import { toggleCallBox, callBox, addCamera } from '../UiElements/callBox.js';
+import { toggleCallBox, callBox, addCamera } from '../UserInterface/UiElements/callBox.js';
 import { PeerGroup, escapeHTML } from './peerjs-groups.js';
-import alertBox from '../UiElements/alertBox.js';
+import alertBox from '../UserInterface/UiElements/alertBox.js';
 
 // PeerJs is injected in the window
 const Peer = window.Peer;

@@ -1,16 +1,17 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
+
+import { PlayerLocal } from './entities/PlayerLocal.js';
+
 import { TerrainController } from './util/TerrainController.js';
-import { RemoteController } from './util/RemoteController.js';
+// import { RemoteController } from './util/RemoteController.js';
+import { UiController } from './UserInterface/UiController.js';
 
 import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
 import { DefaultComposer } from "./render/DefaultComposer.js"
-import { PlayerLocal } from './entities/PlayerLocal.js';
+
 import localProxy from "./util/localProxy.js";
-import {loadingBar, loadingPage} from './UiElements/loadingPage.js';
+import {loadingBar, loadingPage} from './UserInterface/UiElements/LoadingPage/loadingPage.js';
 // import graphicTierButton from './UiElements/buttons/graphicTierButton.js';
-import blocker from './UiElements/blocker.js';
-import avatarSelectPanel from './UiElements/avatarSelectPanel.js';
-import controlInstructions from './UiElements/controlInstructions.js';
 
 const LOW = 0;
 const MEDIUM = 1;
@@ -72,7 +73,7 @@ class VirtualEnvironment {
         this.setGraphicsSetting(this.graphicTier);
         
         // ===== UI =====
-        this.createUiElements();
+        this.uiController = new UiController();
 
         // ===== Terrain Controller
         this.terrainController = new TerrainController(this.loadingManager);
@@ -87,14 +88,9 @@ class VirtualEnvironment {
         }
 
         // ===== setupMultiplayer =====
-        this.remoteController = new RemoteController(this.loadingManager, MAIN_SCENE);
+        // this.remoteController = new RemoteController(this.loadingManager, MAIN_SCENE);
 
     } // -- end constructor
-
-    createUiElements() {
-        blocker();
-        controlInstructions();
-    }
 
     loadTerrain(terrainPath, x, y, z, format, scaleFactor = 1){
         this.terrainController.loadTerrain(terrainPath, MAIN_SCENE, x, y, z, format, scaleFactor);
@@ -229,7 +225,7 @@ class VirtualEnvironment {
             
         }
 
-        this.remoteController.update(delta);
+        // this.remoteController.update(delta);
 
         MAIN_SCENE.fog.needsUpdate = true;
 

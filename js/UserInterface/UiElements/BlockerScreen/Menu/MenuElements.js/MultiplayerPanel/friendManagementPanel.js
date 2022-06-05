@@ -1,4 +1,4 @@
-import localProxy from "../util/localProxy.js";
+import localProxy from "../../util/localProxy.js";
 
 class friendManagementPanel{
     constructor(remoteController) {

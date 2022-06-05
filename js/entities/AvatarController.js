@@ -1,6 +1,6 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
-import { loadingBar } from '../UiElements/loadingPage.js';
+// import { loadingBar } from '../UserInterface/UiElements/loadingPage.js';
 
 const DEFAULT_AVATAR_PATH = '../../../resources/avatars/yBot.glb';
 const DEFAULT_ANIMATION_PATH = '../../../resources/animations/defaultAvatar.glb';
@@ -70,7 +70,7 @@ class AvatarController extends THREE.Object3D {
     }
 
     changeAvatar(avatarUrl, animationsUrl, animationMapping) {
-        loadingBar(this.manager);
+        // loadingBar(this.manager);
         this.loadAvatar(avatarUrl, () => this.loadAnimations(animationsUrl, animationMapping));
     }
 

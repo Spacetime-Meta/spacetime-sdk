@@ -14,11 +14,13 @@ class MenuHeader extends UiElement {
         })
         
         this.chatPanelButton = new MenuHeaderButtons("chat");
-        this.multiplayerPanelButton = new MenuHeaderButtons("multiplayer")
+        this.multiplayerPanelButton = new MenuHeaderButtons("multiplayer");
+        this.avatarPanelButton = new MenuHeaderButtons("avatar");
 
         this.appendChildList([
             this.chatPanelButton,
-            this.multiplayerPanelButton
+            this.multiplayerPanelButton,
+            this.avatarPanelButton
         ])
     }
 
@@ -33,14 +35,20 @@ class MenuHeader extends UiElement {
                 this.multiplayerPanelButton.element.style.background = "grey";
                 this.multiplayerPanelButton.options.style.background = "grey";
                 break;
+            case "avatar":
+                this.avatarPanelButton.element.style.background = "grey";
+                this.avatarPanelButton.options.style.background = "grey";
+                break;
         }
     }
 
     closeAllHeaders() {
         this.chatPanelButton.element.style.background = "#383838";
         this.chatPanelButton.options.style.background = "#383838";
-        this.multiplayerPanelButton.element.style.background = "#383838"
-        this.multiplayerPanelButton.options.style.background = "#383838"
+        this.multiplayerPanelButton.element.style.background = "#383838";
+        this.multiplayerPanelButton.options.style.background = "#383838";
+        this.avatarPanelButton.element.style.background = "#383838";
+        this.avatarPanelButton.options.style.background = "#383838";
     }
 }
 export { MenuHeader }

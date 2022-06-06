@@ -5,10 +5,10 @@ class ChatOutputDisplay extends UiElement {
         super({
             id: "ChatOutputDisplay",
             style: {
+                height: "100%",
                 background: "white",
                 overflow: 'scroll',
                 overflowX: 'hidden',
-                overflowY: 'auto',
                 wordBreak: 'break-all',
                 fontSize: "x-small",
             }

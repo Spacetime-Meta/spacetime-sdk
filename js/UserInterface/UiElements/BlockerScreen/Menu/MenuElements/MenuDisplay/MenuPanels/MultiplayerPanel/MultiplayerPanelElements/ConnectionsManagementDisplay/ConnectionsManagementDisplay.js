@@ -12,6 +12,8 @@ class ConnectionsManagementDisplay extends UiElement {
             }
         })
 
+        this.connectionDisplayList = []
+
         this.newConnectionDisplay = new NewConnectionDisplay();
         this.appendChild(this.newConnectionDisplay);
 
@@ -22,8 +24,16 @@ class ConnectionsManagementDisplay extends UiElement {
     }
 
     handleNewConnection(connection) {
-        const connectionDisplay = new ConnectionDisplay(connection);
-        this.appendChild(connectionDisplay);
+        this.connectionDisplayList.forEach(connectionDisplay => {
+            console.log(connectionDisplay.element.id)
+            if(connectionDisplay.element.id === connection.peer){
+                console.log("here")
+                return;
+            }
+        })
+        const newConnectionDisplay = new ConnectionDisplay(connection);
+        this.connectionDisplayList.push(newConnectionDisplay);
+        this.appendChild(newConnectionDisplay);
     }
 
     handleConnectionClose(peerId) {
@@ -33,6 +43,17 @@ class ConnectionsManagementDisplay extends UiElement {
                 this.element.childNodes[i].remove();
             }
         }
+        this.connectionDisplayList.forEach((display, index) => {
+            if(display.element.id === peerId){
+                this.connectionDisplayList.splice(index, 1);
+            }
+        })
+    }
+
+    update(){
+        this.connectionDisplayList.forEach(connectionDisplay => {
+            connectionDisplay.update();
+        })
     }
 }
 export { ConnectionsManagementDisplay }

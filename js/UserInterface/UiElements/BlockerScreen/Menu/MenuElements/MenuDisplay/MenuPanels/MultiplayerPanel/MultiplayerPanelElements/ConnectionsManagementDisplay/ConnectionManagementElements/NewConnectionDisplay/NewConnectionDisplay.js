@@ -24,7 +24,7 @@ class NewConnectionDisplay extends UiElement {
         })
 
         this.info = new UiElement({
-            innerHTML: "Enter the peer id of your friends to connect"
+            innerHTML: "Enter a peerid to attempt connection"
         })
 
         this.appendChildList([

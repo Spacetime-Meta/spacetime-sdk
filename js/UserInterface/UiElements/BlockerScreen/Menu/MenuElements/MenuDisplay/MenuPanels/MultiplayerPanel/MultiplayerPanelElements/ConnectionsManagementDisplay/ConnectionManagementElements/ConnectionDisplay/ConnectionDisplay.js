@@ -15,6 +15,8 @@ class ConnectionDisplay extends UiElement {
             }    
         })
 
+        this.connection = connection;
+
         // remember the name for closing
         this.peer = connection.peer
 
@@ -35,6 +37,14 @@ class ConnectionDisplay extends UiElement {
 
     handleConnectionClose() {
         VIRTUAL_ENVIRONMENT.remoteController.disconnectPeer(this.peer);
+    }
+
+    update() {
+        if(this.connection.open){
+            this.element.style.border = "1px solid green";
+        } else {
+            this.element.style.border = "1px solid yellow";
+        }
     }
 }
 export { ConnectionDisplay }

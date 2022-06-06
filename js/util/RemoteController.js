@@ -60,6 +60,7 @@ class RemoteController {
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
             this.onConnectionConnect(newConnection)
         })
 
@@ -80,10 +81,7 @@ class RemoteController {
 
     onConnectionConnect(newConnection) {
         this.addMessageToChatBox('[info] new connection to peer: ' + newConnection.peer)
-
-        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
-                
-        newConnection.connectionStatus = 1;
+        
         this.connections.push(newConnection);
         
         // not sure why this is needed but if we dont give the connection some time it wont send the message
@@ -113,7 +111,6 @@ class RemoteController {
             switch(jsonData.type) {
                 
                 case "spawn":
-                    connection.connectionStatus = 2;
                     if(jsonData.pathname === window.location.pathname) {
                         this.addMessageToChatBox("[info] Spawning: "+connection.peer);
 
@@ -146,11 +143,10 @@ class RemoteController {
     }
 
     connectToPeer(peerId) {
-        if(peerId !== localProxy.peerId){
+        if(peerId !== this.peer.id){
             this.addMessageToChatBox("[info] Trying connection to peer: " + peerId);
             const newConnection = this.peer.connect(peerId);
-
-            newConnection.connectionStatus = 1;
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
 
             // on new connection establish
             newConnection.on('open', () => {
@@ -159,8 +155,8 @@ class RemoteController {
 
             // kill the attempt after a certain delay
             setTimeout(() => {
-                if(newConnection.connectionStatus === 1){
-                    console.log("[info] No response from peer, connection time out: " + connection.peer);
+                if(!newConnection.open){ 
+                    VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleConnectionClose(newConnection.peer)
                     newConnection.close();
                 }
             }, 3000);

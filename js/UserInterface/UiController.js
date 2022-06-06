@@ -33,6 +33,7 @@ class UiController {
 
     update() {
         this.blockerScreen.menu.menuFooter.update();
+        this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.update();
     }
 }
 export { UiController }

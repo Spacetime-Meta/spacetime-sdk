@@ -1,4 +1,4 @@
-const callBox = function(remoteController, peerId) {
+const callBox = function(remoteController) {
     const box = document.createElement('div');
     box.id = 'call-box';
     box.style.display = 'flex';

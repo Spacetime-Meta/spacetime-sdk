@@ -1,7 +1,7 @@
 import { UiElement } from "../../../../../../../../../../../UiElement.js";
 
 class ConnectionOptions extends UiElement {
-    constructor(onClose) {
+    constructor(onClose, onCall) {
         super({
             style: {
                 display: "flex",
@@ -22,20 +22,21 @@ class ConnectionOptions extends UiElement {
             onClick: onClose,
         })
 
-        this.call = new UiElement({
-            innerHTML: "&#9742;",
-            style: {
-                padding: "3px",
-                cursor: "pointer",
-                color: "black"
-            },
-            hover: {
-                color: "#383838"
-            }
-        })
+        // this.call = new UiElement({
+        //     innerHTML: "&#9742;",
+        //     style: {
+        //         padding: "3px",
+        //         cursor: "pointer",
+        //         color: "black"
+        //     },
+        //     hover: {
+        //         color: "#383838"
+        //     },
+        //     onClick: onCall,
+        // })
 
         this.appendChildList([
-            this.call,
+            // this.call,
             this.closeConnection
         ])
     }

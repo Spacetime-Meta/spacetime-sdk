@@ -27,6 +27,10 @@ class UiController {
         this.blockerScreen.menu.menuDisplay.chatPanel.chatOutputDisplay.displayNewMessage(message);
     }
 
+    handleConnectionClose(peerId) {
+        this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleConnectionClose(peerId);
+    }
+
     update() {
         this.blockerScreen.menu.menuFooter.update();
     }

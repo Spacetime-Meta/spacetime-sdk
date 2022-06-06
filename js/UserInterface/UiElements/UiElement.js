@@ -13,6 +13,8 @@ class UiElement {
         for (let option in defaultOptions) {
             options[option] = typeof options[option] === 'undefined' ? defaultOptions[option] : options[option];
         }
+
+        this.options = options;
     
         // Create the element and assign id
         this.element = document.createElement(options.type);

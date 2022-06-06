@@ -26,6 +26,7 @@ class friendManagementPanel{
             Object.assign(removeBtn.style, {
                 cursor: 'pointer'
             })
+
             removeBtn.addEventListener('click', () => {
                 //remove id from list
                 let tempList = localProxy.friendList;
@@ -56,12 +57,6 @@ class friendManagementPanel{
 
             parent.appendChild(friendDisplay);
         }
-
-        const closeButton = document.createElement("button");
-        closeButton.innerHTML = "close"
-        closeButton.addEventListener('click', () => {
-            this.friendManagementPanelWrapper.style.display = "none"
-        })
         
         const remotePeerIdInput =  document.createElement("input");
         remotePeerIdInput.id = "remotePeerIdInput";

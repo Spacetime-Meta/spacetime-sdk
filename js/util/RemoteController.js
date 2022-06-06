@@ -1,17 +1,12 @@
 import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import localProxy from "./localProxy.js";
-// import goLivePanel from '../UserInterface/UiElements/goLivePanel.js';
-// import peerIdDisplay from '../UserInterface/UiElements/peerIdDisplay.js';
-// import {chatBox, toggleConnectRoom} from '../UserInterface/UiElements/chatBox.js';
-// import friendManagement from '../UserInterface/buttons/friendManagement.js';
-// import { friendManagementPanel } from '../UserInterface/UiElements/friendManagementPanel.js';
-import { AvatarController } from '../entities/AvatarController.js';
-// import { toggleCallBox, callBox, addCamera } from '../UserInterface/UiElements/callBox.js';
 import { PeerGroup, escapeHTML } from './peerjs-groups.js';
+import { AvatarController } from '../entities/AvatarController.js';
+
+// import {toggleConnectRoom} from '../UserInterface/UiElements/chatBox.js';
+// import { toggleCallBox, callBox, addCamera } from '../UserInterface/UiElements/VideoCallBox/callBox.js';
 // import alertBox from '../UserInterface/UiElements/alertBox.js';
 
-// PeerJs is injected in the window
-const Peer = window.Peer;
 const SIGNALLING_OPTIONS =  {
     secure: 'wss://',
     host: 'spacetime-peerserver.herokuapp.com',
@@ -40,7 +35,6 @@ class RemoteController {
         //     this.peer = new Peer(localProxy.peerId);
         //     console.log("[info] Trying to create peer: " + localProxy.peerId)
         //     this.peer.on('open', () => {
-        //         document.getElementById("goLivePanel").remove()
         //         this.onConnectionOpen()
         //     })
         // }
@@ -61,12 +55,8 @@ class RemoteController {
     }
 
     onConnectionOpen() {
-        // chatBox(this);
-
         this.addMessageToChatBox("[info] Peer created with id: "+localProxy.peerId);
-        // peerIdDisplay(localProxy.peerId, this)
-        // this.friendManagementPanel = new friendManagementPanel(this);
-        // friendManagement(this, this.friendManagementPanel);
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
@@ -99,7 +89,7 @@ class RemoteController {
         // not sure why this is needed but if we dont give the connection some time it wont send the message
         setTimeout(() => {
             newConnection.send(this.jsonMessageFormatter("spawn"));
-        }, 500);
+        }, 1000);
         
 
         // listen to new data
@@ -108,7 +98,7 @@ class RemoteController {
         })
 
         newConnection.on('close', ()=>{
-            this.onConnectionTimeOut(newConnection);
+            this.onConnectionClose(newConnection);
         })
     }
 
@@ -157,7 +147,7 @@ class RemoteController {
 
     connectToPeer(peerId) {
         if(peerId !== localProxy.peerId){
-            console.log("[info] Trying connection to peer: " + peerId);
+            this.addMessageToChatBox("[info] Trying connection to peer: " + peerId);
             const newConnection = this.peer.connect(peerId);
 
             newConnection.connectionStatus = 1;
@@ -170,7 +160,8 @@ class RemoteController {
             // kill the attempt after a certain delay
             setTimeout(() => {
                 if(newConnection.connectionStatus === 1){
-                    this.onConnectionTimeOut(newConnection)
+                    console.log("[info] No response from peer, connection time out: " + connection.peer);
+                    newConnection.close();
                 }
             }, 3000);
 
@@ -179,23 +170,23 @@ class RemoteController {
         }
     }
 
-    onConnectionTimeOut(connection) {
-        console.log("[info] No response from peer, connection time out: " + connection.peer);
-        connection.avatarController.removeAvatar();
+    onConnectionClose(connection) {
+        if(typeof connection.avatarController !== "undefined"){
+            connection.avatarController.removeAvatar();
+        }
         const index = this.connections.indexOf(connection);
         this.connections.splice(index,1);
-        connection.close();
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleConnectionClose(connection.peer)
+        this.addMessageToChatBox('[info] disconnected from peer: ' + connection.peer);
     }
     
     disconnectPeer(peerId) {
-        console.log("[info] Trying disconnect to peer: " + peerId);
         this.connections.forEach((connection, index) => {
             if(connection.peer === peerId) {
                 connection.close();
-                this.connections.splice(index, 1);
             }
         })
-        this.addMessageToChatBox('[info] disconnected from peer: ' + peerId);
+        
     }
 
     sendChatMessage(message) {
@@ -207,8 +198,11 @@ class RemoteController {
                 connection.send('{"type":"chat","message":"'+formatted+'"}');
             })
         }
-        
-        this.addMessageToChatBox("["+localProxy.peerId+"] "+formatted)
+        if(typeof this.peer !== "undefined"){
+            this.addMessageToChatBox("["+this.peer.id+"] "+formatted)
+        } else {
+            this.addMessageToChatBox("[info] You must connect to send messages in chat")
+        }
     }
 
     addMessageToChatBox(message) {
@@ -319,8 +313,7 @@ class RemoteController {
         });
 
         group.addEventListener('joined', function (event) {        
-            me.addMessageToChatBox(`[Info] You're in room ${event.sessionID}`);
-            me.addMessageToChatBox(`${event.userID} is present.`);
+            me.addMessageToChatBox(`[Info] You are now in room ${event.sessionID}`);
         });
 
         group.addEventListener('joinrequest', function (event) {
@@ -334,31 +327,35 @@ class RemoteController {
         });
     
         group.addEventListener('userpresent', function (event) {
-            me.addMessageToChatBox(`${event.userID} is present.`);
+            me.addMessageToChatBox(`[${event.sessionID}] ${event.userID} is present.`);
         });
     
         group.addEventListener('userleft', function (event) { 
-            me.addMessageToChatBox(`${event.userID} is left.`);
+            me.addMessageToChatBox(`[${event.sessionID}] ${event.userID} has left.`);
         });
     
         group.addEventListener('message', function (event) {
-            me.addMessageToChatBox(`${event.userID}: ${event.message}`);
+            me.addMessageToChatBox(`[${event.sessionID}][${event.userID}] ${event.message}`);
         });
     }
 
     createRoom(sessionId) {
-        this.addMessageToChatBox(`[Info] accessing room ${sessionId}...`);
-        this.initializeNetworking();
-        connected = true;
-        group.connect(sessionId, localProxy.peerId);
-        toggleConnectRoom(this);
+        if(typeof this.peer !== "undefined") {
+            this.addMessageToChatBox(`[Info] accessing room ${sessionId}...`);
+            this.initializeNetworking();
+            connected = true;
+            group.connect(sessionId, localProxy.peerId);
+            toggleConnectRoom(this);
+        } else {
+            this.addMessageToChatBox("[info] You must connect to create or join chat rooms")
+        }
     }
 
     disconnectRoom() {
         if(connected) {
             group.disconnect();
             connected = false;
-            this.addMessageToChatBox(`${localProxy.peerId}: has left this conversation`);
+            this.addMessageToChatBox(`[${event.sessionID}] You left this conversation`);
             toggleConnectRoom(this);
         }
     }

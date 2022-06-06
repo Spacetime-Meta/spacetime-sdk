@@ -1,5 +1,4 @@
 import { UiElement } from "../../../../UiElement.js";
-import localProxy from "../../../../../../util/localProxy.js";
 
 class MenuFooter extends UiElement {
     constructor() {
@@ -16,9 +15,12 @@ class MenuFooter extends UiElement {
 
     update() {
         if(typeof VIRTUAL_ENVIRONMENT.remoteController.peer !== "undefined"){
-            if(localProxy.peerId !== this.element.innerHTML) {
-                this.element.innerHTML = "Connected as: " + localProxy.peerId;
+            const peerID = VIRTUAL_ENVIRONMENT.remoteController.peer.id;
+            if(peerID !== this.element.innerHTML) {
+                this.element.innerHTML = "Connected as: " + peerID;
             }
+        } else {
+            this.element.innerHTML = "Not Connected";
         }
     }
 }

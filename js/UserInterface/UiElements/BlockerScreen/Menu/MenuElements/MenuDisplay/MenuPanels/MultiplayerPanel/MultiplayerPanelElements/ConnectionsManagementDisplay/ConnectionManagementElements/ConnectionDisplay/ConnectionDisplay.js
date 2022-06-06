@@ -5,11 +5,13 @@ import { ConnectionOptions } from "./ConnectionDisplayElements/ConnectionOptions
 class ConnectionDisplay extends UiElement {
     constructor(connection){
         super({
+            id: connection.peer,
             style: {
                 border: "1px solid black",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                margin: "5px",
             }    
         })
 
@@ -32,7 +34,6 @@ class ConnectionDisplay extends UiElement {
     }
 
     handleConnectionClose() {
-        this.element.remove();
         VIRTUAL_ENVIRONMENT.remoteController.disconnectPeer(this.peer);
     }
 }

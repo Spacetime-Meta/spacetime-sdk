@@ -25,5 +25,10 @@ class Menu extends UiElement {
             this.menuFooter
         ])
     }
+
+    handleMenuPanelSelection(panel) {
+        this.menuDisplay.handleMenuPanelSelection(panel);
+        this.menuHeader.handleMenuHeaderSelection(panel);
+    }
 }
 export { Menu }

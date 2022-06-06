@@ -4,20 +4,20 @@ class MenuHeaderButtons extends UiElement {
     constructor(text) {
         super({
             style: {
-                color: "blue",
+                color: "white",
                 cursor: "pointer",
-                background: "grey",
+                background: "#383838",
                 padding: "5px",
-                border: "1px solid #9e9e9e"
+                border: "1px solid #383838"
             },
             hover: {
-                background: "yellow"
+                background: "grey"
             },
             innerHTML: text
         })
 
         this.element.addEventListener("click", () => {
-            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.handleMenuPanelSelection(text)
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.handleMenuPanelSelection(text)
         })
     }
 }

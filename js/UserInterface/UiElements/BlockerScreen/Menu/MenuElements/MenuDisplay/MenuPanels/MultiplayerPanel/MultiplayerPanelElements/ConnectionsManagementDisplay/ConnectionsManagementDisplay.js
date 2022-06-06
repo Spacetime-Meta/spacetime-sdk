@@ -25,5 +25,14 @@ class ConnectionsManagementDisplay extends UiElement {
         const connectionDisplay = new ConnectionDisplay(connection);
         this.appendChild(connectionDisplay);
     }
+
+    handleConnectionClose(peerId) {
+        const childList = this.element.childNodes
+        for(let i=0; i<childList.length; i++) {
+            if(childList[i].id === peerId) {
+                this.element.childNodes[i].remove();
+            }
+        }
+    }
 }
 export { ConnectionsManagementDisplay }

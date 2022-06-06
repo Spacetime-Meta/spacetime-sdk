@@ -28,8 +28,8 @@ const peerIdSelectPanel = function(remoteController) {
     acceptPeerIdButton.addEventListener('click', () => {
         const peerId = peerIdInput.value;
         if(peerId) {
-            remoteController.createPeerWithId(peerId)
-            peerIdSelectPanel.remove()
+            remoteController.createPeerWithId(peerId);
+            peerIdSelectPanel.remove(); 
         }
     })
 

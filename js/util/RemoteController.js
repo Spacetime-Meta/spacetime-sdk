@@ -52,6 +52,27 @@ class RemoteController {
         this.answer();
     }
 
+    valid(peerId) {
+        let error = "Duplication found! Please select another!";
+        let currentPeerId = localProxy.peerId;
+        let result = true;
+        if(currentPeerId && currentPeerId === peerId) {
+            alertBox('WARNING', error);
+            result = false;
+        }
+
+        if(typeof localProxy.friendList !== 'undefined'){
+            localProxy.friendList.forEach(friend => {
+                if(friend === localProxy.peerId || friend === peerId){
+                    alertBox('WARNING', error);
+                    result = false;
+                }
+            })
+        }
+        
+        return result;
+    }
+
     onConnectionOpen() {
         chatBox(this);
 

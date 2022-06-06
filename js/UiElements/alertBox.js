@@ -10,7 +10,7 @@ const alertBox = function(title, content, f_accept = null) {
         left: 'calc(50% - 150px)',
         width: '300px',
         textAlign: 'center',
-        background: "rgba(0, 0, 0, 0.2)",
+        background: "rgba(0, 0, 0, 0.9)",
         border: "1px solid rgba(256, 256, 256, 0.3)",
         zIndex: 100,
         color: "rgba(256, 256, 256, 0.8)"
@@ -25,7 +25,7 @@ const alertBox = function(title, content, f_accept = null) {
     })
 
     const closeButton = document.createElement("button");
-    closeButton.innerHTML = "close"
+    closeButton.innerHTML = "Close"
     closeButton.addEventListener('click', () => {
         alertPanel.remove();
     })

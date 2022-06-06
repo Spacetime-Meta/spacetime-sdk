@@ -89,17 +89,19 @@ const friendManagementPanel = function(remoteController) {
         // get value of the input field
         const remotePeerId = remotePeerIdInput.value;
         remotePeerIdInput.value = '';
-        
-        // tell remoteController to try connect
-        remoteController.connectToPeer(remotePeerId);
 
-        // add the friend to the friend list
-        let tempList = localProxy.friendList
-        tempList.push(remotePeerId);
-        localProxy.friendList = tempList
+        if(remoteController.valid(remotePeerId)) {
+            // tell remoteController to try connect
+            remoteController.connectToPeer(remotePeerId);
 
-        // add the friend to the friend panel
-        friendListElement(remotePeerId, friendList);
+            // add the friend to the friend list
+            let tempList = localProxy.friendList
+            tempList.push(remotePeerId);
+            localProxy.friendList = tempList
+
+            // add the friend to the friend panel
+            friendListElement(remotePeerId, friendList);
+        }
     })
     
     friendManagementPanelWrapper.appendChild(remotePeerIdInput);

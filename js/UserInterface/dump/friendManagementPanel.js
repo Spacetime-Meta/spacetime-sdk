@@ -2,36 +2,6 @@ import localProxy from "../../util/localProxy.js";
 
 class friendManagementPanel{
     constructor(remoteController) {
-        this.remoteController = remoteController;
-
-        this.friendManagementPanelWrapper = document.createElement("div");
-        this.friendManagementPanelWrapper.id = "friendManagementPanelWrapper";
-        this.friendManagementPanelWrapper.innerHTML = "Manage Friends";
-
-        Object.assign(this.friendManagementPanelWrapper.style, {
-            position: 'absolute',
-            padding: '10px',
-            top: '350px',
-            transform: 'translate(0, -100%)',
-            left: 'calc(50% - 150px)',
-            width: '300px',
-            textAlign: 'center',
-            border: "1px solid rgba(256, 256, 256, 0.3)",
-            background: "rgba(0, 0, 0, 0.2)",
-            zIndex: 100,
-            color: "rgba(256, 256, 256, 0.8)",
-            display: "none"
-        })
-        
-        const friendList = document.createElement("div");
-        friendList.id = "friendList";
-        Object.assign(friendList.style, {
-            overflow: 'scroll',
-            maxHeight: '100px',
-            overflowX: 'hidden',
-            overflowY: 'auto',
-            listStyle: 'none',
-        })
 
         remoteController.updateFriendList();
         localProxy.friendList.forEach(friend => {

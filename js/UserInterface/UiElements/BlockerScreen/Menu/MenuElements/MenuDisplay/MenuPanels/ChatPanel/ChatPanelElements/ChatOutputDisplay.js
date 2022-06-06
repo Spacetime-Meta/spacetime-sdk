@@ -9,13 +9,14 @@ class ChatOutputDisplay extends UiElement {
                 overflow: 'scroll',
                 overflowX: 'hidden',
                 overflowY: 'auto',
-                wordBreak: 'break-all'
+                wordBreak: 'break-all',
+                fontSize: "x-small",
             }
         })
     }
 
     displayNewMessage(message) {
-        this.element.innerHTML = message;
+        this.element.innerHTML += "<br>"+message;
     }
 }
 export { ChatOutputDisplay }

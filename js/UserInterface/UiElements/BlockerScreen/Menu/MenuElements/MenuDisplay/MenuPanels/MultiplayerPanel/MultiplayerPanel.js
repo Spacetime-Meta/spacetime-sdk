@@ -1,6 +1,7 @@
 import { UiElement } from "../../../../../../UiElement.js";
 
 import { GoLiveDisplay } from "./MultiplayerPanelElements/GoLiveDisplay/GoLiveDisplay.js"
+import { ConnectionsManagementDisplay } from "./MultiplayerPanelElements/ConnectionsManagementDisplay/ConnectionsManagementDisplay.js"
 
 class MultiplayerPanel extends UiElement {
     constructor(){
@@ -13,13 +14,21 @@ class MultiplayerPanel extends UiElement {
         })
 
         this.goLiveDisplay = new GoLiveDisplay(()=>this.handleGoLive());
+        this.connectionsManagementDisplay = new ConnectionsManagementDisplay();
 
-        this.appendChild(this.goLiveDisplay)
+        this.appendChildList([
+            this.goLiveDisplay,
+            this.connectionsManagementDisplay
+        ])
     }
 
     handleGoLive() {
-        VIRTUAL_ENVIRONMENT.remoteController.createPeerWithId(this.goLiveDisplay.peerIdInput.element.value);
-        this.goLiveDisplay.element.style.display = "none";
+        const inputValue = this.goLiveDisplay.peerIdInput.element.value
+        if(inputValue !== "") {
+            VIRTUAL_ENVIRONMENT.remoteController.createPeerWithId(inputValue);
+            this.goLiveDisplay.element.style.display = "none";
+            this.connectionsManagementDisplay.element.style.display = "block";
+        }
     }
 }
 export { MultiplayerPanel }

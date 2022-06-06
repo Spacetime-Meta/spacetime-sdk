@@ -90,6 +90,8 @@ class RemoteController {
 
     onConnectionConnect(newConnection) {
         this.addMessageToChatBox('[info] new connection to peer: ' + newConnection.peer)
+
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
                 
         newConnection.connectionStatus = 1;
         this.connections.push(newConnection);
@@ -97,7 +99,7 @@ class RemoteController {
         // not sure why this is needed but if we dont give the connection some time it wont send the message
         setTimeout(() => {
             newConnection.send(this.jsonMessageFormatter("spawn"));
-        }, 1000);mainScene
+        }, 500);
         
 
         // listen to new data
@@ -193,7 +195,7 @@ class RemoteController {
                 this.connections.splice(index, 1);
             }
         })
-        this.addMessageToChatBox('[info] disconnect to peer: ' + peerId);
+        this.addMessageToChatBox('[info] disconnected from peer: ' + peerId);
     }
 
     sendChatMessage(message) {

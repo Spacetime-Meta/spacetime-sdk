@@ -1,10 +1,29 @@
 import { UiElement } from "../../UiElement.js";
 
+import { MenuHeader } from "./MenuElements/MenuHeader/MenuHeader.js";
+import { MenuFooter } from "./MenuElements/MenuFooter/MenuFooter.js";
+import { MenuDisplay } from "./MenuElements/MenuDisplay/MenuDisplay.js";
+
 class Menu extends UiElement {
-    constructor(parent) {
+    constructor() {
         super({
-            id: "Menu"
+            id: "Menu",
+            style: {
+                background: "grey",
+                display: "grid",
+                gridTemplateRows: "50px 1fr 30px",
+            }
         })
+
+        this.menuHeader = new MenuHeader();
+        this.menuDisplay = new MenuDisplay();
+        this.menuFooter = new MenuFooter();
+
+        this.appendChildList([
+            this.menuHeader,
+            this.menuDisplay,
+            this.menuFooter
+        ])
     }
 }
 export { Menu }

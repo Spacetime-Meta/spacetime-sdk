@@ -3,7 +3,7 @@ import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1W
 import { PlayerLocal } from './entities/PlayerLocal.js';
 
 import { TerrainController } from './util/TerrainController.js';
-// import { RemoteController } from './util/RemoteController.js';
+import { RemoteController } from './util/RemoteController.js';
 import { UiController } from './UserInterface/UiController.js';
 
 import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
@@ -73,7 +73,7 @@ class VirtualEnvironment {
         this.setGraphicsSetting(this.graphicTier);
         
         // ===== UI =====
-        window.UI_CONTROLLER = new UiController();
+        this.UI_CONTROLLER = new UiController();
 
         // ===== Terrain Controller
         this.terrainController = new TerrainController(this.loadingManager);
@@ -88,7 +88,10 @@ class VirtualEnvironment {
         }
 
         // ===== setupMultiplayer =====
-        // this.remoteController = new RemoteController(this.loadingManager, MAIN_SCENE);
+        this.remoteController = new RemoteController(this.loadingManager, MAIN_SCENE);
+
+        // inject this n the window
+        window.VIRTUAL_ENVIRONMENT = this;
 
     } // -- end constructor
 
@@ -225,7 +228,7 @@ class VirtualEnvironment {
             
         }
 
-        // this.remoteController.update(delta);
+        this.remoteController.update(delta);
 
         MAIN_SCENE.fog.needsUpdate = true;
 
@@ -245,6 +248,8 @@ class VirtualEnvironment {
         this.renderer.setRenderTarget(null);
         this.renderer.clear();
         this.composer.render();
+
+        this.UI_CONTROLLER.update();
     }
 
 }

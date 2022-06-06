@@ -25,10 +25,10 @@ class UiElement {
         
         // if something is defined in the hover, add event listeners
         if(typeof options.hover !== "undefined"){
-            this.element.addEventListener("mouseenter", function(){
+            this.element.addEventListener("mouseenter", () => {
                 Object.assign(this.element.style, options.hover);
             })
-            this.element.addEventListener("mouseleave", function(){
+            this.element.addEventListener("mouseleave", () => {
                 Object.assign(this.element.style, options.style);
             })
         }
@@ -49,8 +49,8 @@ class UiElement {
     }
 
     appendChildList(elementList) {
-        elementList.forEach(element => {
-            this.element.appendChild(element);
+        elementList.forEach(elementObject => {
+            this.element.appendChild(elementObject.element);
         })
     }
 }

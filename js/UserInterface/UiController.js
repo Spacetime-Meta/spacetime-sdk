@@ -12,17 +12,23 @@ class UiController {
         this.playScreen = new PlayScreen();
     }
 
-    handleControlsLock () {
+    handleControlsLock() {
         LOCAL_PLAYER.controls.lock();
         this.blockerScreen.element.style.display = "none";
         this.playScreen.element.style.display = "block";
     }
 
-    handleControlsUnlock () {
-        this.blockerScreen.element.style.display = "block";
+    handleControlsUnlock() {
+        this.blockerScreen.element.style.display = "grid";
         this.playScreen.element.style.display = "none";
     }
 
-    update() {}
+    handleNewMessage(message) {
+        this.blockerScreen.menu.menuDisplay.chatPanel.chatOutputDisplay.displayNewMessage(message);
+    }
+
+    update() {
+        this.blockerScreen.menu.menuFooter.update();
+    }
 }
 export { UiController }

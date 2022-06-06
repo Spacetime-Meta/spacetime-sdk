@@ -11,7 +11,9 @@ class BlockerScreen extends UiElement {
                 position: "absolute",
                 top: "0",
                 width: "100%",
-                height: "100%"
+                height: "100%",
+                display: "grid",
+                gridTemplateColumns: "350px 1fr"
             }
         })
 
@@ -19,8 +21,8 @@ class BlockerScreen extends UiElement {
         this.menu = new Menu()
 
         this.appendChildList([
-            this.blocker.element,
-            this.menu.element
+            this.menu,
+            this.blocker
         ])
 
         document.body.appendChild(this.element)

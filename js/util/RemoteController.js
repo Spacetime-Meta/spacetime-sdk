@@ -1,14 +1,14 @@
 import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import localProxy from "./localProxy.js";
-import goLivePanel from '../UserInterface/UiElements/goLivePanel.js';
-import peerIdDisplay from '../UserInterface/UiElements/peerIdDisplay.js';
-import {chatBox, toggleConnectRoom} from '../UserInterface/UiElements/chatBox.js';
-import friendManagement from '../UserInterface/buttons/friendManagement.js';
-import { friendManagementPanel } from '../UserInterface/UiElements/friendManagementPanel.js';
+// import goLivePanel from '../UserInterface/UiElements/goLivePanel.js';
+// import peerIdDisplay from '../UserInterface/UiElements/peerIdDisplay.js';
+// import {chatBox, toggleConnectRoom} from '../UserInterface/UiElements/chatBox.js';
+// import friendManagement from '../UserInterface/buttons/friendManagement.js';
+// import { friendManagementPanel } from '../UserInterface/UiElements/friendManagementPanel.js';
 import { AvatarController } from '../entities/AvatarController.js';
-import { toggleCallBox, callBox, addCamera } from '../UserInterface/UiElements/callBox.js';
+// import { toggleCallBox, callBox, addCamera } from '../UserInterface/UiElements/callBox.js';
 import { PeerGroup, escapeHTML } from './peerjs-groups.js';
-import alertBox from '../UserInterface/UiElements/alertBox.js';
+// import alertBox from '../UserInterface/UiElements/alertBox.js';
 
 // PeerJs is injected in the window
 const Peer = window.Peer;
@@ -29,7 +29,7 @@ class RemoteController {
         this.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         if(!this.getUserMedia) console.log('Your browser doesn\'t support getUserMedia.');
         
-        goLivePanel(this);
+        // goLivePanel(this);
 
         /* The following lines check if the user has a peerID in the local storage
          * and automatically creates a new peer if it finds one. This is a good feature for
@@ -52,19 +52,21 @@ class RemoteController {
         this.peer.on('open', () => {
             this.onConnectionOpen();
         });
+        
         // add video call box
-        callBox(this, peerId);
+        // callBox(this, peerId);
+
         // listen for a call
-        this.answer();
+        // this.answer();
     }
 
     onConnectionOpen() {
-        chatBox(this);
+        // chatBox(this);
 
         this.addMessageToChatBox("[info] Peer created with id: "+localProxy.peerId);
-        peerIdDisplay(localProxy.peerId, this)
-        this.friendManagementPanel = new friendManagementPanel(this);
-        friendManagement(this, this.friendManagementPanel);
+        // peerIdDisplay(localProxy.peerId, this)
+        // this.friendManagementPanel = new friendManagementPanel(this);
+        // friendManagement(this, this.friendManagementPanel);
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
@@ -208,9 +210,8 @@ class RemoteController {
     }
 
     addMessageToChatBox(message) {
-        let formatted = escapeHTML(message);
-        const chat = document.getElementById("chatDisplay");
-        chat.innerHTML = chat.innerHTML + "<br>" + formatted;
+        const formatted = escapeHTML(message);
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleNewMessage(formatted)
     }
 
     update(delta) {

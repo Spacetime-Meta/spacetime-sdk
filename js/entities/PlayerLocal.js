@@ -61,7 +61,7 @@ class PlayerLocal extends CapsuleEntity {
         });
 
         this.controls.addEventListener('unlock', () => {
-            UI_CONTROLLER.handleControlsUnlock()
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleControlsUnlock()
         });
     }
     

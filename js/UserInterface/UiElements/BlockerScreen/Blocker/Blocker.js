@@ -9,9 +9,16 @@ class Blocker extends UiElement {
                 height: "100%",
                 background: "rgba(0, 0, 0, 0.5)",
                 textAlign: "center",
-                color: "white"
+                cursor: "pointer",
+                fontSize: "16px",
+                color: "white",
             },
-            onClick: () => UI_CONTROLLER.handleControlsLock()
+            hover: {
+                background: "rgba(0, 0, 0, 0.3)",
+                fontSize: "large"
+            },
+            innerHTML: "Click to play",
+            onClick: () => VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleControlsLock()
         })
     }
 }

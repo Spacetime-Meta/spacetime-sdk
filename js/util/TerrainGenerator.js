@@ -2,6 +2,12 @@ import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1W
 import { ImprovedNoise } from 'https://threejs.org/examples/jsm/math/ImprovedNoise.js';
 
 const worldWidth = 256, worldDepth = 256;
+const worldSeed = 0;
+
+const seedRandom = function(seed) {
+    var x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+}
 
 class TerrainGenerator {
     generateTerrain(scene, seed, terrainController) {
@@ -121,7 +127,7 @@ class TerrainGenerator {
             // square
             for (x = 0; x < segments; x += whole) {
                 for (y = 0; y < segments; y += whole) {
-                    d = Math.random() * smoothing * 2 - smoothing;
+                    d = seedRandom(worldSeed+x+y) * smoothing * 2 - smoothing;
                     avg = heightmap[x][y] +            // top left
                           heightmap[x+whole][y] +      // top right
                           heightmap[x][y+whole] +      // bottom left
@@ -133,7 +139,7 @@ class TerrainGenerator {
             // diamond
             for (x = 0; x < segments; x += half) {
                 for (y = (x+half) % l; y < segments; y += l) {
-                    d = Math.random() * smoothing * 2 - smoothing;
+                    d = seedRandom(worldSeed+x+y) * smoothing * 2 - smoothing;
                     avg = heightmap[(x-half+size)%size][y] + // middle left
                           heightmap[(x+half)%size][y] +      // middle right
                           heightmap[x][(y+half)%size] +      // middle top

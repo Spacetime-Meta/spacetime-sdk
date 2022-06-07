@@ -8,7 +8,6 @@ class MultiplayerPanel extends UiElement {
         super({
             id: "MultiplayerPanel",
             style: {
-                display: "none",
                 height: "100%"
             }
         })

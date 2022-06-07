@@ -17,21 +17,22 @@ class ConnectionsManagementDisplay extends UiElement {
 
         this.newConnectionDisplay = new NewConnectionDisplay();
         this.appendChild(this.newConnectionDisplay);
+        
+        this.appendChild(new UiElement({
+            innerHTML: "Activate the &#9733; icon to save a connection."
+        }))
 
         this.appendChild(new UiElement({
             type: "h3",
             innerHTML: "Connection List"
         }));
 
-        this.appendChild(new UiElement({
-            innerHTML: "Your stared contacts will connect automatically when you log on"
-        }))
+
     }
 
     handleNewConnection(connection) {
         this.connectionDisplayList.forEach(connectionDisplay => {
             if(connectionDisplay.element.id === connection.peer){
-                console.log("here")
                 return;
             }
         })

@@ -46,13 +46,13 @@ class UiElement {
         }
     }
 
-    appendChild(elementObject) {
-        this.element.appendChild(elementObject.element);
+    appendChild(uiElement) {
+        this.element.appendChild(uiElement.element);
     }
 
-    appendChildList(elementList) {
-        elementList.forEach(elementObject => {
-            this.element.appendChild(elementObject.element);
+    appendChildList(uiElementList) {
+        uiElementList.forEach(uiElement => {
+            this.element.appendChild(uiElement.element);
         })
     }
 }

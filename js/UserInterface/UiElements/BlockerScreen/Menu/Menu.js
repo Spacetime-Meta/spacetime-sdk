@@ -24,6 +24,9 @@ class Menu extends UiElement {
             this.menuDisplay,
             this.menuFooter
         ])
+
+        // set multiplayer as default panel
+        this.handleMenuPanelSelection("multiplayer");
     }
 
     handleMenuPanelSelection(panel) {

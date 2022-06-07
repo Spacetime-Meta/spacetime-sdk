@@ -1,16 +1,12 @@
 import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import localProxy from "./localProxy.js";
-import goLivePanel from '../UiElements/goLivePanel.js';
-import peerIdDisplay from '../UiElements/peerIdDisplay.js';
-import {chatBox, toggleConnectRoom} from '../UiElements/chatBox.js';
-import friendManagement from '../UiElements/buttons/friendManagement.js';
-import { AvatarController } from '../entities/AvatarController.js';
-import { toggleCallBox, callBox, addCamera } from '../UiElements/callBox.js';
 import { PeerGroup, escapeHTML } from './peerjs-groups.js';
-import alertBox from '../UiElements/alertBox.js';
+import { AvatarController } from '../entities/AvatarController.js';
 
-// PeerJs is injected in the window
-const Peer = window.Peer;
+// import {toggleConnectRoom} from '../UserInterface/UiElements/chatBox.js';
+// import { toggleCallBox, callBox, addCamera } from '../UserInterface/UiElements/VideoCallBox/callBox.js';
+// import alertBox from '../UserInterface/UiElements/alertBox.js';
+
 const SIGNALLING_OPTIONS =  {
     secure: 'wss://',
     host: 'spacetime-peerserver.herokuapp.com',
@@ -22,24 +18,26 @@ let joinRequests = [];
 
 
 class RemoteController {
-    constructor(manager, scene) {
+    constructor(manager) {
         this.connections = [];
-        this.scene = scene;
         this.manager = manager;
         this.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         if(!this.getUserMedia) console.log('Your browser doesn\'t support getUserMedia.');
         
-        goLivePanel(this);
+        // goLivePanel(this);
 
-        // check if the user has a peerID in the local storage
-        // if(typeof localProxy.peerId !== 'undefined'){
-        //     this.peer = new Peer(localProxy.peerId);
-        //     console.log("[info] Trying to create peer: " + localProxy.peerId)
-        //     this.peer.on('open', () => {
-        //         document.getElementById("goLivePanel").remove()
-        //         this.onConnectionOpen()
-        //     })
-        // }
+        /* The following lines check if the user has a peerID in the local storage
+         * and automatically creates a new peer if it finds one. This is a good feature for
+         * production but is very annoying when testing. please leave like this until next
+         * merge into the main branch.
+         */ 
+        if(typeof localProxy.peerId !== 'undefined'){
+            this.peer = new Peer(localProxy.peerId);
+            console.log("[info] Trying to create peer: " + localProxy.peerId)
+            this.peer.on('open', () => {
+                this.onConnectionOpen()
+            })
+        }
     }
 
     createPeerWithId(peerId){
@@ -48,28 +46,32 @@ class RemoteController {
         this.peer.on('open', () => {
             this.onConnectionOpen();
         });
+        
+        // add video call box
+        // callBox(this, peerId);
+
         // listen for a call
-        this.answer();
+        // this.answer();
     }
 
     onConnectionOpen() {
-        chatBox(this);
-
         this.addMessageToChatBox("[info] Peer created with id: "+localProxy.peerId);
-        peerIdDisplay(localProxy.peerId, this)
-        friendManagement(this);
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
             this.onConnectionConnect(newConnection)
         })
 
+        this.initFriendList()
+    }
+
+    initFriendList() {
         // try connect to friends
         if(typeof localProxy.friendList !== 'undefined'){
             localProxy.friendList.forEach(friend => {
-                if(friend !== localProxy.peerId){
-                    this.connectToPeer(friend)
-                }
+                this.connectToPeer(friend)
             })
         }
         else {
@@ -79,6 +81,7 @@ class RemoteController {
 
     onConnectionConnect(newConnection) {
         this.addMessageToChatBox('[info] new connection to peer: ' + newConnection.peer)
+        
         this.connections.push(newConnection);
         
         // not sure why this is needed but if we dont give the connection some time it wont send the message
@@ -91,9 +94,13 @@ class RemoteController {
         newConnection.on('data', (data) => {
             this.onReceiveData(newConnection, data)
         })
+
+        newConnection.on('close', ()=>{
+            this.onConnectionClose(newConnection);
+        })
     }
 
-    onReceiveData(connection, data) {
+    onReceiveData(connection, data) {      
         let jsonData;
         try {
             jsonData = JSON.parse(data);
@@ -103,7 +110,7 @@ class RemoteController {
         if(typeof jsonData.type !== 'undefined') {
             switch(jsonData.type) {
                 
-                 case "spawn":
+                case "spawn":
                     if(jsonData.pathname === window.location.pathname) {
                         this.addMessageToChatBox("[info] Spawning: "+connection.peer);
 
@@ -136,24 +143,46 @@ class RemoteController {
     }
 
     connectToPeer(peerId) {
-        console.log("[info] Trying connection to peer: " + peerId);
-        const newConnection = this.peer.connect(peerId);
+        if(peerId !== this.peer.id){
+            this.addMessageToChatBox("[info] Trying connection to peer: " + peerId);
+            const newConnection = this.peer.connect(peerId);
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
 
-        // on new connection establish
-        newConnection.on('open', () => {
-            this.onConnectionConnect(newConnection);
-        })
+            // on new connection establish
+            newConnection.on('open', () => {
+                this.onConnectionConnect(newConnection);
+            })
+
+            // kill the attempt after a certain delay
+            setTimeout(() => {
+                if(!newConnection.open){ 
+                    VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleConnectionClose(newConnection.peer)
+                    newConnection.close();
+                }
+            }, 3000);
+
+        } else {
+            console.warn("[RemoteController:connectToPeer] You are trying to connect to your own peerId. Current id: "+localProxy.peerId);
+        }
+    }
+
+    onConnectionClose(connection) {
+        if(typeof connection.avatarController !== "undefined"){
+            connection.avatarController.removeAvatar();
+        }
+        const index = this.connections.indexOf(connection);
+        this.connections.splice(index,1);
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleConnectionClose(connection.peer)
+        this.addMessageToChatBox('[info] disconnected from peer: ' + connection.peer);
     }
     
     disconnectPeer(peerId) {
-        console.log("[info] Trying disconnect to peer: " + peerId);
         this.connections.forEach((connection, index) => {
             if(connection.peer === peerId) {
                 connection.close();
-                this.connections.splice(index, 1);
             }
         })
-        this.addMessageToChatBox('[info] disconnect to peer: ' + peerId);
+        
     }
 
     sendChatMessage(message) {
@@ -165,21 +194,23 @@ class RemoteController {
                 connection.send('{"type":"chat","message":"'+formatted+'"}');
             })
         }
-        
-        this.addMessageToChatBox("["+localProxy.peerId+"] "+formatted)
+        if(typeof this.peer !== "undefined"){
+            this.addMessageToChatBox("["+this.peer.id+"] "+formatted)
+        } else {
+            this.addMessageToChatBox("[info] You must connect to send messages in chat")
+        }
     }
 
     addMessageToChatBox(message) {
-        let formatted = escapeHTML(message);
-        const chat = document.getElementById("chatDisplay");
-        chat.innerHTML = chat.innerHTML + "<br>" + formatted;
+        const formatted = escapeHTML(message);
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleNewMessage(formatted)
     }
 
     update(delta) {
         this.connections.forEach(connection => {
             if(connection.needUpdate) {
-                const position = player.position;
-                const horizontalVelocity = player.horizontalVelocity;
+                const position = LOCAL_PLAYER.position;
+                const horizontalVelocity = LOCAL_PLAYER.horizontalVelocity;
 
                 connection.send(this.jsonMessageFormatter("stream"));
 
@@ -252,12 +283,12 @@ class RemoteController {
                 jsonMessage.pathname = window.location.pathname;
             case "stream":
                 jsonMessage.transform = {
-                    position: player.position,
-                    horizontalVelocity: player.horizontalVelocity
+                    position: LOCAL_PLAYER.position,
+                    horizontalVelocity: LOCAL_PLAYER.horizontalVelocity
                 }; 
                 jsonMessage.animation = [
-                    window.player.currentAnimation,
-                    window.player.currentAnimationTime
+                    LOCAL_PLAYER.currentAnimation,
+                    LOCAL_PLAYER.currentAnimationTime
                 ];
         }
         return JSON.stringify(jsonMessage);
@@ -280,8 +311,7 @@ class RemoteController {
         });
 
         group.addEventListener('joined', function (event) {        
-            me.addMessageToChatBox(`[Info] You're in room ${event.sessionID}`);
-            me.addMessageToChatBox(`${event.userID} is present.`);
+            me.addMessageToChatBox(`[Info] You are now in room ${event.sessionID}`);
         });
 
         group.addEventListener('joinrequest', function (event) {
@@ -295,31 +325,35 @@ class RemoteController {
         });
     
         group.addEventListener('userpresent', function (event) {
-            me.addMessageToChatBox(`${event.userID} is present.`);
+            me.addMessageToChatBox(`[${event.sessionID}] ${event.userID} is present.`);
         });
     
         group.addEventListener('userleft', function (event) { 
-            me.addMessageToChatBox(`${event.userID} is left.`);
+            me.addMessageToChatBox(`[${event.sessionID}] ${event.userID} has left.`);
         });
     
         group.addEventListener('message', function (event) {
-            me.addMessageToChatBox(`${event.userID}: ${event.message}`);
+            me.addMessageToChatBox(`[${event.sessionID}][${event.userID}] ${event.message}`);
         });
     }
 
     createRoom(sessionId) {
-        this.addMessageToChatBox(`[Info] accessing room ${sessionId}...`);
-        this.initializeNetworking();
-        connected = true;
-        group.connect(sessionId, localProxy.peerId);
-        toggleConnectRoom(this);
+        if(typeof this.peer !== "undefined") {
+            this.addMessageToChatBox(`[Info] accessing room ${sessionId}...`);
+            this.initializeNetworking();
+            connected = true;
+            group.connect(sessionId, localProxy.peerId);
+            toggleConnectRoom(this);
+        } else {
+            this.addMessageToChatBox("[info] You must connect to create or join chat rooms")
+        }
     }
 
     disconnectRoom() {
         if(connected) {
             group.disconnect();
             connected = false;
-            this.addMessageToChatBox(`${localProxy.peerId}: has left this conversation`);
+            this.addMessageToChatBox(`[${event.sessionID}] You left this conversation`);
             toggleConnectRoom(this);
         }
     }

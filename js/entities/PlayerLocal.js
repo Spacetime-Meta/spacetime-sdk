@@ -35,13 +35,13 @@ class PlayerLocal extends CapsuleEntity {
         this.controls.sensitivityY = -0.002;
         this.controls.minPolarAngle = 0.01; 
         this.controls.maxPolarAngle = Math.PI - 0.25;
-        mainScene.add(this.controls.getObject());
+        MAIN_SCENE.add(this.controls.getObject());
 
         document.addEventListener('keyup', (event) => {
             delete this.keys[event.key.toLowerCase()];
         });
         document.addEventListener('keydown', (event) => {
-            if(player.controls.isLocked) {
+            if(this.controls.isLocked) {
                 if (event.key === "v") {
                     if (this.targetControlVector === this.thirdPersonControls) {
                         this.targetControlVector = this.fpsControls;
@@ -52,7 +52,7 @@ class PlayerLocal extends CapsuleEntity {
                 if (event.keyCode === 32 && event.target === document.body) {
                     event.preventDefault();
                 }
-                player.keys[event.key.toLowerCase()] = true;
+                this.keys[event.key.toLowerCase()] = true;
             }
         });
 
@@ -61,7 +61,7 @@ class PlayerLocal extends CapsuleEntity {
         });
 
         this.controls.addEventListener('unlock', () => {
-            document.getElementById("blockerWrapper").style.display = 'block';
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleControlsUnlock()
         });
     }
     

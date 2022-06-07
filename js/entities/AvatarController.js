@@ -1,6 +1,6 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
-import { loadingBar } from '../UiElements/loadingPage.js';
+import { loadingBar } from '../UserInterface/UiElements/LoadingPage/loadingPage.js';
 
 const DEFAULT_AVATAR_PATH = '../../../resources/avatars/yBot.glb';
 const DEFAULT_ANIMATION_PATH = '../../../resources/animations/defaultAvatar.glb';
@@ -77,7 +77,7 @@ class AvatarController extends THREE.Object3D {
     loadAvatar(avatarURL, loadAnimation) {
         this.loader.load(avatarURL, (responseObject) => {
             
-            mainScene.remove(this.model)
+            MAIN_SCENE.remove(this.model)
 
             this.radius = 2.5;
             this.size = 30;
@@ -91,12 +91,14 @@ class AvatarController extends THREE.Object3D {
                     child.frustumCulled = false;
                 }
             });
-            mainScene.add(this.model);
+            MAIN_SCENE.add(this.model);
             loadAnimation(); 
         });
     }
 
-
+    removeAvatar(){
+        MAIN_SCENE.remove(this.model);
+    }
 
     loadAnimations(animationURL, animationMapping) {
         this.loader.load(animationURL, (gltf) => {

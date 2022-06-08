@@ -8,8 +8,9 @@ init();
 function init() {
     const urlParams = new URLSearchParams(window.location.search);
     let seed = parseInt(urlParams.get("x")) + parseInt(urlParams.get("y")) + parseInt(urlParams.get("z"))
-    console.log(seed)
-    if(typeof seed === "NaN"){ seed = 100 }
+    if(isNaN(seed)){ 
+        seed = 100 
+    }
     virtualEnvironment.generateTerrain(seed);
     virtualEnvironment.spawnPlayer({spawn: { x:0, y:520, z:0}})
 }

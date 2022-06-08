@@ -16,11 +16,13 @@ class MenuHeader extends UiElement {
         this.chatPanelButton = new MenuHeaderButtons("chat");
         this.multiplayerPanelButton = new MenuHeaderButtons("multiplayer");
         this.avatarPanelButton = new MenuHeaderButtons("avatar");
+        this.mapPanelButton = new MenuHeaderButtons("map");
 
         this.appendChildList([
             this.chatPanelButton,
             this.multiplayerPanelButton,
-            this.avatarPanelButton
+            this.avatarPanelButton,
+            this.mapPanelButton
         ])
     }
 
@@ -39,6 +41,9 @@ class MenuHeader extends UiElement {
                 this.avatarPanelButton.element.style.background = "grey";
                 this.avatarPanelButton.options.style.background = "grey";
                 break;
+            case "map":
+                this.mapPanelButton.element.style.background = "grey";
+                this.mapPanelButton.options.style.background = "grey";
         }
     }
 
@@ -49,6 +54,8 @@ class MenuHeader extends UiElement {
         this.multiplayerPanelButton.options.style.background = "#383838";
         this.avatarPanelButton.element.style.background = "#383838";
         this.avatarPanelButton.options.style.background = "#383838";
+        this.mapPanelButton.element.style.background = "#383838";
+        this.mapPanelButton.options.style.background = "#383838";
     }
 }
 export { MenuHeader }

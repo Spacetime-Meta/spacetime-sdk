@@ -2,7 +2,6 @@ import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1W
 import { ImprovedNoise } from 'https://threejs.org/examples/jsm/math/ImprovedNoise.js';
 
 const worldWidth = 256, worldDepth = 256;
-const worldSeed = 0;
 
 const seedRandom = function(seed) {
     var x = Math.sin(seed++) * 10000;
@@ -10,7 +9,11 @@ const seedRandom = function(seed) {
 }
 
 class TerrainGenerator {
-    generateTerrain(scene, seed, terrainController) {
+    constructor(seed){
+        this.worldSeed = seed;
+    }
+
+    generateTerrain() {
         const loader = new THREE.TextureLoader();
         loader.load('../../resources/textures/sand.jpg', (sand) => {
             sand.wrapS = sand.wrapT = THREE.RepeatWrapping;
@@ -26,10 +29,10 @@ class TerrainGenerator {
                             {texture: rock, glsl: 'slope > 0.6 ? 0.0 : 1.0 - smoothstep(0.3, 0.6, slope) + 0.2'},
                         ]);
 
-                        const terrain = this.terrain({material: blend})
-                        terrainController.terrain = terrain;
-                        scene.add(terrain)
-                        terrainController.generateCollider(scene);
+                        const terrain = this.terrain({material: blend, seed: this.worldSeed})
+                        VIRTUAL_ENVIRONMENT.terrainController.terrain = terrain;
+                        MAIN_SCENE.add(terrain)
+                        VIRTUAL_ENVIRONMENT.terrainController.generateCollider(MAIN_SCENE);
                     });
                 });
             });
@@ -55,6 +58,7 @@ class TerrainGenerator {
             ySegments: 127,
             ySize: 4096,
             _mesh: null, // internal only
+            seed: 100,
         };
         for (let opt in defaultOptions) {
             options[opt] = typeof options[opt] === 'undefined' ? defaultOptions[opt] : options[opt];
@@ -127,7 +131,7 @@ class TerrainGenerator {
             // square
             for (x = 0; x < segments; x += whole) {
                 for (y = 0; y < segments; y += whole) {
-                    d = seedRandom(worldSeed+x+y) * smoothing * 2 - smoothing;
+                    d = seedRandom(options.seed+x+y) * smoothing * 2 - smoothing;
                     avg = heightmap[x][y] +            // top left
                           heightmap[x+whole][y] +      // top right
                           heightmap[x][y+whole] +      // bottom left
@@ -139,7 +143,7 @@ class TerrainGenerator {
             // diamond
             for (x = 0; x < segments; x += half) {
                 for (y = (x+half) % l; y < segments; y += l) {
-                    d = seedRandom(worldSeed+x+y) * smoothing * 2 - smoothing;
+                    d = seedRandom(options.seed+x+y*100) * smoothing * 2 - smoothing;
                     avg = heightmap[(x-half+size)%size][y] + // middle left
                           heightmap[(x+half)%size][y] +      // middle right
                           heightmap[x][(y+half)%size] +      // middle top

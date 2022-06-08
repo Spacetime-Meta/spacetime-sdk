@@ -2,7 +2,7 @@ import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1W
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
 import { FBXLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/FBXLoader.js';
 import * as BufferGeometryUtils from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/utils/BufferGeometryUtils.js';
-import { MeshBVH, MeshBVHVisualizer } from './three-mesh-bvh.js';
+import { MeshBVH, MeshBVHVisualizer } from '../util/three-mesh-bvh.js';
 import { TerrainGenerator } from './TerrainGenerator.js';
 
 class TerrainController {
@@ -14,11 +14,12 @@ class TerrainController {
         this.collider;
         this.bloomScene = new THREE.Scene();
         this.geometries = [];
-        this.terrainGenerator = new TerrainGenerator();
+        
     }
 
-    generateTerrain(scene, seed) {
-        this.terrain = this.terrainGenerator.generateTerrain(scene, seed, this)
+    generateTerrain(seed) {
+        this.terrainGenerator = new TerrainGenerator(seed);
+        this.terrain = this.terrainGenerator.generateTerrain()
     }
 
     loadTerrain(URL, scene, x, y, z, format, scaleFactor){

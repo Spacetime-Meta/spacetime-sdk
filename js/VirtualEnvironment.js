@@ -2,7 +2,7 @@ import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1W
 
 import { PlayerLocal } from './entities/PlayerLocal.js';
 
-import { TerrainController } from './util/TerrainController.js';
+import { TerrainController } from './terrain/TerrainController.js';
 import { RemoteController } from './util/RemoteController.js';
 import { UiController } from './UserInterface/UiController.js';
 
@@ -100,7 +100,7 @@ class VirtualEnvironment {
     }
 
     generateTerrain(seed) {
-        this.terrainController.generateTerrain(MAIN_SCENE, seed);
+        this.terrainController.generateTerrain(seed);
     }
     
     spawnPlayer(params) {

@@ -12,6 +12,7 @@ class Blocker extends UiElement {
                 cursor: "pointer",
                 fontSize: "16px",
                 color: "white",
+                transition: "all 0.5s ease"
             },
             hover: {
                 background: "rgba(0, 0, 0, 0.3)",

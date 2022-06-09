@@ -13,6 +13,10 @@ class ConnectionDisplay extends UiElement {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 margin: "5px",
+                padding: "5px",
+                borderRadius: "5px",
+                boxShadow: "0 2px 2px #888888",
+                background: "#e0e0e0"
             }    
         })
 
@@ -66,11 +70,14 @@ class ConnectionDisplay extends UiElement {
         if(typeof this.connection !== "undefined"){
             if(this.connection.open){
                 this.element.style.border = "1px solid green";
+                this.element.style.background = "#f0fff0";
             } else {
                 this.element.style.border = "1px solid yellow";
+                this.element.style.background = "#fffff0";
             }
         } else {
             this.element.style.border = "1px solid red";
+            this.element.style.background = "#fff0f0";
         }
     }
 }

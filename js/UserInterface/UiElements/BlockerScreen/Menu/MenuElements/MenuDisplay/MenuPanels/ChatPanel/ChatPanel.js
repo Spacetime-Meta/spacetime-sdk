@@ -10,7 +10,7 @@ class ChatPanel extends UiElement {
             style: { 
                 height: "100%",
                 display: "none",
-                gridTemplateRows: "1fr 125px",
+                gridTemplateRows: "1fr 45px",
             }
         })
 

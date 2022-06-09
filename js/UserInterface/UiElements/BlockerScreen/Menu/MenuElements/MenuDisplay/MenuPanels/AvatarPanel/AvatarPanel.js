@@ -14,8 +14,14 @@ export class AvatarPanel extends UiElement {
         })
 
         this.appendChild(new UiElement({
-            type: "h3",
             innerHTML: "Select an Avatar",
+            style: {
+                width: "100%",
+                fontWeight: "bold",
+                fontSize: "25px",
+                textAlign: "center",
+                paddingTop: "50px"
+            }
         }));
 
         this.xBotAvatarSelectButton = new AvatarSelectButton(

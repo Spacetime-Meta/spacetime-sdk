@@ -5,7 +5,7 @@ class ChatFooter extends UiElement {
         super({
             id: "ChatFooter",
             style: {
-                background: "grey",
+                background: "#c8c8c8",
                 padding: "5px",
             }
         })
@@ -32,14 +32,9 @@ class ChatFooter extends UiElement {
             onClick: () => this.handleSendMessage()
         });
 
-        this.info = new UiElement({
-            innerHTML: "Note that this feature is still experimental and you should join our <a href=https://discord.gg/w6CzHy35E2>discord</a> if you have questions or need help."
-        })
-
         this.appendChildList([
             this.inputBar,
             this.sendButton,
-            this.info
         ])
     }
 

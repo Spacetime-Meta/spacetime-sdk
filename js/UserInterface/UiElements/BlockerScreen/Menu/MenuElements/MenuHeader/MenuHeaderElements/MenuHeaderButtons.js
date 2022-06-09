@@ -4,14 +4,17 @@ class MenuHeaderButtons extends UiElement {
     constructor(text) {
         super({
             style: {
-                color: "white",
+                color: "back",
                 cursor: "pointer",
-                background: "#383838",
                 padding: "5px",
-                border: "1px solid #383838"
+                fontWeight: "bold",
+                width: "100%",
+                textAlign: "center",
+                transition: "all 0.5s ease"
             },
             hover: {
-                background: "grey"
+                background: "#d8d8d8",
+                color: "#3a3a3a",
             },
             innerHTML: text
         })

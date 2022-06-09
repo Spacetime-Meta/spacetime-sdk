@@ -9,7 +9,8 @@ class MenuHeader extends UiElement {
             style: {
                 display: "flex",
                 flexDirection: "row",
-                background: "#383838"
+                boxShadow: "0 4px 4px #888888",
+                zIndex: "100",
             }
         })
         
@@ -30,32 +31,32 @@ class MenuHeader extends UiElement {
         this.closeAllHeaders()
         switch(panel) {
             case "chat":
-                this.chatPanelButton.element.style.background = "grey";
-                this.chatPanelButton.options.style.background = "grey";
+                this.chatPanelButton.element.style.background = "#c8c8c8";
+                this.chatPanelButton.options.style.background = "#c8c8c8";
                 break;
             case "multiplayer":
-                this.multiplayerPanelButton.element.style.background = "grey";
-                this.multiplayerPanelButton.options.style.background = "grey";
+                this.multiplayerPanelButton.element.style.background = "#c8c8c8";
+                this.multiplayerPanelButton.options.style.background = "#c8c8c8";
                 break;
             case "avatar":
-                this.avatarPanelButton.element.style.background = "grey";
-                this.avatarPanelButton.options.style.background = "grey";
+                this.avatarPanelButton.element.style.background = "#c8c8c8";
+                this.avatarPanelButton.options.style.background = "#c8c8c8";
                 break;
             case "map":
-                this.mapPanelButton.element.style.background = "grey";
-                this.mapPanelButton.options.style.background = "grey";
+                this.mapPanelButton.element.style.background = "#c8c8c8";
+                this.mapPanelButton.options.style.background = "#c8c8c8";
         }
     }
 
     closeAllHeaders() {
-        this.chatPanelButton.element.style.background = "#383838";
-        this.chatPanelButton.options.style.background = "#383838";
-        this.multiplayerPanelButton.element.style.background = "#383838";
-        this.multiplayerPanelButton.options.style.background = "#383838";
-        this.avatarPanelButton.element.style.background = "#383838";
-        this.avatarPanelButton.options.style.background = "#383838";
-        this.mapPanelButton.element.style.background = "#383838";
-        this.mapPanelButton.options.style.background = "#383838";
+        this.chatPanelButton.element.style.background = "#e0e0e0";
+        this.chatPanelButton.options.style.background = "#e0e0e0";
+        this.multiplayerPanelButton.element.style.background = "#e0e0e0";
+        this.multiplayerPanelButton.options.style.background = "#e0e0e0";
+        this.avatarPanelButton.element.style.background = "#e0e0e0";
+        this.avatarPanelButton.options.style.background = "#e0e0e0";
+        this.mapPanelButton.element.style.background = "#e0e0e0";
+        this.mapPanelButton.options.style.background = "#e0e0e0";
     }
 }
 export { MenuHeader }

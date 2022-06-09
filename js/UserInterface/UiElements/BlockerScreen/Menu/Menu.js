@@ -9,7 +9,7 @@ class Menu extends UiElement {
         super({
             id: "Menu",
             style: {
-                background: "grey",
+                background: "white",
                 display: "grid",
                 gridTemplateRows: "50px 1fr 30px",
             }

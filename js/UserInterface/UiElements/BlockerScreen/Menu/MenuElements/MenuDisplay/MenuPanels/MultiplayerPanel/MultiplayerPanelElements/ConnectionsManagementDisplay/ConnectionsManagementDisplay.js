@@ -19,13 +19,24 @@ class ConnectionsManagementDisplay extends UiElement {
         this.appendChild(this.newConnectionDisplay);
         
         this.appendChild(new UiElement({
-            innerHTML: "Activate the &#9733; icon to save a connection."
-        }))
-
-        this.appendChild(new UiElement({
-            type: "h3",
-            innerHTML: "Connection List"
+            innerHTML: "Connection List",
+            style: {
+                width: "100%",
+                fontWeight: "bold",
+                fontSize: "25px",
+                textAlign: "center",
+                marginTop: "50px"
+            }
         }));
+        
+        this.appendChild(new UiElement({
+            innerHTML: "Activate the &#9733; icon to save a connection.",
+            style: {
+                fontSize: "xx-small",
+                width: "100%",
+                textAlign: "center"
+            }
+        }))
 
 
     }

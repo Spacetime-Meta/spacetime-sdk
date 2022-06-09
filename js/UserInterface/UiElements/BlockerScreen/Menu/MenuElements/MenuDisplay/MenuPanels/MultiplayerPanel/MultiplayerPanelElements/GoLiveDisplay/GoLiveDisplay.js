@@ -16,25 +16,38 @@ class GoLiveDisplay extends UiElement {
             }
         })
         
-        this.goLiveButton = new GoLiveButton(onClick);
-        this.peerIdInput = new PeerIdInput();
+        this.inputs = new UiElement({})
+
+        this.inputs.peerIdInput = new PeerIdInput()
+        this.inputs.appendChildList([
+            this.inputs.peerIdInput,
+            new GoLiveButton(onClick)
+        ])
         
         this.title = new UiElement({
-            type: "h3",
-            innerHTML: "enter a peer id"
+            innerHTML: "enter a peer id",
+            style: {
+                width: "100%",
+                fontWeight: "bold",
+                fontSize: "25px",
+                textAlign: "center",
+                marginTop: "50px"
+            }
         });
         
         this.info = new UiElement({
             style: {
                 padding: "10px",
+                fontSize: "xx-small",
+                textAlign: "justify",
+                width: "250px"
             },
-            innerHTML: "This feature is still experimental. Please join our <a href='https://discord.gg/w6CzHy35E2'>Discord</a> if you have any difficulty or want to suggest an improvement, "
+            innerHTML: "This feature is still experimental. Please join our <a href='https://discord.gg/w6CzHy35E2'>Discord</a> if you have any difficulty or want to suggest an improvement."
         })
 
         this.appendChildList([
             this.title,
-            this.peerIdInput,
-            this.goLiveButton,
+            this.inputs,
             this.info
         ]);
     }

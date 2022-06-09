@@ -23,7 +23,7 @@ class MultiplayerPanel extends UiElement {
     }
 
     handleGoLive() {
-        const inputValue = this.goLiveDisplay.peerIdInput.element.value
+        const inputValue = this.goLiveDisplay.inputs.peerIdInput.element.value
         if(inputValue !== "") {
             VIRTUAL_ENVIRONMENT.remoteController.createPeerWithId(inputValue);
         }

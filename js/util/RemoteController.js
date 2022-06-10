@@ -23,8 +23,6 @@ class RemoteController {
         this.manager = manager;
         this.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         if(!this.getUserMedia) console.log('Your browser doesn\'t support getUserMedia.');
-        
-        // goLivePanel(this);
 
         /* The following lines check if the user has a peerID in the local storage
          * and automatically creates a new peer if it finds one. This is a good feature for
@@ -143,7 +141,24 @@ class RemoteController {
     }
 
     connectToPeer(peerId) {
-        if(peerId !== this.peer.id){
+
+        let isValid = true;
+
+        // verify that we are not connecting to self
+        if(peerId === this.peer.id){
+            console.warn("[RemoteController:connectToPeer] You are trying to connect to your own peerId. Current id: " + localProxy.peerId);
+            isValid = false;
+        }
+
+        // verify that we do not already have a connection to this peer
+        this.connections.forEach(connection => {
+            if(connection.peer === peerId){
+                console.warn("[RemoteController:connectToPeer] You are trying to duplicate a connection to peer: " + peerId);
+                isValid = false;
+            }
+        })
+
+        if(isValid) {
             this.addMessageToChatBox("[info] Trying connection to peer: " + peerId);
             const newConnection = this.peer.connect(peerId);
             VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
@@ -160,9 +175,6 @@ class RemoteController {
                     newConnection.close();
                 }
             }, 3000);
-
-        } else {
-            console.warn("[RemoteController:connectToPeer] You are trying to connect to your own peerId. Current id: "+localProxy.peerId);
         }
     }
 

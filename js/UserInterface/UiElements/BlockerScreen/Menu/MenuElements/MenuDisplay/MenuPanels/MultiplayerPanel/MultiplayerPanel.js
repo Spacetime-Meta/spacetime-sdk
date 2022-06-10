@@ -34,7 +34,7 @@ class MultiplayerPanel extends UiElement {
             this.goLiveDisplay.element.style.display = "none";
             this.connectionsManagementDisplay.element.style.display = "block";
         } else {
-            this.goLiveDisplay.element.style.display = "block";
+            this.goLiveDisplay.element.style.display = "flex";
             this.connectionsManagementDisplay.element.style.display = "none";
         }
     }

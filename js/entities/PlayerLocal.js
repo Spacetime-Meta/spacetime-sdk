@@ -149,7 +149,7 @@ class PlayerLocal extends CapsuleEntity {
                 this.setAnimationParameters("idle");
             }
         } else {
-            if(this.positionChange.y < -0.5) {
+            if(this.positionChange.y < -3) {
                 this.setAnimationParameters("fall", 0.25);
             }
         }

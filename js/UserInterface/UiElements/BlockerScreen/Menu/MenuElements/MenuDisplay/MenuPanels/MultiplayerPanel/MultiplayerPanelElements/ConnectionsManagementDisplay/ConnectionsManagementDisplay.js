@@ -43,8 +43,8 @@ class ConnectionsManagementDisplay extends UiElement {
 
     handleNewConnection(connection) {
         this.connectionDisplayList.forEach(connectionDisplay => {
-            if(connectionDisplay.element.id === connection.peer){
-                return;
+            if(connectionDisplay.peer === connection.peer){
+                connectionDisplay.element.remove()
             }
         })
         const newConnectionDisplay = new ConnectionDisplay(connection);

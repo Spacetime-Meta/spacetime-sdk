@@ -11,7 +11,7 @@ class Menu extends UiElement {
             style: {
                 background: "white",
                 display: "grid",
-                gridTemplateRows: "50px 1fr 30px",
+                gridTemplateRows: "50px 1fr auto"
             }
         })
 

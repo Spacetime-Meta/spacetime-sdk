@@ -1,5 +1,7 @@
 import { UiElement } from "../../../../../../UiElement.js";
 
+import { SpacetimeMap } from "./MapPanelElements/SpacetimeMap.js";
+
 export class MapPanel extends UiElement {
     constructor(){
         super({
@@ -11,6 +13,9 @@ export class MapPanel extends UiElement {
                 alignItems: "center"
             }
         })
+
+        this.spacetimeMap = new SpacetimeMap();
+        this.appendChild(this.spacetimeMap);
 
         this.appendChild( new UiElement({
             innerHTML: "go back to map",

@@ -22,9 +22,12 @@ export class SpacetimeMap extends UiElement {
         // start by initializing the three js scene and renderer
         this.buildThreeJsScene();
         
-        // get the current location
+        /**
+         * Get the current location so we can always ini the map
+         * looking at the planet we are currently on
+         */ 
         const location = LocationManager.getLocation();
-        //handleLocationSelected
+        handleNavigateMap(location.x, location.y, location.z);
 
 
         // start the animation loop
@@ -35,8 +38,8 @@ export class SpacetimeMap extends UiElement {
         requestAnimationFrame(animate);
     }
 
-    handleLocationSelected(x, y, z) {
-        //LocationManager.setLocation(x,y,z);
+    async handleNavigateMap(x, y, z) {
+        
     }
 
     buildThreeJsScene() {

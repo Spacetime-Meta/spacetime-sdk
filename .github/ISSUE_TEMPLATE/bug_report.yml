@@ -3,7 +3,7 @@ description: Report a reproducible bug.
 title: '[Bug]: '
 body: 
 - type: markdown
-  attribute:
+  attributes:
     value: |
       Thanks for taking the time to fill out this bug report!
 - type: input

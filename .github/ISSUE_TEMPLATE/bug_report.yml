@@ -3,8 +3,9 @@ description: Report a reproducible bug.
 title: '[Bug]: '
 body: 
 - type: markdown
-  value: |
-    Thanks for taking the time to fill out this bug report!
+  attribute:
+    value: |
+      Thanks for taking the time to fill out this bug report!
 - type: input
   id: contact
   attributes:

@@ -13,7 +13,6 @@ body:
     label:  Overview
     description: Introduce the issue with a short description.
     placeholder: |
-      ex.
       This issue proposes to change everything because it would be way better then.   
       This issue proposes to add an option that allows the users to do everything because it would be fun.
   validations:
@@ -33,8 +32,8 @@ body:
       - the users will be able to send messages to the group chat
       - the owner of the group will be able to kick users from his group
       - [...]
-    validations:
-      required: true
+  validations:
+    required: true
 - type: textarea
   attributes:
     label: Anything else?

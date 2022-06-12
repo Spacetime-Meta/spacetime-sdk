@@ -13,9 +13,9 @@ body:
     label:  Overview
     description: Introduce the issue with a short description.
     placeholder: |
-    ex.
-    This issue proposes to change everything because it would be way better then.   
-    This issue proposes to add an option that allows the users to do everything because it would be fun.
+      ex.
+      This issue proposes to change everything because it would be way better then.   
+      This issue proposes to add an option that allows the users to do everything because it would be fun.
   validations:
     required: true
 - type: textarea

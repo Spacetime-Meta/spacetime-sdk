@@ -1,0 +1,45 @@
+name: Feature
+description: Suggest an idea for the project.
+title: '[Feature]: '
+body: 
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out this feature request!  
+      Ignoring this template may result in your feature request getting deleted.
+- type: textarea
+  id: overview
+  attributes:
+    label:  Overview
+    description: Introduce the issue with a short description.
+    placeholder: |
+      This issue proposes to change everything because it would be way better then.   
+      This issue proposes to add an option that allows the users to do everything because it would be fun.
+  validations:
+    required: true
+- type: textarea
+  id: description
+  attributes:
+    label: Specifications
+    description: |
+      Here you must give complete details of the issue.  
+      It is strongly recommended to do a list with all the 'sub-features' that your issue introduces.  
+    placeholder: |
+      For example if your issue is to add group chat features the list could look like: 
+      - the users will be able to create a new group
+      - the user will be able to join a group chat using a group id
+      - when receiving a message from a group, it will appear differently than a direct message
+      - the users will be able to send messages to the group chat
+      - the owner of the group will be able to kick users from his group
+      - [...]
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Anything else?
+    description: |
+      Links? References? Anything that will give us more context about the issue you are encountering!
+
+      Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
+  validations:
+    required: false

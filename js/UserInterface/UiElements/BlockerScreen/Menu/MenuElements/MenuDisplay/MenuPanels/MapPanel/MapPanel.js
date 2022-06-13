@@ -9,7 +9,7 @@ export class MapPanel extends UiElement {
                 height: "100%",
                 display: "none",
                 flexDirection: "column",
-                justifyContent: "center",
+                // justifyContent: "center",
                 alignItems: "center"
             }
         })

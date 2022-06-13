@@ -5,6 +5,9 @@ import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/l
 import { UiElement } from "../../../../../../../UiElement.js";
 import { LocationManager } from "../../../../../../../../../util/LocationManager.js";
 
+import { getSpaceSector } from './graphqlCaller.js';
+import PlanetGenerator from './PlanetGenerator.js';
+
 
 const IPFS = function(CID) { return `https://ipfs.io/ipfs/${CID}` }
 const ID = function(x, y, z) { return `${x},${y},${z}` }
@@ -19,16 +22,31 @@ export class SpacetimeMap extends UiElement {
             }
         })
 
+        this.spaceState = {};
+        this.renderDistance = 50;
+        this.GLTFLoader = new GLTFLoader();
+
         // start by initializing the three js scene and renderer
         this.buildThreeJsScene();
         
-        /**
-         * Get the current location so we can always ini the map
-         * looking at the planet we are currently on
-         */ 
         const location = LocationManager.getLocation();
-        handleNavigateMap(location.x, location.y, location.z);
+        if(isNaN(location.x) || isNaN(location.y) || isNaN(location.z)){
+            this.handleNavigateMap(new THREE.Vector3());
+        } else {
+            this.handleNavigateMap(location.x, location.y, location.z);
+        }
 
+        // add the event listeners
+        this.element.addEventListener('click', event => {
+            var intersectResult = this.getMouseIntersect(
+                event.offsetX  / this.element.clientWidth * 2 - 1,
+                event.offsetY  / this.element.clientHeight * -2 + 1
+            );
+
+            if(typeof intersectResult !== "undefined"){
+                this.handleNavigateMap(intersectResult)
+            };
+        });
 
         // start the animation loop
         const animate = () => { 
@@ -38,8 +56,125 @@ export class SpacetimeMap extends UiElement {
         requestAnimationFrame(animate);
     }
 
-    async handleNavigateMap(x, y, z) {
+    async handleNavigateMap(newLocation) {
         
+        this.moveOrbit(newLocation);
+
+        // start by loading the whole sector around our new location
+        await this.loadSector(newLocation);
+
+        // TODO - at this point we can update the ui info
+        // mapPanel.update()
+
+        this.removeOutOfRange(newLocation);
+
+    }
+
+    getMouseIntersect(x, y) {
+        var mouse3D = new THREE.Vector3(x, y, 0); 
+        this.raycaster.setFromCamera( mouse3D, this.camera );
+        var intersects = this.raycaster.intersectObjects( this.scene.children );
+
+        // use the following line to debug the raycaster
+        // this.scene.add(new THREE.ArrowHelper( this.raycaster.ray.direction, this.raycaster.ray.origin, 100, Math.random() * 0xffffff ));
+        
+        if (intersects.length > 0) {
+            let object = intersects[0].object;
+            try {
+                while (!object.chunk) { 
+                    object = object.parent;
+                }
+            } catch (e) { return undefined }
+            return object.chunk;
+        }
+    }
+
+    async loadSector (newLocation) {
+        // get the state of that sector
+        const newChunks = await getSpaceSector(  
+            newLocation.x-this.renderDistance, 
+            newLocation.x+this.renderDistance, 
+            newLocation.y-this.renderDistance, 
+            newLocation.y+this.renderDistance, 
+            newLocation.z-this.renderDistance, 
+            newLocation.z+this.renderDistance
+        )
+    
+        const keys = Object.keys(newChunks)
+        keys.forEach(key => {
+            if(typeof this.spaceState[key] === "undefined"){
+                try { 
+                    this.renderChunk(newChunks[key]) 
+                } 
+                catch (error) { 
+                    console.log("Error with spaceState key: "+key)
+                    console.error(error) 
+                }
+            }
+        });
+    
+        // update the space state
+        this.spaceState = {...this.spaceState, ...newChunks}
+    }
+
+    removeOutOfRange(newLocation) { 
+        for(var i=0; i<this.scene.children.length ;i++){
+            const child = this.scene.children[i]
+            if(typeof child.chunk !== 'undefined'){
+                const location = child.chunk;
+                if(
+                    location.x > newLocation.x+this.renderDistance ||
+                    location.x < newLocation.x-this.renderDistance ||
+                    location.y > newLocation.y+this.renderDistance ||
+                    location.y < newLocation.y-this.renderDistance ||
+                    location.z > newLocation.z+this.renderDistance ||
+                    location.z < newLocation.z-this.renderDistance
+                ){
+                    this.scene.remove(child)
+                    delete this.spaceState[ID(location.x, location.y, location.z)]
+                    i--;
+                }
+            }
+        }
+    }
+
+    renderChunk(objData) {
+        if (objData.planet !== "") {
+            this.GLBSpawner(IPFS(objData.planet),
+                objData.location.x,
+                objData.location.y,
+                objData.location.z)
+        }
+        else {
+            const newPlanet = PlanetGenerator.spawn(
+                objData.location.x,
+                objData.location.y,
+                objData.location.z
+            );
+            this.scene.add(newPlanet)
+        }
+    }
+
+    GLBSpawner (path, x, y, z) {
+        this.GLTFLoader.load( path,  (object) => {
+            object.scene.position.set(x, y, z);
+            
+            var helper = new THREE.BoxHelper(object.scene, 0xffffff)
+            helper.update()
+        
+            // this is how we scale items back to one unit
+            var rad = helper.geometry.boundingSphere.radius 
+            if(rad > 1 && ID(x,y,z) != ID(0,0,0)){
+                object.scene.scale.x = object.scene.scale.x / rad;
+                object.scene.scale.y = object.scene.scale.y / rad;
+                object.scene.scale.z = object.scene.scale.z / rad;
+            }
+            object.scene.chunk = new THREE.Vector3(x, y, z);
+            object.scene.source = 'gltf'
+            this.scene.add(object.scene)
+        },
+        ()=>{},
+        () => {console.log("Error with Chunk "+x+" "+y+" "+z)})
     }
 
     buildThreeJsScene() {
@@ -54,13 +189,13 @@ export class SpacetimeMap extends UiElement {
         this.scene.background = new THREE.Color(0x000000);
 
         // ============= setup the camera =============
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500);
+        this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 500);
         this.camera.position.set(10, 10, 10);
         this.scene.add(this.camera);
 
         // ============= setup controls =============
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.maxDistance = 20;
+        this.controls.maxDistance = 200;
         this.controls.minDistance = 1;
         this.controls.enablePan = false;
 
@@ -69,9 +204,48 @@ export class SpacetimeMap extends UiElement {
         const light = new THREE.DirectionalLight(0xffffff);
         light.position.set(10, 10, 10).normalize();
         this.scene.add(light);
+
+        // ============ setup raycaster ================
+        this.raycaster = new THREE.Raycaster();
+        // document.addEventListener('mousemove', onDocumentMouseMove);
+    }
+
+    moveOrbit(newLocation) {
+        if(!this.controls.target.equals(newLocation)){
+            
+            this.originalCameraPos = this.camera.position.clone();
+            this.targetCameraPos = this.camera.position.clone().add(newLocation.clone().sub(this.camera.position).normalize().multiplyScalar(newLocation.clone().sub(this.camera.position).length() - 10));
+            
+            
+            this.originalTargetPos = this.controls.target.clone();
+            this.targetTargetPos = newLocation.clone();
+            
+            this.cameraTransitionFrames = 60;
+        } 
+    }
+
+    updateCamera() {
+        if (this.cameraTransitionFrames > 0) {
+            this.camera.position.copy(this.originalCameraPos.clone().lerp(this.targetCameraPos, THREE.Math.smootherstep(1 - this.cameraTransitionFrames / 60, 0, 1)));
+            this.controls.target.copy(this.originalTargetPos.clone().lerp(this.targetTargetPos, THREE.Math.smootherstep(1 - this.cameraTransitionFrames / 60, 0, 1)));
+            this.cameraTransitionFrames--;
+        }
     }
 
     update() {
-        this.renderer.render(this.scene, this.camera)
+        this.controls.update()
+        this.renderer.render(this.scene, this.camera);
+
+        this.updateCamera()
+
+        this.scene.children.forEach(child => {
+            if(child.source === 'generator'){
+                PlanetGenerator.update(child)
+            } else {
+                if(child.source === 'gltf'){
+                    child.rotateY(0.002)
+                }
+            }
+        })
     }
 }

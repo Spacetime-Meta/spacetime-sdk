@@ -68,7 +68,6 @@ class TerrainController {
     }
 
     generateCollider(scene){
-        console.log("loading collider")
         this.terrain.traverse(object => {
             if (object.geometry && object.visible) {
                 const cloned = object.geometry.clone();

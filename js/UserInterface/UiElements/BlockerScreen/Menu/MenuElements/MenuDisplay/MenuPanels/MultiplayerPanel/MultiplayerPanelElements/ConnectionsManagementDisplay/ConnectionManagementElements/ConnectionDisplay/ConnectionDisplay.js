@@ -1,7 +1,7 @@
 import { UiElement } from "../../../../../../../../../../UiElement.js";
 import localProxy from "../../../../../../../../../../../../util/localProxy.js"
 
-import { ConnectionOptions } from "./ConnectionDisplayElements/ConnectionOptions.js"
+import { ConnectionOptions } from "./ConnectionDisplayElements/ConnectionOptions.js";
 
 class ConnectionDisplay extends UiElement {
     constructor(connection){
@@ -35,7 +35,8 @@ class ConnectionDisplay extends UiElement {
         this.options = new ConnectionOptions(
             ()=>this.handleConnectionClose(),
             localProxy.friendList.includes(this.peer),
-            ()=>this.handleClickOnStar()
+            ()=>this.handleClickOnStar(),
+            ()=>this.handleClickOnCall()
         );
 
         this.appendChildList([
@@ -64,6 +65,13 @@ class ConnectionDisplay extends UiElement {
 
     handleConnectionClose() {
         VIRTUAL_ENVIRONMENT.remoteController.disconnectPeer(this.peer);
+        MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "none");
+        MENU.handleMenuPanelSelection("multiplayer");
+    }
+
+    handleClickOnCall() {
+        VIRTUAL_ENVIRONMENT.remoteController.call(this.peer);
+        MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "flex");
     }
 
     update() {

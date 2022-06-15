@@ -16,15 +16,18 @@ class MenuHeader extends UiElement {
         
         this.chatPanelButton = new MenuHeaderButtons("chat");
         this.multiplayerPanelButton = new MenuHeaderButtons("multiplayer");
+        this.callPanelButton = new MenuHeaderButtons("calling", "call-panel", "none");
         this.avatarPanelButton = new MenuHeaderButtons("avatar");
         this.mapPanelButton = new MenuHeaderButtons("map");
 
         this.appendChildList([
             this.chatPanelButton,
             this.multiplayerPanelButton,
+            this.callPanelButton,
             this.avatarPanelButton,
             this.mapPanelButton
         ])
+
     }
 
     handleMenuHeaderSelection(panel) {
@@ -42,6 +45,10 @@ class MenuHeader extends UiElement {
                 this.avatarPanelButton.element.style.background = "#c8c8c8";
                 this.avatarPanelButton.options.style.background = "#c8c8c8";
                 break;
+            case "calling":
+                this.callPanelButton.element.style.background = "#c8c8c8";
+                this.callPanelButton.options.style.background = "#c8c8c8";
+                break;
             case "map":
                 this.mapPanelButton.element.style.background = "#c8c8c8";
                 this.mapPanelButton.options.style.background = "#c8c8c8";
@@ -55,6 +62,8 @@ class MenuHeader extends UiElement {
         this.multiplayerPanelButton.options.style.background = "#e0e0e0";
         this.avatarPanelButton.element.style.background = "#e0e0e0";
         this.avatarPanelButton.options.style.background = "#e0e0e0";
+        this.callPanelButton.element.style.background = "#e0e0e0";
+        this.callPanelButton.options.style.background = "#e0e0e0";
         this.mapPanelButton.element.style.background = "#e0e0e0";
         this.mapPanelButton.options.style.background = "#e0e0e0";
     }

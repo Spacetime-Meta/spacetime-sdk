@@ -4,7 +4,6 @@ import { PeerGroup, escapeHTML } from './peerjs-groups.js';
 import { AvatarController } from '../entities/AvatarController.js';
 
 // import {toggleConnectRoom} from '../UserInterface/UiElements/chatBox.js';
-// import { toggleCallBox, callBox, addCamera } from '../UserInterface/UiElements/VideoCallBox/callBox.js';
 // import alertBox from '../UserInterface/UiElements/alertBox.js';
 
 const SIGNALLING_OPTIONS =  {
@@ -29,13 +28,13 @@ class RemoteController {
          * production but is very annoying when testing. please leave like this until next
          * merge into the main branch.
          */ 
-        if(typeof localProxy.peerId !== 'undefined'){
-            this.peer = new Peer(localProxy.peerId);
-            console.log("[info] Trying to create peer: " + localProxy.peerId)
-            this.peer.on('open', () => {
-                this.onConnectionOpen()
-            })
-        }
+        // if(typeof localProxy.peerId !== 'undefined'){
+        //     this.peer = new Peer(localProxy.peerId);
+        //     console.log("[info] Trying to create peer: " + localProxy.peerId)
+        //     this.peer.on('open', () => {
+        //         this.onConnectionOpen()
+        //     })
+        // }
     }
 
     createPeerWithId(peerId){
@@ -44,9 +43,6 @@ class RemoteController {
         this.peer.on('open', () => {
             this.onConnectionOpen();
         });
-        
-        // add video call box
-        // callBox(this, peerId);
 
         // listen for a call
         // this.answer();
@@ -248,14 +244,13 @@ class RemoteController {
 
     call(peerId) {
         let me = this;
-        callBox(me);
         this.getUserMedia({video: true, audio: true}, function(stream) {
-            addCamera(localProxy.peerId, stream);
+            CALL_PANEL.addCameraBox(localProxy.peerId, stream)
             var call = me.peer.call(peerId, stream);
             me.currentCall = call;
             call.on('stream', function(incomingStream) {
                 me.sendChatMessage(`Calling ${call.peer}`);
-                addCamera(call.peer, incomingStream);
+                CALL_PANEL.addCameraBox(call.peer, incomingStream)
             });
           }, function(err) {
                 console.log('Failed to get local stream' ,err);
@@ -265,14 +260,13 @@ class RemoteController {
     answer() {
         let me = this;
         this.peer.on('call', function(call) {
-            callBox(me);
             me.getUserMedia({video: true, audio: true}, function(stream) {
-              addCamera(localProxy.peerId, stream);
+              CALL_PANEL.addCameraBox(localProxy.peerId, stream)
               call.answer(stream);
               me.currentCall = call;
               call.on('stream', function(incomingStream) {
                 me.sendChatMessage(`Received a call from ${call.peer}`);
-                addCamera(call.peer, incomingStream);
+                CALL_PANEL.addCameraBox(call.peer, incomingStream)
               });
             }, function(err) {
                     console.log('Failed to get local stream' ,err);

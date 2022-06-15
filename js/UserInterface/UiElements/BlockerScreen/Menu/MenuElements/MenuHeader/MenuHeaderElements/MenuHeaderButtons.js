@@ -1,7 +1,7 @@
 import { UiElement } from "../../../../../UiElement.js";
 
 class MenuHeaderButtons extends UiElement {
-    constructor(text) {
+    constructor(text, className = null, display = null) {
         super({
             style: {
                 color: "back",
@@ -19,9 +19,19 @@ class MenuHeaderButtons extends UiElement {
             innerHTML: text
         })
 
+        if(className) this.element.className = className;
+        if(display) this.element.style.display = display;
+
         this.element.addEventListener("click", () => {
             VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.handleMenuPanelSelection(text)
         })
+
+        window.MENU_HEADER_BUTTON = this;
+    }
+
+    toggleMenuHeader(className, display) {
+        for (let menuHeader of document.getElementsByClassName(className)) 
+            menuHeader.style.display = display;
     }
 }
 export { MenuHeaderButtons }

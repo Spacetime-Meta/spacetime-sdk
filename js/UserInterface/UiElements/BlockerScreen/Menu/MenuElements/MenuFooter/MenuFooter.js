@@ -40,6 +40,8 @@ class MenuFooter extends UiElement {
                 VIRTUAL_ENVIRONMENT.remoteController.peer.destroy();
                 delete VIRTUAL_ENVIRONMENT.remoteController.peer;
                 VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
+                MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "none");
+                MENU.handleMenuPanelSelection("multiplayer");
             }
         })
 
@@ -62,7 +64,7 @@ class MenuFooter extends UiElement {
     update() {
         if(typeof VIRTUAL_ENVIRONMENT.remoteController.peer !== "undefined"){
             const peerID = VIRTUAL_ENVIRONMENT.remoteController.peer.id;
-            if(peerID !== this.element.innerHTML) {
+            if(peerID && peerID !== this.element.innerHTML) {
                 this.textInfo.element.innerHTML = "Connected as: " + peerID;
             }
         } else {

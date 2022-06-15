@@ -4,6 +4,7 @@ class UiElement {
             type: "div", 
             id: undefined,
             style: {},
+            attributes: {},
             hover: undefined,
             onClick: undefined,
             innerHTML: undefined
@@ -24,6 +25,9 @@ class UiElement {
 
         // apply the style
         Object.assign(this.element.style, options.style);
+
+        //aply attributes
+        Object.assign(this.element, options.attributes);
         
         // if something is defined in the hover, add event listeners
         if(typeof options.hover !== "undefined"){

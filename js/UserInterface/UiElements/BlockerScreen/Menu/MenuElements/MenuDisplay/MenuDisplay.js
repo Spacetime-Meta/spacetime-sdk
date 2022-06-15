@@ -4,6 +4,7 @@ import { ChatPanel } from "./MenuPanels/ChatPanel/ChatPanel.js";
 import { MultiplayerPanel } from "./MenuPanels/MultiplayerPanel/MultiplayerPanel.js";
 import { AvatarPanel } from "./MenuPanels/AvatarPanel/AvatarPanel.js";
 import { MapPanel } from "./MenuPanels/MapPanel/MapPanel.js";
+import { CallPanel } from "./MenuPanels/CallPanel/CallPanel.js";
 
 class MenuDisplay extends UiElement {
     constructor() {
@@ -13,12 +14,14 @@ class MenuDisplay extends UiElement {
         
         this.chatPanel = new ChatPanel();
         this.multiplayerPanel = new MultiplayerPanel();
+        this.callPanel = new CallPanel();
         this.avatarPanel = new AvatarPanel();
         this.mapPanel = new MapPanel();
 
         this.appendChildList([
             this.chatPanel,
             this.multiplayerPanel,
+            this.callPanel,
             this.avatarPanel,
             this.mapPanel
         ])
@@ -33,6 +36,9 @@ class MenuDisplay extends UiElement {
             case "multiplayer":
                 this.multiplayerPanel.element.style.display = "block";
                 break;
+            case "calling":
+                this.callPanel.element.style.display = "block";
+                break;
             case "avatar":
                 this.avatarPanel.element.style.display = "block";
                 break;
@@ -46,6 +52,7 @@ class MenuDisplay extends UiElement {
     closeAllPanels() {
         this.chatPanel.element.style.display = "none";
         this.multiplayerPanel.element.style.display = "none";
+        this.callPanel.element.style.display = "none";
         this.avatarPanel.element.style.display = "none";
         this.mapPanel.element.style.display = "none";
     }

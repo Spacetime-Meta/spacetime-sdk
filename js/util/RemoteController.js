@@ -25,13 +25,13 @@ class RemoteController {
          * production but is very annoying when testing. please leave like this until next
          * merge into the main branch.
          */ 
-        // if(typeof localProxy.peerId !== 'undefined'){
-        //     this.peer = new Peer(localProxy.peerId);
-        //     console.log("[info] Trying to create peer: " + localProxy.peerId)
-        //     this.peer.on('open', () => {
-        //         this.onConnectionOpen()
-        //     })
-        // }
+        if(typeof localProxy.peerId !== 'undefined'){
+            this.peer = new Peer(localProxy.peerId);
+            console.log("[info] Trying to create peer: " + localProxy.peerId)
+            this.peer.on('open', () => {
+                this.onConnectionOpen()
+            })
+        }
     }
 
     createPeerWithId(peerId){

@@ -45,7 +45,7 @@ class RemoteController {
         });
 
         // listen for a call
-        // this.answer();
+        this.answer();
     }
 
     onConnectionOpen() {
@@ -247,10 +247,12 @@ class RemoteController {
         this.getUserMedia({video: true, audio: true}, function(stream) {
             CALL_PANEL.addCameraBox(localProxy.peerId, stream)
             var call = me.peer.call(peerId, stream);
-            me.currentCall = call;
             call.on('stream', function(incomingStream) {
-                me.sendChatMessage(`Calling ${call.peer}`);
-                CALL_PANEL.addCameraBox(call.peer, incomingStream)
+                if(!me.currentCall) {
+                    me.currentCall = call;
+                    me.sendChatMessage(`Calling ${call.peer}`);
+                    CALL_PANEL.addCameraBox(call.peer, incomingStream)
+                }
             });
           }, function(err) {
                 console.log('Failed to get local stream' ,err);
@@ -260,14 +262,19 @@ class RemoteController {
     answer() {
         let me = this;
         this.peer.on('call', function(call) {
+            MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "block");
+            MENU.handleMenuPanelSelection("calling");
             me.getUserMedia({video: true, audio: true}, function(stream) {
               CALL_PANEL.addCameraBox(localProxy.peerId, stream)
               call.answer(stream);
-              me.currentCall = call;
               call.on('stream', function(incomingStream) {
-                me.sendChatMessage(`Received a call from ${call.peer}`);
-                CALL_PANEL.addCameraBox(call.peer, incomingStream)
+                if(!me.currentCall) {
+                    me.currentCall = call;
+                    me.sendChatMessage(`Received a call from ${call.peer}`);
+                    CALL_PANEL.addCameraBox(call.peer, incomingStream)
+                }
               });
+              
             }, function(err) {
                     console.log('Failed to get local stream' ,err);
             });
@@ -366,6 +373,11 @@ class RemoteController {
 
     isConnected() {
         return group && connected;
+    }
+
+    destroy() {
+        this.endcall();
+        this.peer.destroy();
     }
 }
 

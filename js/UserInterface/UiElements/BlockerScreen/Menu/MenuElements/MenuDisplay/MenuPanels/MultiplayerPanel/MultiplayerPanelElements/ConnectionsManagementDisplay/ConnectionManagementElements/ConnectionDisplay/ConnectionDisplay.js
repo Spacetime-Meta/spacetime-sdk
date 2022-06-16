@@ -70,8 +70,9 @@ class ConnectionDisplay extends UiElement {
     }
 
     handleClickOnCall() {
+        MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "block");
+        MENU.handleMenuPanelSelection("calling");
         VIRTUAL_ENVIRONMENT.remoteController.call(this.peer);
-        MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "flex");
     }
 
     update() {

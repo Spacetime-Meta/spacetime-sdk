@@ -37,7 +37,7 @@ class MenuFooter extends UiElement {
                 background: "#ffc8c8"
             },
             onClick: ()=>{
-                VIRTUAL_ENVIRONMENT.remoteController.peer.destroy();
+                VIRTUAL_ENVIRONMENT.remoteController.destroy();
                 delete VIRTUAL_ENVIRONMENT.remoteController.peer;
                 VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
                 MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "none");

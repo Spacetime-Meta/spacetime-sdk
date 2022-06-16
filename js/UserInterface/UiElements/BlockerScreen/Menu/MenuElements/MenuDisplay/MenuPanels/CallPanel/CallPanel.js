@@ -8,23 +8,31 @@ class CallPanel extends UiElement {
             id: "CallPanel",
             style: { 
                 height: "100%",
-                display: "none"
+                display: "none",
             }
         })
 
         this.element.className = "call-panel";
 
         this.endCallButton = new EndCallButton();
+        this.camera = new UiElement({
+            style: {
+                height: "80%",
+                overflow: 'scroll',
+                overflowX: 'hidden',
+            }
+        })
 
         this.appendChildList([
-            this.endCallButton
+            this.endCallButton,
+            this.camera
         ])
 
         window.CALL_PANEL = this;
     }
 
     addCameraBox(peerId, stream) {
-        this.appendChild(new CameraBox(peerId, stream));
+        this.camera.appendChild(new CameraBox(peerId, stream));
     }
 }
 export { CallPanel }

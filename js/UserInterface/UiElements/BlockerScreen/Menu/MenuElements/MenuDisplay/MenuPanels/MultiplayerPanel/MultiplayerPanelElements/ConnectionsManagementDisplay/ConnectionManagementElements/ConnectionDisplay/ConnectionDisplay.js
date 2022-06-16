@@ -65,13 +65,13 @@ class ConnectionDisplay extends UiElement {
 
     handleConnectionClose() {
         VIRTUAL_ENVIRONMENT.remoteController.disconnectPeer(this.peer);
-        MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "none");
-        MENU.handleMenuPanelSelection("multiplayer");
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuHeader.callPanelButton.toggleMenuHeader("call-panel", "none");
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.handleMenuPanelSelection("multiplayer");
     }
 
     handleClickOnCall() {
-        MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "block");
-        MENU.handleMenuPanelSelection("calling");
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuHeader.callPanelButton.toggleMenuHeader("call-panel", "block");
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.handleMenuPanelSelection("calling");
         VIRTUAL_ENVIRONMENT.remoteController.call(this.peer);
     }
 

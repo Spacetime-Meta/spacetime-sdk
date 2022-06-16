@@ -21,8 +21,8 @@ export class EndCallButton extends UiElement {
         })
 
         this.element.addEventListener("click", ()=>{
-            MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "none");
-            MENU.handleMenuPanelSelection("multiplayer");
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuHeader.callPanelButton.toggleMenuHeader("call-panel", "none");
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.handleMenuPanelSelection("multiplayer");
             VIRTUAL_ENVIRONMENT.remoteController.endcall();
         })
     }

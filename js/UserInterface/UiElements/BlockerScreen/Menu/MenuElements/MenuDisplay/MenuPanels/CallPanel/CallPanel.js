@@ -27,12 +27,16 @@ class CallPanel extends UiElement {
             this.endCallButton,
             this.camera
         ])
-
-        window.CALL_PANEL = this;
     }
 
     addCameraBox(peerId, stream) {
-        this.camera.appendChild(new CameraBox(peerId, stream));
+        let cameraBox = document.getElementById("camera-screen-" + peerId);
+        if(!cameraBox) this.camera.appendChild(new CameraBox(peerId, stream));
+    }
+
+    closeCameraBox(peerId) {
+        let cameraBox = document.getElementById("camera-screen-" + peerId);
+        if(cameraBox) cameraBox.remove();
     }
 }
 export { CallPanel }

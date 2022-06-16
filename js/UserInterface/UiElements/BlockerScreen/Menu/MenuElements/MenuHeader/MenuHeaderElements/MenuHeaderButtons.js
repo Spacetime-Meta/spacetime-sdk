@@ -25,8 +25,6 @@ class MenuHeaderButtons extends UiElement {
         this.element.addEventListener("click", () => {
             VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.handleMenuPanelSelection(text)
         })
-
-        window.MENU_HEADER_BUTTON = this;
     }
 
     toggleMenuHeader(className, display) {

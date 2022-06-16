@@ -2,9 +2,7 @@ import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1
 import localProxy from "./localProxy.js";
 import { PeerGroup, escapeHTML } from './peerjs-groups.js';
 import { AvatarController } from '../entities/AvatarController.js';
-
-// import {toggleConnectRoom} from '../UserInterface/UiElements/chatBox.js';
-// import alertBox from '../UserInterface/UiElements/alertBox.js';
+import { AlertBox } from '../UserInterface/UiElements/Common/AlertBox.js';
 
 const SIGNALLING_OPTIONS =  {
     secure: 'wss://',
@@ -14,7 +12,6 @@ const SIGNALLING_OPTIONS =  {
 let connected = false;
 let group;
 let joinRequests = [];
-
 
 class RemoteController {
     constructor(manager) {
@@ -122,6 +119,15 @@ class RemoteController {
                 case "chat": 
                     this.addMessageToChatBox("["+connection.peer+"] "+jsonData.message)
                     break;
+
+                case "notify":
+                    if(jsonData.command == "answered") this.alertBox.element.remove();
+                    if(jsonData.command == "endcall") {
+                        this.currentCall = null;
+                        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.callPanel.closeCameraBox(connection.peer);
+                    }
+                    VIRTUAL_ENVIRONMENT.UI_CONTROLLER.ringtoneSystem.playNotifyTone();
+
             }
         }
     }
@@ -245,13 +251,14 @@ class RemoteController {
     call(peerId) {
         let me = this;
         this.getUserMedia({video: true, audio: true}, function(stream) {
-            CALL_PANEL.addCameraBox(localProxy.peerId, stream)
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.callPanel.addCameraBox(localProxy.peerId, stream);
             var call = me.peer.call(peerId, stream);
+            me.alertBox = new AlertBox('Information', `Calling ${call.peer}...`);
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.ringtoneSystem.playCallTone();
             call.on('stream', function(incomingStream) {
                 if(!me.currentCall) {
                     me.currentCall = call;
-                    me.sendChatMessage(`Calling ${call.peer}`);
-                    CALL_PANEL.addCameraBox(call.peer, incomingStream)
+                    VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.callPanel.addCameraBox(call.peer, incomingStream)
                 }
             });
           }, function(err) {
@@ -262,31 +269,48 @@ class RemoteController {
     answer() {
         let me = this;
         this.peer.on('call', function(call) {
-            MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "block");
-            MENU.handleMenuPanelSelection("calling");
-            me.getUserMedia({video: true, audio: true}, function(stream) {
-              CALL_PANEL.addCameraBox(localProxy.peerId, stream)
-              call.answer(stream);
-              call.on('stream', function(incomingStream) {
-                if(!me.currentCall) {
-                    me.currentCall = call;
-                    me.sendChatMessage(`Received a call from ${call.peer}`);
-                    CALL_PANEL.addCameraBox(call.peer, incomingStream)
-                }
-              });
-              
-            }, function(err) {
+            me.alertBox = new AlertBox('Information', `Receiving a call from ${call.peer}?`, () => {
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.ringtoneSystem.playCallTone();
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuHeader.callPanelButton.toggleMenuHeader("call-panel", "block");
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.handleMenuPanelSelection("calling");
+                me.getUserMedia({video: true, audio: true}, function(stream) {
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.callPanel.addCameraBox(localProxy.peerId, stream)
+                call.answer(stream);
+                call.on('stream', function(incomingStream) {
+                    if(!me.currentCall) {
+                        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.ringtoneSystem.mute();
+                        me.currentCall = call;
+                        me.sendNotify(call.peer, 'answered');
+                        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.callPanel.addCameraBox(call.peer, incomingStream)
+                    }
+                });
+                call.on('close', function() {
+                    me.endcall();
+                });
+                }, function(err) {
                     console.log('Failed to get local stream' ,err);
+                });
             });
         });
     }
 
+    sendNotify(peerId, command) {
+        this.connections.forEach(connection => {
+            if(connection.peer === peerId) {
+                connection.send('{"type":"notify","command":"'+command+'"}');
+            }
+        })
+    }
+
     endcall() {
         if(this.currentCall) {
-            this.sendChatMessage(`End call with ${this.currentCall.peer}`);
+            let peerId = this.currentCall.peer;
             this.currentCall.close();
-            toggleCallBox();
+            this.currentCall = null;
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.callPanel.closeCameraBox(peerId);
+            this.sendNotify(peerId, 'endcall');
         } 
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.ringtoneSystem.playNotifyTone();
     }
 
     jsonMessageFormatter(type) {

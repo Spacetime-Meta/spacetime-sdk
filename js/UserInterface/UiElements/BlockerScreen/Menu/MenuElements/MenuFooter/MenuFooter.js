@@ -40,8 +40,8 @@ class MenuFooter extends UiElement {
                 VIRTUAL_ENVIRONMENT.remoteController.destroy();
                 delete VIRTUAL_ENVIRONMENT.remoteController.peer;
                 VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
-                MENU_HEADER_BUTTON.toggleMenuHeader("call-panel", "none");
-                MENU.handleMenuPanelSelection("multiplayer");
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuHeader.callPanelButton.toggleMenuHeader("call-panel", "none");
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.handleMenuPanelSelection("multiplayer");
             }
         })
 

@@ -1,4 +1,5 @@
 import { BlockerScreen } from './UiElements/BlockerScreen/BlockerScreen.js'
+import { RingToneSystem } from './UiElements/Common/RingtoneSystem.js';
 import { PlayScreen } from './UiElements/PlayScreen/PlayScreen.js'
 
 class UiController {
@@ -10,6 +11,7 @@ class UiController {
     constructor() {
         this.blockerScreen = new BlockerScreen();
         this.playScreen = new PlayScreen();
+        this.ringtoneSystem = new RingToneSystem();
     }
 
     handleControlsLock() {

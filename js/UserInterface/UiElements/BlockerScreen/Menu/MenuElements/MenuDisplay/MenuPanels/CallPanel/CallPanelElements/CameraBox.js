@@ -27,6 +27,8 @@ class CameraBox extends UiElement {
                 height: '200px'
             },
             attributes: {
+                volumn: 0,
+                muted: 'muted',
                 autoplay: 'autoplay',
                 srcObject: stream
             }

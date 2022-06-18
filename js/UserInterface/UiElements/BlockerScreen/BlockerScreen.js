@@ -27,5 +27,14 @@ class BlockerScreen extends UiElement {
 
         document.body.appendChild(this.element)
     }
+
+    toggleMapSize() {
+        console.log(this.element.style.gridTemplateColumns)
+        // if(size === 350) { 
+        //     this.element.style.gridTemplateColumns = "700px 1px";
+        // } else {
+        //     this.element.style.gridTemplateColumns = "350px 1fr";
+        // }
+    }
 }
 export { BlockerScreen }

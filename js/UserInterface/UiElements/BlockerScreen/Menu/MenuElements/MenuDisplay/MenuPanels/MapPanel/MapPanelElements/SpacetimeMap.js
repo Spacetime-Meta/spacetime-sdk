@@ -7,10 +7,12 @@ import { LocationManager } from "../../../../../../../../../util/LocationManager
 
 import { getSpaceSector } from './graphqlCaller.js';
 import PlanetGenerator from './PlanetGenerator.js';
+import { HoverInfoBox } from './HoverInfoBox.js';
 
 
 const IPFS = function(CID) { return `https://ipfs.io/ipfs/${CID}` }
 const ID = function(x, y, z) { return `${x},${y},${z}` }
+const vectorToId = function(vector) { return ID(vector.x, vector.y, vector.z) }
 
 export class SpacetimeMap extends UiElement {
     constructor(){
@@ -22,9 +24,13 @@ export class SpacetimeMap extends UiElement {
             }
         })
 
+        this.hoverInfoBox = new HoverInfoBox();
+        this.appendChild(this.hoverInfoBox);
+
         this.spaceState = {};
         this.renderDistance = 50;
         this.GLTFLoader = new GLTFLoader();
+        this.hoverIntersect = undefined;
 
         // start by initializing the three js scene and renderer
         this.buildThreeJsScene();
@@ -38,14 +44,27 @@ export class SpacetimeMap extends UiElement {
 
         // add the event listeners
         this.element.addEventListener('click', event => {
-            var intersectResult = this.getMouseIntersect(
-                event.offsetX  / this.element.clientWidth * 2 - 1,
-                event.offsetY  / this.element.clientHeight * -2 + 1
-            );
+            var intersectResult = this.getMouseIntersect(event);
 
             if(typeof intersectResult !== "undefined"){
                 this.handleNavigateMap(intersectResult)
             };
+        });
+
+        this.element.addEventListener('mousemove', event => {
+            this.hoverIntersect = this.getMouseIntersect(event);
+            
+            if(typeof this.hoverIntersect !== "undefined"){
+
+                this.hoverInfoBox.setInfoContent(this.spaceState[vectorToId(this.hoverIntersect)])
+
+                this.hoverInfoBox.element.style.left = (event.pageX + 5) + 'px';
+                this.hoverInfoBox.element.style.top = (event.pageY + 5) + 'px';
+                this.hoverInfoBox.element.style.display = "flex";
+
+            } else {
+                this.hoverInfoBox.element.style.display = "none";
+            }
         });
 
         // start the animation loop
@@ -70,8 +89,12 @@ export class SpacetimeMap extends UiElement {
 
     }
 
-    getMouseIntersect(x, y) {
-        var mouse3D = new THREE.Vector3(x, y, 0); 
+    getMouseIntersect(event) { 
+        var mouse3D = new THREE.Vector3(
+            event.offsetX  / this.element.clientWidth * 2 - 1,
+            event.offsetY  / this.element.clientHeight * -2 + 1,
+            0
+        ); 
         this.raycaster.setFromCamera( mouse3D, this.camera );
         var intersects = this.raycaster.intersectObjects( this.scene.children );
 
@@ -207,7 +230,6 @@ export class SpacetimeMap extends UiElement {
 
         // ============ setup raycaster ================
         this.raycaster = new THREE.Raycaster();
-        // document.addEventListener('mousemove', onDocumentMouseMove);
     }
 
     moveOrbit(newLocation) {

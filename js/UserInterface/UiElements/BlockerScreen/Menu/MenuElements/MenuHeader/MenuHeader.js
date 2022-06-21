@@ -11,6 +11,7 @@ class MenuHeader extends UiElement {
                 flexDirection: "row",
                 boxShadow: "0 4px 4px #888888",
                 zIndex: "100",
+                height: "50px"
             }
         })
         

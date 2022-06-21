@@ -10,8 +10,8 @@ class Menu extends UiElement {
             id: "Menu",
             style: {
                 background: "white",
-                display: "grid",
-                gridTemplateRows: "50px 1fr auto"
+                overflow: "scroll",
+                overflow: "auto"
             }
         })
 

@@ -15,17 +15,48 @@ const ID = function(x, y, z) { return `${x},${y},${z}` }
 const vectorToId = function(vector) { return ID(vector.x, vector.y, vector.z) }
 
 export class SpacetimeMap extends UiElement {
-    constructor(){
+    constructor(panel){
         super({
             id: "map",
             style: {
                 width: "350px",
-                height: "350px",
+                height: "350px"
             }
         })
 
+        this.parentPanel = panel;
+
         this.hoverInfoBox = new HoverInfoBox();
         this.appendChild(this.hoverInfoBox);
+
+        this.homeButton = new UiElement({
+            style: {
+                position: "absolute",
+                padding: "10px",
+                margin: "10px",
+                border: "1px solid #e0e0e0",
+                borderRadius: "10px",
+                background: "radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(235,235,235,1) 48%, rgba(250,250,250,1) 100%)",
+                boxShadow: "0 2px 2px #888888",
+                textAlign: "center",
+                cursor: "pointer",
+                transition: "all 0.5s ease"
+            },
+            onClick: ()=>{
+                this.handleNavigateMap(new THREE.Vector3())
+            }
+        })
+
+        const homeImg = new UiElement({
+            type: "img",
+            style: {
+                width: "10px"
+            }
+        })
+        homeImg.element.src = "../../resources/images/home.png";
+        this.homeButton.appendChild(homeImg)
+
+        this.appendChild(this.homeButton)
 
         this.spaceState = {};
         this.renderDistance = 50;
@@ -39,7 +70,7 @@ export class SpacetimeMap extends UiElement {
         if(isNaN(location.x) || isNaN(location.y) || isNaN(location.z)){
             this.handleNavigateMap(new THREE.Vector3());
         } else {
-            this.handleNavigateMap(location.x, location.y, location.z);
+            this.handleNavigateMap(new THREE.Vector3(location.x, location.y, location.z));
         }
 
         // add the event listeners
@@ -83,7 +114,7 @@ export class SpacetimeMap extends UiElement {
         await this.loadSector(newLocation);
 
         // TODO - at this point we can update the ui info
-        // mapPanel.update()
+        this.parentPanel.setPortalPanelInfo(this.spaceState[vectorToId(newLocation)])
 
         this.removeOutOfRange(newLocation);
 
@@ -233,6 +264,7 @@ export class SpacetimeMap extends UiElement {
     }
 
     moveOrbit(newLocation) {
+        console.log(newLocation)
         if(!this.controls.target.equals(newLocation)){
             
             this.originalCameraPos = this.camera.position.clone();

@@ -2,6 +2,8 @@ import { UiElement } from "../../../../../../UiElement.js";
 
 import { SpacetimeMap } from "./MapPanelElements/SpacetimeMap.js";
 
+const IPFS = function(CID) { return `https://ipfs.io/ipfs/${CID}` }
+
 export class MapPanel extends UiElement {
     constructor(){
         super({
@@ -9,18 +11,18 @@ export class MapPanel extends UiElement {
                 height: "100%",
                 display: "none",
                 flexDirection: "column",
-                // justifyContent: "center",
                 alignItems: "center"
             }
         })
 
-        this.spacetimeMap = new SpacetimeMap();
+        this.portalLocation = "https://stdkit-dev.netlify.app/examples/spawn-planet/index.html";
+
+        this.spacetimeMap = new SpacetimeMap(this);
         this.appendChild(this.spacetimeMap);
 
-        this.appendChild( new UiElement({
-            innerHTML: "+",
+        this.visitWorldButton = new UiElement({
             style: {
-                padding: "20px",
+                padding: "10px",
                 margin: "20px",
                 border: "1px solid #e0e0e0",
                 borderRadius: "10px",
@@ -34,36 +36,45 @@ export class MapPanel extends UiElement {
                 background: "#d8d8d8"
             },
             onClick: ()=>{
-                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.toggleMapSize();
+                window.location.href = this.portalLocation;
             }
-        }));
+        })
 
-        this.appendChild( new UiElement({
-            innerHTML: "go back to map",
-            style: {
-                padding: "20px",
-                margin: "20px",
-                border: "1px solid #e0e0e0",
-                borderRadius: "10px",
-                background: "radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(235,235,235,1) 48%, rgba(250,250,250,1) 100%)",
-                boxShadow: "0 2px 2px #888888",
-                textAlign: "center",
-                cursor: "pointer",
-                transition: "all 0.5s ease"
-            },
-            hover: {
-                background: "#d8d8d8"
-            },
-            onClick: ()=>{
-                window.location.href = "https://www.spacetimemeta.io/#/map"
-            }
-        }))
+        this.locationLoc = new UiElement({
+            innerHTML: "x:0 y:0 z:0"
+        })
 
-        this.appendChild( new UiElement({
-            innerHTML: "This will send you back to the spacetime meta website",
+        this.locationName = new UiElement({
+            innerHTML: "Spacetime Meta"
+        })
+
+        this.locationImg = new UiElement({
+            type: "img",
             style: {
-                textAlign: "center"
+                width: "300px"
             }
-        }))
+        })
+
+        this.locationImg.element.src = "https://cdn.discordapp.com/attachments/925045793780543568/984261788549918802/newBack.png"
+        this.visitWorldButton.appendChildList([
+            this.locationLoc,
+            this.locationName,
+            this.locationImg,
+            new UiElement({ innerHTML: "Enter Location"})
+        ]);
+
+        this.appendChild( this.visitWorldButton )
+    }
+
+    setPortalPanelInfo(information){
+        this.locationLoc.element.innerHTML = `x:${information.location.x} y:${information.location.y} z:${information.location.z}`;
+        this.locationName.element.innerHTML = information.name;
+
+        if(information.image.substring(0,2) === "Qm"){
+            information.image = IPFS(information.image);
+        }
+        this.locationImg.element.src = information.image;
+
+        this.portalLocation = information.portal;
     }
 }

@@ -37,7 +37,7 @@ export class SpacetimeMap extends UiElement {
             style: {
                 position: "absolute",
                 padding: "5px",
-                margin: "10px",
+                margin: "5px",
                 border: "1px solid #e0e0e0",
                 borderRadius: "5px",
                 background: "rgb(255,255,255)",
@@ -63,7 +63,42 @@ export class SpacetimeMap extends UiElement {
         homeIcon.element.src = "../../resources/images/home.png";
         this.homeButton.appendChild(homeIcon)
 
-        this.appendChild(this.homeButton)
+        this.shareButton = new UiElement({
+            style: {
+                position: "absolute",
+                padding: "5px",
+                margin: "5px",
+                marginLeft: "30px",
+                border: "1px solid #e0e0e0",
+                borderRadius: "5px",
+                background: "rgb(255,255,255)",
+                boxShadow: "0 2px 2px #888888",
+                textAlign: "center",
+                cursor: "pointer",
+                transition: "all 0.5s ease"
+            },
+            hover: {
+                background: "#d8d8d8"
+            },
+            onClick: ()=>{
+                navigator.clipboard.writeText(this.spaceState[vectorToId(this.selectedLocation)].portal)
+            }
+        })
+
+        const shareIcon = new UiElement({
+            type: "img",
+            style: {
+                width: "10px"
+            }
+        })
+        shareIcon.element.src = "../../resources/images/share.png";
+        this.shareButton.appendChild(shareIcon);
+
+
+        this.appendChildList([
+            this.homeButton,
+            this.shareButton
+        ])
 
         this.spaceState = {};
         this.renderDistance = 50;
@@ -115,6 +150,8 @@ export class SpacetimeMap extends UiElement {
 
     async handleNavigateMap(newLocation) {
         
+        this.selectedLocation = newLocation;
+
         this.moveOrbit(newLocation);
 
         // start by loading the whole sector around our new location

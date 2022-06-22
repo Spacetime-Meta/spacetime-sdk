@@ -9,9 +9,9 @@ export class SearchBar extends UiElement {
         super({
             style: {
                 position: "absolute",
-                padding: "5px",
-                margin: "10px",
-                marginLeft: "45px",
+                padding: "5.5px",
+                margin: "5px",
+                marginLeft: "55px",
                 border: "1px solid #e0e0e0",
                 borderRadius: "5px",
                 background: "rgb(255,255,255)",

@@ -323,7 +323,6 @@ class TerrainGenerator {
 
         
         heights.sort(function(a, b) { return a - b; });
-                // console.log(heights)
         for (i = 0; i < levels; i++) {
             // Bucket by population (bucket size) not range size
             var subset = heights.slice(i*inc, (i+1)*inc),
@@ -338,7 +337,6 @@ class TerrainGenerator {
                 avg: sum / bl,
             };
         }
-        console.log(buckets)
 
         // Set the height of each vertex to the average height of its bucket
         for (i = 0; i < l; i++) {

@@ -1,9 +1,9 @@
 import { UiElement } from "../../../../UiElement.js";
 
-import { ChatPanel } from "./MenuPanels/ChatPanel/ChatPanel.js";
-import { MultiplayerPanel } from "./MenuPanels/MultiplayerPanel/MultiplayerPanel.js";
-import { AvatarPanel } from "./MenuPanels/AvatarPanel/AvatarPanel.js";
-import { MapPanel } from "./MenuPanels/MapPanel/MapPanel.js";
+import { ChatPanel } from "../../../../MenuPanels/ChatPanel/ChatPanel.js";
+import { MultiplayerPanel } from "../../../../MenuPanels/MultiplayerPanel/MultiplayerPanel.js";
+import { AvatarPanel } from "../../../../MenuPanels/AvatarPanel/AvatarPanel.js";
+import { MapPanel } from "../../../../MenuPanels/MapPanel/MapPanel.js";
 
 class MenuDisplay extends UiElement {
     constructor() {

@@ -9,7 +9,10 @@ class MenuFooter extends UiElement {
                 textAlign: "center",
                 height: "30px",
                 transition: "all 0.5s ease",
-                overflow: "hidden"
+                overflow: "hidden",
+                position: "absolute",
+                bottom: "0",
+                width: "350px"
             },
             
         })

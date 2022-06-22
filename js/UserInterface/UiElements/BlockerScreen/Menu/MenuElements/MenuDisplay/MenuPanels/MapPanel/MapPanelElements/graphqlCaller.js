@@ -16,7 +16,79 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
   return await result.json();
 }
 
-const operationsDoc = (minX, maxX, minY, maxY, minZ, maxZ) => { return `
+// The following query is for search bar with locations
+ const searchByLocation = (x,y,z) => { return `
+ query MyQuery {
+   spaceState_v3(where: {x: {_eq: ${x}}, y: {_eq: ${y}}, z: {_eq: ${z}}}) {
+     loc
+     logo
+     name
+     x
+     y
+     z
+   }
+ }
+`};
+
+// the following query search by name
+const searchByName = (input) => { return `
+  query MyQuery {
+    search_chunks_aggregate(args: {search: "${input}"}) {
+      nodes {
+        name
+        logo
+        loc
+        x
+        y
+        z
+      }
+    }
+  }
+`};
+
+
+function fetchMyQuery(query) {
+    return fetchGraphQL(
+        query,
+        "MyQuery",
+        {}
+    );
+}
+
+async function getSearchBarQuery(input) {
+
+    let query;
+    if(typeof input === "string") {
+        if(input.length < 3) { return undefined; }
+        query = searchByName(input);
+    } else {
+        query = searchByLocation(input.x, input.y, input.z);
+    }
+
+    const { errors, data } = await fetchMyQuery(query);
+  
+    if (errors) { 
+        console.error(errors);
+        return undefined; 
+    }
+  
+    // do something great with this precious data
+    return data;
+  }
+
+
+
+
+
+
+
+
+
+/**
+ * the following logic is specific to the space sectors
+ */
+
+const spaceSectorQuery = (minX, maxX, minY, maxY, minZ, maxZ) => { return `
 query MyQuery {
   spaceState_v3 (where: {x: {_gte: ${minX}, _lte: ${maxX}}, y: {_gte: ${minY}, _lte: ${maxY}}, z: {_gte: ${minZ}, _lte: ${maxZ}}}){
     planet
@@ -31,7 +103,7 @@ query MyQuery {
 
 function fetchMySector(minX, maxX, minY, maxY, minZ, maxZ) {
   return fetchGraphQL(
-    operationsDoc(minX, maxX, minY, maxY, minZ, maxZ),
+    spaceSectorQuery(minX, maxX, minY, maxY, minZ, maxZ),
     "MyQuery",
     {}
   );
@@ -79,4 +151,4 @@ async function getSpaceSector(minX, maxX, minY, maxY, minZ, maxZ) {
     return spaceState;
 }
 
-export {getSpaceSector}
+export {getSpaceSector, getSearchBarQuery}

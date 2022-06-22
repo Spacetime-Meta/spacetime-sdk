@@ -8,6 +8,7 @@ import { LocationManager } from "../../../../../../../../../util/LocationManager
 import { getSpaceSector } from './graphqlCaller.js';
 import PlanetGenerator from './PlanetGenerator.js';
 import { HoverInfoBox } from './HoverInfoBox.js';
+import { SearchBar } from './SearchBar.js';
 
 
 const IPFS = function(CID) { return `https://ipfs.io/ipfs/${CID}` }
@@ -29,32 +30,38 @@ export class SpacetimeMap extends UiElement {
         this.hoverInfoBox = new HoverInfoBox();
         this.appendChild(this.hoverInfoBox);
 
+        this.searchBar = new SearchBar(this);
+        this.appendChild( this.searchBar )
+
         this.homeButton = new UiElement({
             style: {
                 position: "absolute",
-                padding: "10px",
+                padding: "5px",
                 margin: "10px",
                 border: "1px solid #e0e0e0",
-                borderRadius: "10px",
-                background: "radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(235,235,235,1) 48%, rgba(250,250,250,1) 100%)",
+                borderRadius: "5px",
+                background: "rgb(255,255,255)",
                 boxShadow: "0 2px 2px #888888",
                 textAlign: "center",
                 cursor: "pointer",
                 transition: "all 0.5s ease"
+            },
+            hover: {
+                background: "#d8d8d8"
             },
             onClick: ()=>{
                 this.handleNavigateMap(new THREE.Vector3())
             }
         })
 
-        const homeImg = new UiElement({
+        const homeIcon = new UiElement({
             type: "img",
             style: {
                 width: "10px"
             }
         })
-        homeImg.element.src = "../../resources/images/home.png";
-        this.homeButton.appendChild(homeImg)
+        homeIcon.element.src = "../../resources/images/home.png";
+        this.homeButton.appendChild(homeIcon)
 
         this.appendChild(this.homeButton)
 

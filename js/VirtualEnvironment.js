@@ -1,5 +1,7 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 
+import Stats from './util/Stats.module.js'
+
 import { PlayerLocal } from './entities/PlayerLocal.js';
 
 import { TerrainController } from './terrain/TerrainController.js';
@@ -28,6 +30,11 @@ class VirtualEnvironment {
     constructor() {
         // ===== loading =====
         this.loading();
+
+        // stats
+        this.stats = Stats()
+        this.stats.dom.style.left = "350px"
+        document.body.appendChild(this.stats.dom)
         
         // until complete removal of the graphic tier setting, keep this section commented
         this.graphicTier = 2; //localProxy.tier !== undefined ? localProxy.tier : 0;
@@ -200,6 +207,10 @@ class VirtualEnvironment {
     }
     
     update() {
+
+        // update the stats
+        this.stats.update();
+
         const delta = Math.min(clock.getDelta(), 0.1);
         if (this.terrainController.collider) {
             

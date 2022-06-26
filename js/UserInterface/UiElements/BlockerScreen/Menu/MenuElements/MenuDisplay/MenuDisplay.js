@@ -38,6 +38,7 @@ class MenuDisplay extends UiElement {
                 break;
             case "map":
                 this.mapPanel.element.style.display = "flex";
+                console.log("play map frames")
                 break;
             
         }
@@ -48,6 +49,7 @@ class MenuDisplay extends UiElement {
         this.multiplayerPanel.element.style.display = "none";
         this.avatarPanel.element.style.display = "none";
         this.mapPanel.element.style.display = "none";
+        console.log("stop map frames")
     }
 }
 export { MenuDisplay }

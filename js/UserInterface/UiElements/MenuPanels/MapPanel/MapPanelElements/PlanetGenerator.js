@@ -509,7 +509,6 @@ const PlanetGenerator = {
             moon.rotation.y += r.y[3];
             moon.rotation.z += r.z[3];
         });
-        planet.rotateY(0.002)
     },
     newId() {
         const firstId = id;

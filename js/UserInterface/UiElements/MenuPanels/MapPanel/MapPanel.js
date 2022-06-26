@@ -15,7 +15,7 @@ export class MapPanel extends UiElement {
             }
         })
 
-        this.portalLocation = "https://stdkit-dev.netlify.app/examples/spawn-planet/index.html";
+        this.portalLocation = `${window.location.origin}/metaverse/spawn-planet/`;
 
         this.spacetimeMap = new SpacetimeMap(this);
         this.appendChild(this.spacetimeMap);

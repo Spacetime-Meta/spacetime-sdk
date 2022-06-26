@@ -9,6 +9,9 @@ class MenuDisplay extends UiElement {
     constructor() {
         super({
             id: "MenuDisplay",
+            style: {
+                marginTop: "50px"
+            }
         })
         
         this.chatPanel = new ChatPanel();

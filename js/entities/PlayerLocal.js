@@ -45,8 +45,10 @@ class PlayerLocal extends CapsuleEntity {
                 if (event.key === "v") {
                     if (this.targetControlVector === this.thirdPersonControls) {
                         this.targetControlVector = this.fpsControls;
+                        this.avatarController.setTransparency(true);
                     } else {
                         this.targetControlVector = this.thirdPersonControls;
+                        this.avatarController.setTransparency(false);
                     }
                 }
                 if (event.keyCode === 32 && event.target === document.body) {
@@ -125,7 +127,6 @@ class PlayerLocal extends CapsuleEntity {
         this.updateCurrentAnimation()
         if(typeof this.avatarController !== "undefined"){
             this.avatarController.update(delta, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
-            this.avatarController.opacity = (this.controlVector.z - 0.01) / (40 - 0.01);
         }
 
         this.controlVector.lerp(this.targetControlVector, 0.1);

@@ -9,6 +9,7 @@ const DEFAULT_ANIMATION_MAPPING = { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 }
 class AvatarController extends THREE.Object3D {
     constructor(manager) {//animationURL, avatarURL, keyMap
         super();
+        this.isVisible = true;
         this.loader = new GLTFLoader(manager);
         this.manager = manager;
         this.animations = {};
@@ -49,24 +50,23 @@ class AvatarController extends THREE.Object3D {
         // use the mixer as only signal that everything is properly loaded
         if(this.mixer){
             this.position.copy(position);
-            this.updateFacingDirection(horizontalVelocity)
-            this.play(anim, time);
-            this.mixer.update(delta);
-        
-            // this part should not happen on every update, only when user changes the view
-            this.model.traverse(child => {
-                if (child.isMesh) {
-                    
-                    child.material.opacity = this.opacity;
-                    
-                    if (this.opacity < 1) {
-                        child.material.transparent = true;
-                    } else {
-                        child.material.transparent = false;
-                    }
-                }
-            })
-        }        
+            if(this.isVisible) {
+                this.updateFacingDirection(horizontalVelocity);
+                this.play(anim, time);
+                this.mixer.update(delta); 
+                console.log(this.isVisible)
+            }
+        } 
+    }
+
+    setTransparency(setTo) {
+        if(setTo) {
+            window.MAIN_SCENE.remove(this.model);
+            
+        } else {
+            window.MAIN_SCENE.add(this.model);
+        }
+        this.isVisible = !setTo;
     }
 
     changeAvatar(avatarUrl, animationsUrl, animationMapping) {
@@ -118,7 +118,6 @@ class AvatarController extends THREE.Object3D {
             this.lastChange = performance.now() - 250;
             this.delta = 0;
             this.play("idle", 0);
-            this.opacity = 1;
         });
     }
 

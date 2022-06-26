@@ -4,7 +4,7 @@ import { loadingBar } from '../UserInterface/UiElements/LoadingPage/loadingPage.
 
 const DEFAULT_AVATAR_PATH = '../../../resources/avatars/yBot.glb';
 const DEFAULT_ANIMATION_PATH = '../../../resources/animations/defaultAvatar.glb';
-const DEFAULT_ANIMATION_MAPPING = { walk: 1, idle: 2, run: 3, jump: 5, fall: 4 };
+const DEFAULT_ANIMATION_MAPPING = { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 };
 
 class AvatarController extends THREE.Object3D {
     constructor(manager) {//animationURL, avatarURL, keyMap

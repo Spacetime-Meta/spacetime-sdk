@@ -7,24 +7,52 @@ class MenuHeader extends UiElement {
         super({
             id: "MenuHeader",
             style: {
-                display: "flex",
-                flexDirection: "row",
                 boxShadow: "0 4px 4px #888888",
+                background: "#E0E0E0",
                 zIndex: "100",
-                height: "50px"
+                height: "50px",
+                position: "absolute",
+                width: "350px",
+                transition: "all 0.5s ease",
+                overflow: "hidden"
             }
         })
-        
-        this.chatPanelButton = new MenuHeaderButtons("chat");
-        this.multiplayerPanelButton = new MenuHeaderButtons("multiplayer");
-        this.avatarPanelButton = new MenuHeaderButtons("avatar");
-        this.mapPanelButton = new MenuHeaderButtons("map");
 
-        this.appendChildList([
+        this.isOpen = false;
+
+        this.toggleMenuButton = new UiElement({
+            innerHTML: "☰",
+            style: {
+                padding: "10px",
+                cursor: "pointer",
+
+            },
+            onClick: () => {
+                this.toggleMenu();
+            }
+        })
+
+        this.chatPanelButton = new MenuHeaderButtons("chat", this);
+        this.multiplayerPanelButton = new MenuHeaderButtons("multiplayer", this);
+        this.avatarPanelButton = new MenuHeaderButtons("avatar", this);
+        this.mapPanelButton = new MenuHeaderButtons("map", this);
+        
+        this.optionList = new UiElement({
+            style: {
+                display: "none",
+                marginTop: "50px",
+            }
+        })
+        this.optionList.appendChildList([
             this.chatPanelButton,
             this.multiplayerPanelButton,
             this.avatarPanelButton,
             this.mapPanelButton
+        ])
+
+        this.appendChildList([
+            this.toggleMenuButton,
+            this.optionList
         ])
     }
 
@@ -47,6 +75,19 @@ class MenuHeader extends UiElement {
                 this.mapPanelButton.element.style.background = "#c8c8c8";
                 this.mapPanelButton.options.style.background = "#c8c8c8";
         }
+    }
+
+    toggleMenu() {
+        if(this.isOpen){
+            this.element.style.height = "50px";
+            this.toggleMenuButton.element.innerHTML = "☰";
+            this.optionList.element.style.display = "none"; 
+        } else {
+            this.element.style.height = "350px";
+            this.toggleMenuButton.element.innerHTML = "X";
+            this.optionList.element.style.display = "block"; 
+        }
+        this.isOpen = !this.isOpen;
     }
 
     closeAllHeaders() {

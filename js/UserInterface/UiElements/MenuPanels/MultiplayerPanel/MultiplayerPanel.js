@@ -9,7 +9,8 @@ class MultiplayerPanel extends UiElement {
             id: "MultiplayerPanel",
             style: {
                 display: "none",
-                height: "100%"
+                height: "100%",
+                paddingTop: "25px",
             }
         })
 

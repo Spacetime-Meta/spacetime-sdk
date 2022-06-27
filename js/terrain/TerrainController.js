@@ -39,10 +39,9 @@ class TerrainController {
     }
 
     handleLoadedTerrain(terrain, scene, x, y, z, scaleFactor) {
-        console.log(terrain)
         this.terrain = terrain;
         this.terrain.position.set(x, y, z);
-        this.terrain.scale.set(scaleFactor, scaleFactor, scaleFactor)
+        this.terrain.scale.set(scaleFactor, scaleFactor, scaleFactor);
         this.terrain.traverse(object => {
             if (object.isMesh) {
                 object.castShadow = true;

@@ -24,6 +24,7 @@ class PlayerLocal extends CapsuleEntity {
 
         this.speedFactor = 1; // 1 is the default walk speed
         this.visible = false;
+        this.isRunning = false;
         
         this.avatarController = new AvatarController(loadingManager);
         this.avatarController.spawnAvatar(params);
@@ -88,7 +89,11 @@ class PlayerLocal extends CapsuleEntity {
 
         if(Object.keys(this.keys).length > 0){
             // speedFactor depending on the run/walk state
-            this.speedFactor = this.keys["shift"] ? 3 : 1;
+            
+            if(this.keys["shift"]) {
+                this.isRunning = true;
+            }
+            this.speedFactor = this.isRunning ? 3 : 1;
 
             if (this.keys["w"]) {
                 this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(this.speedFactor * delta));
@@ -110,6 +115,7 @@ class PlayerLocal extends CapsuleEntity {
                 this.setAnimationParameters("jump", 0);
             }
         } else {
+            this.isRunning = false;
             this.horizontalVelocity.multiplyScalar(0);
         }
 
@@ -141,7 +147,7 @@ class PlayerLocal extends CapsuleEntity {
 
         if(this.onGround) {
             if (this.keys["w"] || this.keys["s"] || this.keys["a"] || this.keys["d"]) {
-                if(this.keys["shift"]){ 
+                if(this.isRunning){ 
                     this.setAnimationParameters("run"); 
                 } else { 
                     this.setAnimationParameters("walk"); 

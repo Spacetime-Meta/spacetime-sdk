@@ -20,7 +20,6 @@ const MEDIUM = 1;
 const HIGH = 2;
 const ULTRA = 3;
 const settings = ["Low", "Medium", "High", "Ultra"];
-const DEFAULT = "default";
 
 let shadowLight;
 
@@ -31,10 +30,12 @@ class VirtualEnvironment {
         // ===== loading =====
         this.loading();
 
-        // stats
-        this.stats = Stats()
-        this.stats.dom.style.left = "350px"
-        document.body.appendChild(this.stats.dom)
+        /**
+         * Uncomment the following lines to activate the stats panel
+         */
+        // this.stats = Stats()
+        // this.stats.dom.style.left = "350px"
+        // document.body.appendChild(this.stats.dom)
         
         // until complete removal of the graphic tier setting, keep this section commented
         this.graphicTier = 2; //localProxy.tier !== undefined ? localProxy.tier : 0;

@@ -1,4 +1,4 @@
-import { UiElement } from "../../../../UiElement.js";
+import { UiElement } from "../../../UiElement.js";
 
 class MenuFooter extends UiElement {
     constructor() {

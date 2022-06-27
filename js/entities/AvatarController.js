@@ -54,7 +54,6 @@ class AvatarController extends THREE.Object3D {
                 this.updateFacingDirection(horizontalVelocity);
                 this.play(anim, time);
                 this.mixer.update(delta); 
-                console.log(this.isVisible)
             }
         } 
     }

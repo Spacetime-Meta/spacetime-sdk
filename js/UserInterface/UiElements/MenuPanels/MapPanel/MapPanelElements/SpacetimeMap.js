@@ -331,7 +331,6 @@ export class SpacetimeMap extends UiElement {
     }
 
     moveOrbit(newLocation) {
-        console.log(newLocation)
         if(!this.controls.target.equals(newLocation)){
             
             this.originalCameraPos = this.camera.position.clone();

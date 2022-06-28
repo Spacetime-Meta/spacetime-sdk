@@ -33,12 +33,12 @@ class VirtualEnvironment {
         /**
          * Uncomment the following lines to activate the stats panel
          */
-        // this.stats = Stats()
-        // this.stats.dom.style.left = "350px"
-        // document.body.appendChild(this.stats.dom)
+        this.stats = Stats()
+        this.stats.dom.style.left = "350px"
+        document.body.appendChild(this.stats.dom)
         
         // until complete removal of the graphic tier setting, keep this section commented
-        this.graphicTier = 2; //localProxy.tier !== undefined ? localProxy.tier : 0;
+        this.graphicTier = 1; //localProxy.tier !== undefined ? localProxy.tier : 0;
 
         // ===== renderer =====
         this.renderer = new THREE.WebGLRenderer({ alpha: true });

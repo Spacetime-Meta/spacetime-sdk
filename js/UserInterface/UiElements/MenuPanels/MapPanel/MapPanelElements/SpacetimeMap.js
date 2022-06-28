@@ -141,11 +141,15 @@ export class SpacetimeMap extends UiElement {
         });
 
         // start the animation loop
-        const animate = () => { 
-            this.update()
-            requestAnimationFrame(animate) 
-        }
-        requestAnimationFrame(animate);
+        // const animate = () => { 
+        //     this.update()
+        //     if(this.parentPanel.element.style.display = "block") {
+        //         requestAnimationFrame(animate)
+        //     }
+            
+        // }
+        // requestAnimationFrame(animate);
+        this.update()
     }
 
     async handleNavigateMap(newLocation) {
@@ -161,6 +165,20 @@ export class SpacetimeMap extends UiElement {
         this.parentPanel.setPortalPanelInfo(this.spaceState[vectorToId(newLocation)])
 
         this.removeOutOfRange(newLocation);
+
+        let i=0
+        // start the animation loop
+        const animate = () => { 
+            this.update()
+            this.controls.update()
+            if(i<60) {
+                requestAnimationFrame(animate);
+                i++;
+            } else {
+                cancelAnimationFrame(animate);
+            }
+        }
+        requestAnimationFrame(animate);
 
     }
 
@@ -213,6 +231,9 @@ export class SpacetimeMap extends UiElement {
     
         // update the space state
         this.spaceState = {...this.spaceState, ...newChunks}
+
+        // render the scene
+        this.update();
     }
 
     removeOutOfRange(newLocation) { 
@@ -293,6 +314,8 @@ export class SpacetimeMap extends UiElement {
 
         // ============= setup controls =============
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    
+        this.controls.addEventListener("change", ()=>{this.update()})
         this.controls.maxDistance = 200;
         this.controls.minDistance = 1;
         this.controls.enablePan = false;
@@ -308,7 +331,6 @@ export class SpacetimeMap extends UiElement {
     }
 
     moveOrbit(newLocation) {
-        console.log(newLocation)
         if(!this.controls.target.equals(newLocation)){
             
             this.originalCameraPos = this.camera.position.clone();
@@ -331,7 +353,7 @@ export class SpacetimeMap extends UiElement {
     }
 
     update() {
-        this.controls.update()
+
         this.renderer.render(this.scene, this.camera);
 
         this.updateCamera()
@@ -339,10 +361,6 @@ export class SpacetimeMap extends UiElement {
         this.scene.children.forEach(child => {
             if(child.source === 'generator'){
                 PlanetGenerator.update(child)
-            } else {
-                if(child.source === 'gltf'){
-                    child.rotateY(0.002)
-                }
             }
         })
     }

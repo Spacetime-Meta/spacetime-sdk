@@ -1,4 +1,4 @@
-import { UiElement } from "../../UiElement.js";
+import { UiElement } from "../UiElement.js";
 
 import { MenuHeader } from "./MenuElements/MenuHeader/MenuHeader.js";
 import { MenuFooter } from "./MenuElements/MenuFooter/MenuFooter.js";

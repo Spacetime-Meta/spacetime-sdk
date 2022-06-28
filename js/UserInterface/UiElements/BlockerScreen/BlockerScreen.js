@@ -1,7 +1,7 @@
 import { UiElement } from "../UiElement.js";
 
 import { Blocker } from "./Blocker/Blocker.js"; 
-import { Menu } from "./Menu/Menu.js";
+import { Menu } from "../Menu/Menu.js";
 
 class BlockerScreen extends UiElement {
     constructor(){

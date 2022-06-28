@@ -31,20 +31,25 @@ class RemoteController {
          */ 
         if(typeof localProxy.peerId !== 'undefined'){
             this.peer = new Peer(localProxy.peerId);
-            console.log("[info] Trying to create peer: " + localProxy.peerId)
-            this.peer.on('open', () => {
-                this.onConnectionOpen()
-            })
+            this.initPeer(this.peer)
         }
+    }
+
+    initPeer(peer) {
+        peer.on('open', () => {
+            this.onConnectionOpen();
+        })
+
+        peer.on("close", () => {
+            window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.update()
+        })
     }
 
     createPeerWithId(peerId){
         localProxy.peerId = peerId;
         this.peer = new Peer(peerId);
-        this.peer.on('open', () => {
-            this.onConnectionOpen();
-        });
-        
+        this.initPeer(this.peer)
+
         // add video call box
         // callBox(this, peerId);
 
@@ -54,11 +59,12 @@ class RemoteController {
 
     onConnectionOpen() {
         this.addMessageToChatBox("[info] Peer created with id: "+localProxy.peerId);
-        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
+        window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
+        window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.update();
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
-            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
+            window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
             this.onConnectionConnect(newConnection)
         })
 
@@ -161,7 +167,7 @@ class RemoteController {
         if(isValid) {
             this.addMessageToChatBox("[info] Trying connection to peer: " + peerId);
             const newConnection = this.peer.connect(peerId);
-            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
+            window.window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
 
             // on new connection establish
             newConnection.on('open', () => {

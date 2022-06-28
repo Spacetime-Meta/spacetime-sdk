@@ -1,9 +1,10 @@
-import { UiElement } from "../../../../UiElement.js";
+import { UiElement } from "../../../UiElement.js";
 
-import { ChatPanel } from "../../../../MenuPanels/ChatPanel/ChatPanel.js";
-import { MultiplayerPanel } from "../../../../MenuPanels/MultiplayerPanel/MultiplayerPanel.js";
-import { AvatarPanel } from "../../../../MenuPanels/AvatarPanel/AvatarPanel.js";
-import { MapPanel } from "../../../../MenuPanels/MapPanel/MapPanel.js";
+import { ChatPanel } from "../../../MenuPanels/ChatPanel/ChatPanel.js";
+import { MultiplayerPanel } from "../../../MenuPanels/MultiplayerPanel/MultiplayerPanel.js";
+import { AvatarPanel } from "../../../MenuPanels/AvatarPanel/AvatarPanel.js";
+import { OptionsPanel } from "../../../MenuPanels/OptionsPanel/OptionsPanel.js";
+import { MapPanel } from "../../../MenuPanels/MapPanel/MapPanel.js";
 
 class MenuDisplay extends UiElement {
     constructor() {
@@ -17,12 +18,14 @@ class MenuDisplay extends UiElement {
         this.chatPanel = new ChatPanel();
         this.multiplayerPanel = new MultiplayerPanel();
         this.avatarPanel = new AvatarPanel();
+        this.optionsPanel = new OptionsPanel();
         this.mapPanel = new MapPanel();
 
         this.appendChildList([
             this.chatPanel,
             this.multiplayerPanel,
             this.avatarPanel,
+            this.optionsPanel,
             this.mapPanel
         ])
     }
@@ -39,10 +42,12 @@ class MenuDisplay extends UiElement {
             case "avatar":
                 this.avatarPanel.element.style.display = "block";
                 break;
+            case "options":
+                this.optionsPanel.element.style.display = "block";
+                break;
             case "map":
                 this.mapPanel.element.style.display = "flex";
                 break;
-            
         }
     }
 
@@ -50,6 +55,7 @@ class MenuDisplay extends UiElement {
         this.chatPanel.element.style.display = "none";
         this.multiplayerPanel.element.style.display = "none";
         this.avatarPanel.element.style.display = "none";
+        this.optionsPanel.element.style.display = "none";
         this.mapPanel.element.style.display = "none";
     }
 }

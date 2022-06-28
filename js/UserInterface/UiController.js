@@ -10,6 +10,9 @@ class UiController {
     constructor() {
         this.blockerScreen = new BlockerScreen();
         this.playScreen = new PlayScreen();
+
+        // references
+        this.connectionsManagementDisplay = this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay;
     }
 
     handleControlsLock() {
@@ -32,8 +35,7 @@ class UiController {
     }
 
     update() {
-        this.blockerScreen.menu.menuFooter.update();
-        this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.update();
+        this.connectionsManagementDisplay.update();
     }
 }
 export { UiController }

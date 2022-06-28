@@ -1,5 +1,7 @@
 import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
 
+import Stats from './util/Stats.module.js'
+
 import { PlayerLocal } from './entities/PlayerLocal.js';
 
 import { TerrainController } from './terrain/TerrainController.js';
@@ -18,7 +20,6 @@ const MEDIUM = 1;
 const HIGH = 2;
 const ULTRA = 3;
 const settings = ["Low", "Medium", "High", "Ultra"];
-const DEFAULT = "default";
 
 let shadowLight;
 
@@ -28,9 +29,16 @@ class VirtualEnvironment {
     constructor() {
         // ===== loading =====
         this.loading();
+
+        /**
+         * Uncomment the following lines to activate the stats panel
+         */
+        this.stats = Stats()
+        this.stats.dom.style.left = "350px"
+        document.body.appendChild(this.stats.dom)
         
         // until complete removal of the graphic tier setting, keep this section commented
-        this.graphicTier = 2; //localProxy.tier !== undefined ? localProxy.tier : 0;
+        this.graphicTier = 1; //localProxy.tier !== undefined ? localProxy.tier : 0;
 
         // ===== renderer =====
         this.renderer = new THREE.WebGLRenderer({ alpha: true });
@@ -200,6 +208,10 @@ class VirtualEnvironment {
     }
     
     update() {
+
+        // update the stats
+        this.stats.update();
+
         const delta = Math.min(clock.getDelta(), 0.1);
         if (this.terrainController.collider) {
             

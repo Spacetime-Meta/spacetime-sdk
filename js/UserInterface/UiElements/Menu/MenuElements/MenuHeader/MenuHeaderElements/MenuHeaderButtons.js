@@ -1,4 +1,4 @@
-import { UiElement } from "../../../../../UiElement.js";
+import { UiElement } from "../../../../UiElement.js";
 
 export class MenuHeaderButtons extends UiElement {
     constructor(text, menu) {

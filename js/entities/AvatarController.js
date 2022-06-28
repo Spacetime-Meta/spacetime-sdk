@@ -2,7 +2,7 @@ import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1W
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
 import { loadingBar } from '../UserInterface/UiElements/LoadingPage/loadingPage.js';
 
-const DEFAULT_AVATAR_PATH = '../../../resources/avatars/yBot.glb';
+const DEFAULT_AVATAR_PATH = '../../../resources/avatars/vanguard.glb';
 const DEFAULT_ANIMATION_PATH = '../../../resources/animations/defaultAvatar.glb';
 const DEFAULT_ANIMATION_MAPPING = { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 };
 

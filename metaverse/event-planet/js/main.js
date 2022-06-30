@@ -49,9 +49,9 @@ function animate() {
 
     // console.log(LOCAL_PLAYER.position)
 
-    if(LOCAL_PLAYER.position.y > 1400) {
-        if( LOCAL_PLAYER.position.x < -290 && LOCAL_PLAYER.position.x > -510 &&
-            LOCAL_PLAYER.position.z < 780 && LOCAL_PLAYER.position.z > 560) {
+    if(LOCAL_PLAYER.position.y > 70) {
+        if( LOCAL_PLAYER.position.x < -14 && LOCAL_PLAYER.position.x > -25 &&
+            LOCAL_PLAYER.position.z < 39 && LOCAL_PLAYER.position.z > 27) {
             
                 if(!isWon) {
                     isWon = true;

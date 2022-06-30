@@ -78,11 +78,11 @@ class AvatarController extends THREE.Object3D {
             
             MAIN_SCENE.remove(this.model)
 
-            this.radius = 2.5;
-            this.size = 30;
+            this.radius = .25;
+            this.size = 1.5;
 
             this.model = responseObject.scene;
-            this.model.scale.set(0.2, 0.2, 0.2);
+            this.model.scale.set(0.01, 0.01, 0.01);
             this.model.traverse(child => {
                 if (child.isMesh) {
                     child.castShadow = true;
@@ -122,12 +122,12 @@ class AvatarController extends THREE.Object3D {
 
     updateFacingDirection(horizontalVelocity) {
         if(horizontalVelocity.length() > 0.001){
-            this.lookAt(this.position.x + horizontalVelocity.x, this.position.y + this.size / 2 + 1.25 , this.position.z + horizontalVelocity.z);
+            this.lookAt(this.position.x + horizontalVelocity.x, this.position.y + this.size / 2 + this.radius , this.position.z + horizontalVelocity.z);
             this.quaternion.multiply(this.quaternion90deg)
         }
 
         this.model.position.copy(this.position);
-        this.model.position.y -= this.size / 2 + 1.25;
+        this.model.position.y -= this.size / 2;
         this.model.quaternion.copy(this.quaternion);
     }
 }

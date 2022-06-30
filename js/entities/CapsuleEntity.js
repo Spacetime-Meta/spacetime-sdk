@@ -9,8 +9,13 @@ export class CapsuleEntity extends THREE.Object3D {
         this.radius = radius;
         this.size = size;
         this.onGround = false;
-        this.gravity = -300;
+        this.gravity = -20;
         this.segment = new THREE.Line3(new THREE.Vector3(), new THREE.Vector3(0, -size, 0.0));
+
+        // this.debugHitBox = new THREE.Mesh(new THREE.BoxGeometry( radius * 2, size + radius * 2, radius * 2 ));
+        // this.debugHitBox.material.wireframe = true;
+        // MAIN_SCENE.add(this.debugHitBox);
+
         this.friction = 0.975;
     }
 
@@ -71,6 +76,8 @@ export class CapsuleEntity extends THREE.Object3D {
         const newPosition = tempVector;
         newPosition.copy(tempSegment.start).applyMatrix4(collider.matrixWorld);
 
+        // this.debugHitBox.position.copy(tempSegment.start.add(tempSegment.end).multiplyScalar(0.5))
+        
         const deltaVector = tempVector2;
         deltaVector.subVectors(newPosition, this.position);
         

@@ -14,7 +14,10 @@ export class MapPanel extends UiElement {
                 alignItems: "center"
             }
         })
+         this.isLoaded = false;
+    }
 
+    initMap() {
         this.portalLocation = `${window.location.origin}/metaverse/spawn-planet/`;
 
         this.spacetimeMap = new SpacetimeMap(this);

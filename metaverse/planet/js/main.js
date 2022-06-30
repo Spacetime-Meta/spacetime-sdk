@@ -12,7 +12,7 @@ function init() {
         seed = 100 
     }
     virtualEnvironment.generateTerrain(seed);
-    virtualEnvironment.spawnPlayer({spawn: { x:0, y:520, z:0}})
+    virtualEnvironment.spawnPlayer({spawn: { x:0, y:300, z:0}})
 }
 
 // then start the animation

@@ -6,8 +6,8 @@ let virtualEnvironment = new VirtualEnvironment();
 // fill your world with the stuff you want
 init();
 function init() {
-    virtualEnvironment.loadTerrain('../../../resources/terrains/baseTemplate.fbx', 0, 0, 0, "fbx")
-    virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 70, z: 0}});
+    virtualEnvironment.loadTerrain('../../../resources/terrains/scaleTest.glb', 0, 0, 0, "glb")
+    virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
 }
 
 // then start the animation

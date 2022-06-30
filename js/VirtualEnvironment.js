@@ -51,15 +51,12 @@ class VirtualEnvironment {
         // ===== scene =====
         window.MAIN_SCENE = new THREE.Scene();
         MAIN_SCENE.background = new THREE.Color(0x69e6f4);
-        MAIN_SCENE.fog = new THREE.Fog(0x69e6f4, 1600, 2000);
+        MAIN_SCENE.fog = new THREE.Fog(0x69e6f4, 16, 20);
 
         // ===== camera =====
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-        this.camera.position.y = 1.6;
-        this.camera.lookAt(0, 1.7, -1);
-        this.dummyCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-        this.dummyCamera.position.y = 1.6;
-        this.dummyCamera.lookAt(0, 1.7, -1);
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
+
+        this.dummyCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();
 

@@ -19,7 +19,7 @@ class TerrainController {
 
     generateTerrain(seed) {
         this.terrainGenerator = new TerrainGenerator(seed);
-        this.terrain = this.terrainGenerator.generateTerrain()
+        this.terrain = this.terrainGenerator.generateTerrain();
     }
 
     loadTerrain(URL, scene, x, y, z, format, scaleFactor){
@@ -102,15 +102,15 @@ class TerrainController {
         this.GLTFLoader.load(url, (responseObject) => {
             setTimeout(() => {   
                 console.log("load new stuff")
-                responseObject.scene.scale.set(3.75 * scaleFactor, 3.75 * scaleFactor, 3.75 * scaleFactor)
+                responseObject.scene.scale.set(scaleFactor, scaleFactor, scaleFactor)
                 responseObject.scene.position.set(x,y,z)
                 scene.add(responseObject.scene)
     
                 responseObject.scene.traverse((object) => {
                     if(object.geometry && object.visible && object.position) {
                         const cloned = object.geometry.clone();
-                        cloned.scale(3.75 * scaleFactor, 3.75 * scaleFactor, 3.75 * scaleFactor)
-                        cloned.translate(x, y + (-1 * scaleFactor),z)
+                        cloned.scale(scaleFactor, scaleFactor, scaleFactor)
+                        cloned.translate(x, y ,z)
                         console.log(object.matrixWorld)
                         object.updateMatrixWorld();
                         cloned.applyMatrix4(object.matrixWorld);

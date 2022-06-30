@@ -6,8 +6,8 @@ let virtualEnvironment = new VirtualEnvironment();
 // then fill your world with the stuff you want
 init();
 function init() {
-    virtualEnvironment.loadTerrain('../../../resources/terrains/spawnPlanet.glb', 0, -20, 0, "glb")
-    virtualEnvironment.spawnPlayer({spawn: { x:0, y:50, z:0}})
+    virtualEnvironment.loadTerrain('../../../resources/terrains/spawnPlanet.glb', 0, 0, 0, "glb", 0.05)
+    virtualEnvironment.spawnPlayer({spawn: { x:0, y:5, z:0}})
 }
 
 // then start the animation

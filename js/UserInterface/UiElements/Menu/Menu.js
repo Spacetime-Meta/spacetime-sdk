@@ -1,8 +1,8 @@
 import { UiElement } from "../UiElement.js";
 
-import { MenuHeader } from "./MenuElements/MenuHeader/MenuHeader.js";
-import { MenuFooter } from "./MenuElements/MenuFooter/MenuFooter.js";
-import { MenuDisplay } from "./MenuElements/MenuDisplay/MenuDisplay.js";
+import { MenuHeader } from "./MenuElements/MenuHeader.js";
+import { MenuFooter } from "./MenuElements/MenuFooter.js";
+import { MenuDisplay } from "./MenuElements/MenuDisplay.js";
 
 class Menu extends UiElement {
     constructor() {
@@ -26,7 +26,7 @@ class Menu extends UiElement {
         ])
 
         // set multiplayer as default panel
-        this.handleMenuPanelSelection("map");
+        this.handleMenuPanelSelection("multiplayer");
     }
 
     handleMenuPanelSelection(panel) {

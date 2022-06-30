@@ -82,22 +82,22 @@ class DefaultComposer extends EffectComposer {
                     renderPass.enabled = false;
                     renderer.shadowMap.enabled = true;
                     scene.fog.color = new THREE.Color(0.8, 0.8, 0.8);
-                    scene.fog.near = 100;
-                    scene.fog.far = 1500;
+                    scene.fog.near = 10;
+                    scene.fog.far = 150;
                     break;
 
                 case MEDIUM:
                     aoPass.enabled = false;
                     smaaPass.enabled = false;
-                    fxaaPass.enabled = true;
-                    bloomPass.enabled = true;
-                    boxBlur.enabled = true;
-                    bloomAddPass.enabled = true;
-                    renderPass.enabled = false;
+                    fxaaPass.enabled = false;
+                    bloomPass.enabled = false;
+                    boxBlur.enabled = false;
+                    bloomAddPass.enabled = false;
+                    renderPass.enabled = true;
                     renderer.shadowMap.enabled = true;
                     scene.fog.color = new THREE.Color(0.8, 0.8, 0.8);
-                    scene.fog.near = 100;
-                    scene.fog.far = 1500;
+                    scene.fog.near = 10;
+                    scene.fog.far = 150;
                     break;
 
                 case LOW:
@@ -108,10 +108,10 @@ class DefaultComposer extends EffectComposer {
                     boxBlur.enabled = false;
                     bloomAddPass.enabled = false;
                     renderPass.enabled = true;
-                    renderer.shadowMap.enabled = false;
+                    renderer.shadowMap.enabled = true;
                     scene.fog.color = new THREE.Color(0.8, 0.8, 0.8);
-                    scene.fog.near = 100;
-                    scene.fog.far = 1500;
+                    scene.fog.near = 10;
+                    scene.fog.far = 150;
                     break;
             }
         }

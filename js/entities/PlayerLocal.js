@@ -5,7 +5,7 @@ import { AvatarController } from './AvatarController.js';
 
 class PlayerLocal extends CapsuleEntity {
     constructor(params, camera, loadingManager) {
-        super(5, 30);
+        super(0.25, 1.5);
         this.spawnPoint = typeof params.spawn === "undefined" ? {x: 0, y:0, z:0} : params.spawn;
         this.position.x = this.spawnPoint.x;
         this.position.y = this.spawnPoint.y;
@@ -14,7 +14,7 @@ class PlayerLocal extends CapsuleEntity {
 
         this.camera = camera;
         this.fpsControls = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
-        this.thirdPersonControls = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 40, 0.2);
+        this.thirdPersonControls = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 5, 0.2);
         this.controlVector = this.thirdPersonControls.clone();
         this.targetControlVector = this.thirdPersonControls;
         this.horizontalVelocity = new Vector3();
@@ -22,7 +22,6 @@ class PlayerLocal extends CapsuleEntity {
         this.positionChange = new Vector3();
         this.keys = {};
 
-        this.speedFactor = 1; // 1 is the default walk speed
         this.visible = false;
         this.isRunning = false;
         
@@ -52,15 +51,15 @@ class PlayerLocal extends CapsuleEntity {
                         this.avatarController.setTransparency(false);
                     }
                 }
+                if (event.key === "r") {
+                    this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);
+                    this.velocity = new Vector3();
+                }
                 if (event.keyCode === 32 && event.target === document.body) {
                     event.preventDefault();
                 }
                 this.keys[event.key.toLowerCase()] = true;
             }
-        });
-
-        window.addEventListener('keydown', (event) => {
-
         });
 
         this.controls.addEventListener('unlock', () => {
@@ -93,7 +92,7 @@ class PlayerLocal extends CapsuleEntity {
             if(this.keys["shift"]) {
                 this.isRunning = true;
             }
-            this.speedFactor = this.isRunning ? 3 : 1;
+            this.speedFactor = this.isRunning ? 0.15 : 0.05;
 
             if (this.keys["w"]) {
                 this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(this.speedFactor * delta));
@@ -111,7 +110,7 @@ class PlayerLocal extends CapsuleEntity {
                 this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(this.speedFactor * delta));
             }
             if (this.keys[" "] && this.onGround) {
-                this.velocity.y = 150.0;
+                this.velocity.y = 10.0;
                 this.setAnimationParameters("jump", 0);
             }
         } else {
@@ -125,7 +124,7 @@ class PlayerLocal extends CapsuleEntity {
         }
        
 
-        if (this.position.y < -1000) {
+        if (this.position.y < -20) {
             this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);
             this.velocity = new Vector3();
         }

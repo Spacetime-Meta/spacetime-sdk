@@ -290,7 +290,7 @@ class TerrainGenerator {
             l = positionArray.length / 3;
         for (i = 0; i < l; i++) {
             if (positionArray[i*3+1] < min) min = positionArray[i*3+1];
-            if (positionArray[i*3+1] > 500) positionArray[i*3+1] = 500;
+            if (positionArray[i*3+1] > 50) positionArray[i*3+1] = 50;
         }
         if(min < 0){
             min =  Math.abs(min);

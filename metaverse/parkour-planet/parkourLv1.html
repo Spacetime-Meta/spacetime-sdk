@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Parkour Map</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Space Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+    <script type="importmap"> { "imports": { "three": "https://cdn.skypack.dev/three@0.137.0" } } </script>
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    <script async src="//cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.5-rc.1/peerjs.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+    
+    <script type="module">
+        import { VirtualEnvironment } from '../../../js/VirtualEnvironment.js';
+        import { UiElement } from '../../../js/UserInterface/UiElements/UiElement.js';
+
+        import { Vector3 } from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
+
+        let isWon = false;
+        let startTime, elapsed, timer;
+
+        // start by creating a basic virtual environment
+        let virtualEnvironment = new VirtualEnvironment();
+
+        // fill your world with the stuff you want
+        init();
+        function init() {
+            virtualEnvironment.loadTerrain('../../../resources/terrains/parkour1.glb', 0, 0, 0, "glb", 0.5)
+            virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
+            
+            document.addEventListener("keydown", event => {
+                if(event.key === "r") {
+                    startTime = Date.now()
+                    isWon = false;
+                }
+            })
+
+            startTime = Date.now()
+            timer = new UiElement({
+                innerHTML: "00000000",
+                style: {
+                    position: "absolute",
+                    bottom: "0",
+                    right: "0",
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize: "25px"
+                }
+            })
+
+            document.body.appendChild(timer.element)
+        }
+
+        // then start the animation
+        animate();
+        function animate() {
+
+            if(!isWon) {
+                elapsed = Date.now() - startTime;
+                timer.element.innerHTML = `time: ${(elapsed / 1000).toFixed(2)}s`
+            }
+
+            // console.log(LOCAL_PLAYER.position)
+
+            if(LOCAL_PLAYER.position.y > 70) {
+                if( LOCAL_PLAYER.position.x < -14 && LOCAL_PLAYER.position.x > -25 &&
+                    LOCAL_PLAYER.position.z < 39 && LOCAL_PLAYER.position.z > 27) {
+                    
+                        if(!isWon) {
+                            isWon = true;
+                        } 
+                    
+                }
+            }
+
+            virtualEnvironment.update();
+            requestAnimationFrame(animate);
+        }
+
+    </script>
+</body>
+
+</html>

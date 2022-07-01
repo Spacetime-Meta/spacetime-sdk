@@ -39,7 +39,6 @@ class UiElement {
         if(typeof options.onClick !== "undefined"){
             this.element.addEventListener("click", options.onClick)
         }
-        // this.element.addEventListener("click", () => {console.log(this.element.id)})
 
         if(typeof options.innerHTML !== "undefined"){
             this.element.innerHTML = options.innerHTML;

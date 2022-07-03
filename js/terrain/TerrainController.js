@@ -64,6 +64,7 @@ class TerrainController {
 
         scene.add(this.terrain);
         this.generateCollider(scene);
+        MAIN_SCENE.buildInteractives();
     }
 
     generateCollider(scene){

@@ -8,8 +8,6 @@ We are making this codebase open source and free to use by our [community]([disc
 ![GitHub][licence] ![GitHub release (latest by date)][version] ![GitHub top language](https://img.shields.io/github/languages/top/Spacetime-Meta/spacetime-standard-kit)  
 ![GitHub issues](https://img.shields.io/github/issues-raw/Spacetime-Meta/spacetime-standard-kit) ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/Spacetime-Meta/spacetime-standard-kit)  
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/95409eab-4d50-4060-a73c-07b417fb6e68/deploy-status)](https://app.netlify.com/sites/stdkit-dev/deploys)
-
 ---
 
 The environments are built using [ThreeJs]([three]).  

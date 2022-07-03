@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Base Template</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <script src="../build/bundle.min.js"></script>
+        <script type="module">
+            const VE = new VirtualEnvironment();
+
+            // build the environment
+            VE.loadTerrain('./assets/terrains/baseTemplate.glb', 0, 0, 0, "glb");
+            VE.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
+
+            // start the animation loop
+            animate();
+            function animate() {
+                VE.update();
+                requestAnimationFrame(animate);
+            }
+        </script>
+    </body>
+    
+</html>

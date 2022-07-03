@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { loadingBar } from '../UserInterface/UiElements/LoadingPage/loadingPage.js';
 
-const DEFAULT_AVATAR_PATH = '../../../resources/avatars/vanguard.glb';
-const DEFAULT_ANIMATION_PATH = '../../../resources/animations/defaultAvatar.glb';
+const DEFAULT_AVATAR_PATH = 'https://elegant-truffle-070d6b.netlify.app/vanguard.glb';
+const DEFAULT_ANIMATION_PATH = 'https://elegant-truffle-070d6b.netlify.app/defaultAnimations.glb';
 const DEFAULT_ANIMATION_MAPPING = { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 };
 
 class AvatarController extends THREE.Object3D {

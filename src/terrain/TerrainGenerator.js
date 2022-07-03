@@ -15,11 +15,11 @@ class TerrainGenerator {
 
     generateTerrain() {
         const loader = new THREE.TextureLoader();
-        loader.load('../../resources/textures/sand.jpg', (sand) => {
+        loader.load('../../assets/textures/sand.jpg', (sand) => {
             sand.wrapS = sand.wrapT = THREE.RepeatWrapping;
-            loader.load('../../resources/textures/grass.jpg', (grass) => {
-                loader.load('../../resources/textures/stone.jpg', (rock) => {
-                    loader.load('../../resources/textures/snow.jpg', (t4) => {
+            loader.load('../../assets/textures/grass.jpg', (grass) => {
+                loader.load('../../assets/textures/stone.jpg', (rock) => {
+                    loader.load('../../assets/textures/snow.jpg', (t4) => {
                         
                         const blend = this.generateBlendedMaterial([
                             {texture: sand},

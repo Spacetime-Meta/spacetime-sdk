@@ -16,6 +16,7 @@ export class VirtualEnvironment {
     constructor() {
         // set the page css
         document.body.style.margin = "0";
+        document.body.style.fontFamily = "Space Mono, monospace";
         
         // ===== loading =====
         this.loading();

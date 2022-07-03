@@ -1,0 +1,35 @@
+{
+  "name": "spacetime-sdk",
+  "version": "0.6.0",
+  "description": "The Spacetime standard kit provide developers with turnkey virtual environments. This package will provide multiple metaverse features like multiplayer, custom avatars, vehicle and blockchain connection.",
+  "main": "./build/bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Spacetime-Meta/spacetime-standard-kit.git"
+  },
+  "files": [
+    "build/bundle.js",
+    "LICENSE",
+    "package.json",
+    "README.md"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Spacetime-Meta/spacetime-standard-kit/issues"
+  },
+  "homepage": "https://github.com/Spacetime-Meta/spacetime-standard-kit#readme",
+  "devDependencies": {
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "peerjs": "^1.4.6",
+    "seedrandom": "^3.0.5",
+    "three": "^0.142.0"
+  }
+}

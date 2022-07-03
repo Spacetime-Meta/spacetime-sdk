@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <script src="../build/bundle.min.js"></script>
+        <script type="module">
+            const VE = new VirtualEnvironment();
+
+            VE.loadTerrain('../../../resources/terrains/baseTemplate.glb', 0, 0, 0, "glb");
+            VE.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
+
+            // then start the animation
+            animate();
+            function animate() {
+                VE.update();
+                requestAnimationFrame(animate);
+            }
+        </script>
+    </body>
+</html>

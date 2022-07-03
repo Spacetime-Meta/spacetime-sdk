@@ -8,7 +8,7 @@ import { TerrainController } from './terrain/TerrainController.js';
 import { RemoteController } from './util/RemoteController.js';
 import { UiController } from './UserInterface/UiController.js';
 
-import { DefaultDirectionalLight } from "./render/DefaultDirectionalLight.js"
+import { DefaultScene } from "./render/DefaultScene.js"
 
 import localProxy from "./util/localProxy.js";
 import {loadingBar, loadingPage} from './UserInterface/UiElements/LoadingPage/loadingPage.js';
@@ -23,9 +23,9 @@ class VirtualEnvironment {
         /**
          * Uncomment the following lines to activate the stats panel
          */
-        this.stats = Stats()
-        this.stats.dom.style.left = "350px"
-        document.body.appendChild(this.stats.dom)
+        // this.stats = Stats()
+        // this.stats.dom.style.left = "350px"
+        // document.body.appendChild(this.stats.dom)
         
         // ===== renderer =====
         this.renderer = new THREE.WebGLRenderer({ alpha: true });
@@ -36,9 +36,7 @@ class VirtualEnvironment {
         document.body.appendChild(this.renderer.domElement);
 
         // ===== scene =====
-        window.MAIN_SCENE = new THREE.Scene();
-        MAIN_SCENE.background = new THREE.Color(0x69e6f4);
-        MAIN_SCENE.fog = new THREE.Fog( new THREE.Color(0.8, 0.8, 0.8), 10, 150 );
+        window.MAIN_SCENE = new DefaultScene();
 
         // ===== camera =====
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
@@ -46,14 +44,6 @@ class VirtualEnvironment {
         this.dummyCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
         this.cameraPosition = new THREE.Vector3();
         this.cameraTarget = new THREE.Vector3();
-
-        // ===== lights =====
-        const light = new THREE.HemisphereLight(0xffeeff, 0x777788, 1);
-        MAIN_SCENE.add(light);
-
-        this.shadowLight = new DefaultDirectionalLight();
-        MAIN_SCENE.add(this.shadowLight);
-        MAIN_SCENE.add(this.shadowLight.target);
 
         // ===== UI =====
         this.UI_CONTROLLER = new UiController();
@@ -150,7 +140,9 @@ class VirtualEnvironment {
     update() {
 
         // update the stats
-        this.stats.update();
+        // this.stats.update();
+
+        MAIN_SCENE.update();
 
         const delta = Math.min(clock.getDelta(), 0.1);
         if (this.terrainController.collider) {
@@ -181,7 +173,6 @@ class VirtualEnvironment {
         }
 
         this.remoteController.update(delta);
-        this.shadowLight.update();
         this.renderer.render(MAIN_SCENE, this.camera);
 
         this.UI_CONTROLLER.update();

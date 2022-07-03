@@ -13,6 +13,10 @@ class UiController {
 
         // references
         this.connectionsManagementDisplay = this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay;
+    
+        
+        this.updatable = [];
+        this.updatable.push(this.connectionsManagementDisplay);
     }
 
     handleControlsLock() {
@@ -34,8 +38,15 @@ class UiController {
         this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleConnectionClose(peerId);
     }
 
+    setupTimer() {
+        this.playScreen.setupTimerBox();
+        this.updatable.push(this.playScreen.timerBox);
+    }
+
     update() {
-        this.connectionsManagementDisplay.update();
+        this.updatable.forEach(item => {
+            item.update();
+        })
     }
 }
 export { UiController }

@@ -1,44 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <title>dome</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Space Mono', monospace;
-        }
-    </style>
-</head>
-<body>
-    <script type="importmap"> { "imports": { "three": "https://cdn.skypack.dev/three@0.137.0" } } </script>
-    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.5-rc.1/peerjs.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+    <head>
+        <title>Base Template</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    </head>
 
-    <script type="module">
-        import { VirtualEnvironment } from '../../../js/VirtualEnvironment.js';
+    <body>
+        <script src="../build/bundle.min.js"></script>
+        <script type="module">
 
-        // start by creating a basic virtual environment
-        let virtualEnvironment = new VirtualEnvironment();
+            // start by initializing a virtual environment
+            const virtualEnvironment = new VirtualEnvironment();
 
-        // then fill your world with the stuff you want
-        init();
-        function init() {
-            virtualEnvironment.loadTerrain('../../../resources/terrains/dome.fbx', 0, 0, 0, "fbx", 0.008)
-            virtualEnvironment.spawnPlayer({spawn: {x:0, y:10, z:0}})
-        }
+            // build the environment
+            virtualEnvironment.loadTerrain('./assets/terrains/dome.fbx', 0, 0, 0, "fbx", 0.008);
+            virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
 
-        // then start the animation
-        animate();
-        function animate() {
-            virtualEnvironment.update();
-            requestAnimationFrame(animate);
-        }
-    </script>
-</body>
-
+            // start the animation loop
+            animate();
+            function animate() {
+                virtualEnvironment.update();
+                requestAnimationFrame(animate);
+            }
+        </script>
+    </body>
+    
 </html>

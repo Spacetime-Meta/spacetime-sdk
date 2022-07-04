@@ -15,11 +15,11 @@ class TerrainGenerator {
 
     generateTerrain() {
         const loader = new THREE.TextureLoader();
-        loader.load('../../assets/textures/sand.jpg', (sand) => {
+        loader.load('./assets/textures/sand.jpg', (sand) => {
             sand.wrapS = sand.wrapT = THREE.RepeatWrapping;
-            loader.load('../../assets/textures/grass.jpg', (grass) => {
-                loader.load('../../assets/textures/stone.jpg', (rock) => {
-                    loader.load('../../assets/textures/snow.jpg', (t4) => {
+            loader.load('./assets/textures/grass.jpg', (grass) => {
+                loader.load('./assets/textures/stone.jpg', (rock) => {
+                    loader.load('./assets/textures/snow.jpg', (t4) => {
                         
                         const blend = this.generateBlendedMaterial([
                             {texture: sand},
@@ -288,13 +288,13 @@ class TerrainGenerator {
         var min = Infinity,
             max = -Infinity,
             l = positionArray.length / 3;
-        for (i = 0; i < l; i++) {
+        for (var i = 0; i < l; i++) {
             if (positionArray[i*3+1] < min) min = positionArray[i*3+1];
             if (positionArray[i*3+1] > 50) positionArray[i*3+1] = 50;
         }
         if(min < 0){
             min =  Math.abs(min);
-            for (i = 0; i < l; i++) {
+            for (var i = 0; i < l; i++) {
                 positionArray[i*3+1] += min
             }
         }
@@ -317,18 +317,18 @@ class TerrainGenerator {
             heights = new Array(l),
             buckets = new Array(levels);
 
-        for (i = 0; i < l; i++) {
+        for (var i = 0; i < l; i++) {
             heights[i] = positionArray[(i*3)+1];
         }
 
         
         heights.sort(function(a, b) { return a - b; });
-        for (i = 0; i < levels; i++) {
+        for (var i = 0; i < levels; i++) {
             // Bucket by population (bucket size) not range size
             var subset = heights.slice(i*inc, (i+1)*inc),
                 sum = 0,
                 bl = subset.length;
-            for (j = 0; j < bl; j++) {
+            for (var j = 0; j < bl; j++) {
                 sum += subset[j];
             }
             buckets[i] = {
@@ -339,9 +339,9 @@ class TerrainGenerator {
         }
 
         // Set the height of each vertex to the average height of its bucket
-        for (i = 0; i < l; i++) {
+        for (var i = 0; i < l; i++) {
             var startHeight = positionArray[(i*3)+1];
-            for (j = 0; j < levels; j++) {
+            for (var j = 0; j < levels; j++) {
                 if (startHeight >= buckets[j].min && startHeight <= buckets[j].max) {
                     positionArray[(i*3)+1] = buckets[j].avg;
                     break;

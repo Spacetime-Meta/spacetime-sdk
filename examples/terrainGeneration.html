@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>Terrain Generation</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <script src="../build/bundle.min.js"></script>
+        <script type="module">
+
+            // start by initializing a virtual environment
+            const virtualEnvironment = new VirtualEnvironment();
+
+            // build the environment
+            virtualEnvironment.generateTerrain(100);
+            virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 300, z: 0}});
+
+            // start the animation loop
+            animate();
+            function animate() {
+                virtualEnvironment.update();
+                requestAnimationFrame(animate);
+            }
+        </script>
+    </body>
+    
+</html>

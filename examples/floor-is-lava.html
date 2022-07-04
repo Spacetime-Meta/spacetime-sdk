@@ -1,49 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <title>Floor is Lava</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Space Mono', monospace;
-        }
-    </style>
-</head>
-<body>
-    <script type="importmap"> { "imports": { "three": "https://cdn.skypack.dev/three@0.137.0" } } </script>
-    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.5-rc.1/peerjs.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+    <head>
+        <title>Base Template</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    </head>
 
-    <script type="module">
-        import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.0-X5O2PK3x44y1WRry67Kr/mode=imports/optimized/three.js';
-        import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/loaders/GLTFLoader.js';
-        import { VirtualEnvironment } from '../../../js/VirtualEnvironment.js';
-
-        // start by creating a basic virtual environment
+    <body>
+        <script src="../build/bundle.min.js"></script>
+        <script type="module">
+        
+        // start by initializing a virtual environment
         let virtualEnvironment = new VirtualEnvironment();
 
         // then fill your world with the stuff you want
-        init();
-        function init() {
-            virtualEnvironment.spawnPlayer({spawn: { x:0, y:10, z:0}})
-            
-            setTimeout(() => {
-                virtualEnvironment.newSolidGeometriesFromSource('../../../resources/objects/rock_platform.glb', 0, 0, 50, 2);
-                virtualEnvironment.newSolidGeometriesFromSource('../../../resources/objects/rock_platform.glb', 0, 0, 0, 2);
+        virtualEnvironment.spawnPlayer({spawn: { x:0, y:10, z:0}})
+        
+        setTimeout(() => {
+            virtualEnvironment.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', 0, 0, 50, 2);
+            virtualEnvironment.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', 0, 0, 0, 2);
 
-                for(let i=0; i<35; i++) {
-                    let position = new THREE.Vector3(Math.random() * 80 - 40, 0, Math.random() * 50);
-                    virtualEnvironment.newSolidGeometriesFromSource('../../../resources/objects/rock_platform.glb', position.x, position.y, position.z, Math.random() * 3 + 1);
-                }
+            let position;
+            for(let i=0; i<35; i++) {
+                position = {
+                    x: Math.random() * 80 - 40, 
+                    y: 0, 
+                    z: Math.random() * 50
+                };
 
-                virtualEnvironment.terrainController.generateCollider(virtualEnvironment.scene);
-            }, 100);
-        }
+                virtualEnvironment.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', position.x, position.y, position.z, Math.random() * 3 + 1);
+            }
+
+            virtualEnvironment.terrainController.generateCollider(virtualEnvironment.scene);
+        }, 100);
+
 
         // then start the animation
         animate();

@@ -45,7 +45,7 @@ export class RemoteController {
         })
 
         peer.on("close", () => {
-            window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.update()
+            window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setPeerIdDisplay("Not Connected")
         })
     }
 
@@ -58,7 +58,7 @@ export class RemoteController {
     onConnectionOpen() {
         this.addMessageToChatBox("[info] Peer created with id: "+localProxy.peerId);
         window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
-        window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.update();
+        window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setPeerIdDisplay(`Connected as: ${localProxy.peerId}`);
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
@@ -203,15 +203,12 @@ export class RemoteController {
 
     sendChatMessage(message) {
         let formatted = escapeHTML(message);
-        if (connected) {
-            group.send(formatted);
-        } else {
+
+        if(typeof this.peer !== "undefined"){
+            this.addMessageToChatBox("["+this.peer.id+"] "+formatted)
             this.connections.forEach(connection => {
                 connection.send('{"type":"chat","message":"'+formatted+'"}');
             })
-        }
-        if(typeof this.peer !== "undefined"){
-            this.addMessageToChatBox("["+this.peer.id+"] "+formatted)
         } else {
             this.addMessageToChatBox("[info] You must connect to send messages in chat")
         }

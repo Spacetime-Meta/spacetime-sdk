@@ -48,7 +48,7 @@ class MenuHeader extends UiElement {
             this.chatPanelButton,
             this.multiplayerPanelButton,
             this.avatarPanelButton,
-            // this.optionsPanelButton
+            this.optionsPanelButton,
             this.mapPanelButton
         ])
 

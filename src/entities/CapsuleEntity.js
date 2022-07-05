@@ -1,4 +1,6 @@
-import { Box3, Vector3, Line3, Matrix4, Object3D } from 'three';
+import { Box3, Vector3, Line3, Matrix4, Object3D, Mesh, BoxGeometry, Raycaster, ArrowHelper } from 'three';
+
+const downVector = new Vector3(0, -1, 0);
 
 export class CapsuleEntity extends Object3D {
     constructor(radius, size) {
@@ -9,14 +11,31 @@ export class CapsuleEntity extends Object3D {
         this.radius = radius;
         this.size = size;
         this.onGround = false;
+        this.canJump = true;
         this.gravity = -20;
         this.segment = new Line3(new Vector3(), new Vector3(0, -size, 0.0));
 
-        // this.debugHitBox = new THREE.Mesh(new THREE.BoxGeometry( radius * 2, size + radius * 2, radius * 2 ));
-        // this.debugHitBox.material.wireframe = true;
-        // MAIN_SCENE.add(this.debugHitBox);
+        this.raycaster = new Raycaster();
+        this.raycaster.set(this.position, downVector);
+        this.arrowHelper = new ArrowHelper( this.raycaster.ray.direction, this.raycaster.ray.origin, 100, 0x00ff00 );
+
+        this.debugHitBox = new Mesh(new BoxGeometry( radius * 2, size + radius * 2, radius * 2 ));
+        this.debugHitBox.material.wireframe = true;
+
+        this.isHelperActive = false;
 
         this.friction = 0.975;
+    }
+
+    toggleHitbox() {
+        if(this.isHelperActive) {
+            MAIN_SCENE.remove(this.debugHitBox);
+            MAIN_SCENE.remove(this.arrowHelper);
+        } else {
+            MAIN_SCENE.add(this.arrowHelper);
+            MAIN_SCENE.add(this.debugHitBox);
+        }
+        this.isHelperActive = !this.isHelperActive;
     }
 
     update(delta, collider) {
@@ -76,7 +95,6 @@ export class CapsuleEntity extends Object3D {
         const newPosition = tempVector;
         newPosition.copy(tempSegment.start).applyMatrix4(collider.matrixWorld);
 
-        // this.debugHitBox.position.copy(tempSegment.start.add(tempSegment.end).multiplyScalar(0.5))
         
         const deltaVector = tempVector2;
         deltaVector.subVectors(newPosition, this.position);
@@ -87,6 +105,31 @@ export class CapsuleEntity extends Object3D {
         
         // evaluate if the player is grounded
         this.onGround = deltaVector.y > Math.abs(delta * this.velocity.y * 0.25);
+        
+        // evaluate if the player is close to the ground
+        this.raycaster.set(tempSegment.start, downVector);
+        this.raycaster.ray.applyMatrix4(tempMat)
+        const hit = collider.bvh.raycastFirst( this.raycaster.ray );
+
+        
+        if(hit) {
+            this.canJump = hit.distance < 2 || this.onGround;
+        } else {
+            this.canJump = this.onGround;
+        }
+        
+        if(this.isHelperActive){
+            this.debugHitBox.position.copy(tempSegment.start.add(tempSegment.end).multiplyScalar(0.5))
+        
+            if(this.canJump) {
+                this.arrowHelper.setColor(0x00ff00)
+            } else {
+                this.arrowHelper.setColor(0xff0000)
+            }
+
+            this.arrowHelper.position.copy(tempSegment.start);
+        }
+        
 
         if (this.onGround) {
             this.velocity.set(0, 0, 0);

@@ -2,7 +2,7 @@ import { UiElement } from "../../UiElement.js";
 import { AvatarSelectButton } from "./AvatarPanelElements/AvatarSelectButton.js"
 
 const defaultMapping = { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 };
-const defaultAnimations = '../../../resources/animations/defaultAvatar.glb';
+const defaultAnimations = 'https://elegant-truffle-070d6b.netlify.app/defaultAnimations.glb';
 
 export class AvatarPanel extends UiElement {
     constructor(){

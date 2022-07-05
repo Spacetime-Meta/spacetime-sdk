@@ -81,6 +81,7 @@ export class TerrainController {
         const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(this.geometries, false);
         mergedGeometry.boundsTree = new MeshBVH(mergedGeometry, { lazyGeneration: false });
         this.collider = new Mesh(mergedGeometry);
+        this.collider.bvh = mergedGeometry.boundsTree;
         this.collider.material.wireframe = true;
         this.collider.material.opacity = 0.5;
         this.collider.material.transparent = true;
@@ -99,10 +100,13 @@ export class TerrainController {
         // scene.add(visualizer);
     }
 
+    toggleViewCollider() {
+        this.collider.visible = !this.collider.visible;
+    }
+
     newSolidGeometriesFromSource(scene, url, x, y, z, scaleFactor) {
         this.GLTFLoader.load(url, (responseObject) => {
             setTimeout(() => {   
-                console.log("load new stuff")
                 responseObject.scene.scale.set(scaleFactor, scaleFactor, scaleFactor)
                 responseObject.scene.position.set(x,y,z)
                 scene.add(responseObject.scene)
@@ -112,7 +116,6 @@ export class TerrainController {
                         const cloned = object.geometry.clone();
                         cloned.scale(scaleFactor, scaleFactor, scaleFactor)
                         cloned.translate(x, y ,z)
-                        console.log(object.matrixWorld)
                         object.updateMatrixWorld();
                         cloned.applyMatrix4(object.matrixWorld);
                         for (const key in cloned.attributes) {

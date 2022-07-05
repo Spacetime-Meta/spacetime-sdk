@@ -14,15 +14,22 @@ export class SquareWalkOnTrigger extends Interactive {
             z: Math.abs(this.mesh.geometry.attributes.position.array[2]),
         };
 
-        
-        const box = new Mesh( new BoxGeometry(this.padSize.x * 2, 2, this.padSize.z * 2) );
-        
-        // use this to see the box
-        // box.material.wireframe = true;
-        // MAIN_SCENE.add(box);
+        // build the debug box
+        this.debugBox = new Mesh( new BoxGeometry(this.padSize.x * 2, 2, this.padSize.z * 2) );
+        this.debugBox.material.wireframe = true;
+        this.debugBox.position.copy(mesh.position);
+        this.debugBox.position.y = mesh.position.y + 1 + this.padSize.y;
 
-        // box.position.copy(mesh.position);
-        // box.position.y = mesh.position.y + 1 + this.padSize.y;
+        this.isDebugActive = false;
+    }
+
+    toggleDebugBox() {
+        if(this.isDebugActive) {
+            MAIN_SCENE.remove(this.debugBox);
+        } else {
+            MAIN_SCENE.add(this.debugBox);
+        }
+        this.isDebugActive = !this.isDebugActive;
     }
 
     update() {

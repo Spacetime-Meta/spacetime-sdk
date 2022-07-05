@@ -28,6 +28,12 @@ export class DefaultScene extends Scene {
         this.shadowLight.castShadow = !this.shadowLight.castShadow;
     }
 
+    toggleInteractiveDebugBox() {
+        this.interactives.forEach(interactive => {
+            interactive.toggleDebugBox();
+        })
+    }
+
     buildInteractives() {
         this.children.forEach(child => {
             if(child.name === "Scene") {

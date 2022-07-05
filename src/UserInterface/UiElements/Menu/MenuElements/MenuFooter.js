@@ -62,12 +62,8 @@ class MenuFooter extends UiElement {
         })
     }
 
-    update() {
-        if(typeof window.VIRTUAL_ENVIRONMENT.remoteController.peer !== "undefined"){
-            this.textInfo.element.innerHTML = "Connected as: " + window.VIRTUAL_ENVIRONMENT.remoteController.peer.id;
-        } else {
-            this.textInfo.element.innerHTML = "Not Connected";
-        }
+    setPeerIdDisplay(content) {
+        this.textInfo.element.innerHTML = content;
     }
 }
 export { MenuFooter }

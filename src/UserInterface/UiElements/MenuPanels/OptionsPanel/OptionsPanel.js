@@ -29,7 +29,7 @@ export class OptionsPanel extends UiElement {
         }));
 
         this.appendChild( new OptionToggle( "Show Triggers" ,false , function() {
-            VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
+            MAIN_SCENE.toggleInteractiveDebugBox();
         }));
     } 
 }

@@ -109,7 +109,7 @@ class PlayerLocal extends CapsuleEntity {
             if (this.keys["d"]) {
                 this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(this.speedFactor * delta));
             }
-            if (this.keys[" "] && this.onGround) {
+            if (this.keys[" "] && this.canJump) {
                 this.velocity.y = 10.0;
                 this.setAnimationParameters("jump", 0);
             }

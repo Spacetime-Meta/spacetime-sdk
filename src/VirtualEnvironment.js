@@ -1,6 +1,6 @@
 import { WebGLRenderer, VSMShadowMap, PerspectiveCamera, Vector3, LoadingManager, Clock, Matrix4, Raycaster, Mesh, MeshLambertMaterial, PlaneGeometry, VideoTexture } from 'three';
 
-// import Stats from './util/Stats.module.js'
+import Stats from './util/Stats.module.js'
 
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import { TerrainController } from './terrain/TerrainController.js';
@@ -18,15 +18,15 @@ export class VirtualEnvironment {
         document.body.style.margin = "0";
         document.body.style.fontFamily = "Space Mono, monospace";
         
+        // vars
+        this.isStatsActive = false;
+
         // ===== loading =====
         this.loading();
 
-        /**
-         * Uncomment the following lines to activate the stats panel
-         */
-        // this.stats = Stats()
-        // this.stats.dom.style.left = "350px"
-        // document.body.appendChild(this.stats.dom)
+        // ==== stats ===== 
+        this.stats = Stats()
+        this.stats.dom.style.left = "350px"
         
         // ===== renderer =====
         this.renderer = new WebGLRenderer({ alpha: true });
@@ -137,11 +137,20 @@ export class VirtualEnvironment {
         loadingPage();
         loadingBar(this.loadingManager);
     }
+
+    toggleStats() {
+        if(this.isStatsActive) {
+            document.body.removeChild(this.stats.dom);
+        } else {
+            document.body.appendChild(this.stats.dom)
+        }
+        this.isStatsActive = !this.isStatsActive;
+    }
     
     update() {
 
         // update the stats
-        // this.stats.update();
+        this.stats.update();
 
         MAIN_SCENE.update();
 

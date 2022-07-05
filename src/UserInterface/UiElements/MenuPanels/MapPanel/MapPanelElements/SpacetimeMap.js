@@ -199,7 +199,7 @@ export class SpacetimeMap extends UiElement {
             0
         ); 
         this.raycaster.setFromCamera( mouse3D, this.camera );
-        var intersects = this.raycaster.intersectObjects( this.scene.children );
+        const intersects = this.raycaster.intersectObjects( this.scene.children );
 
         // use the following line to debug the raycaster
         // this.scene.add(new THREE.ArrowHelper( this.raycaster.ray.direction, this.raycaster.ray.origin, 100, Math.random() * 0xffffff ));
@@ -233,8 +233,7 @@ export class SpacetimeMap extends UiElement {
                     this.renderChunk(newChunks[key]) 
                 } 
                 catch (error) { 
-                    console.log("Error with spaceState key: "+key)
-                    console.error(error) 
+                    console.error("[SpacetimeMap] Error with spaceState key: "+key+" ====================== "+error);
                 }
             }
         });

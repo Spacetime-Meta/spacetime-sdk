@@ -24,14 +24,16 @@ export class DefaultScene extends Scene {
         this.interactives = [];
     }
 
+    toggleShadows() {
+        this.shadowLight.castShadow = !this.shadowLight.castShadow;
+    }
+
     buildInteractives() {
         this.children.forEach(child => {
             if(child.name === "Scene") {
                 child.children.forEach(mesh => {
                     if(mesh.name.substring(0,5) === "_stm_") {
                         const type = mesh.name.substring(5).substring(0,mesh.name.substring(5).indexOf('_'));
-                        
-                        console.log(type)
 
                         switch (type) {
                             
@@ -61,7 +63,6 @@ export class DefaultScene extends Scene {
 
                             case "portal": {
                                 this.interactives.push( new SquareWalkOnTrigger(mesh, () => {
-                                    console.log("portal");
                                 }) );
                             } break;
                         }

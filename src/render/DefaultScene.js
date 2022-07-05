@@ -68,7 +68,9 @@ export class DefaultScene extends Scene {
                             } break;
 
                             case "portal": {
+                                const id = mesh.name.substring(12, 12 + mesh.name.substring(12).indexOf('_'))
                                 this.interactives.push( new SquareWalkOnTrigger(mesh, () => {
+                                    window.location.href = VIRTUAL_ENVIRONMENT.portalMap[id]
                                 }) );
                             } break;
                         }

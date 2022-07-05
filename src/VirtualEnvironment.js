@@ -20,6 +20,7 @@ export class VirtualEnvironment {
         
         // vars
         this.isStatsActive = false;
+        this.portalMap = {};
 
         // ===== loading =====
         this.loading();

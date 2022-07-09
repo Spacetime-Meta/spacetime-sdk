@@ -5,7 +5,7 @@
   "main": "./build/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --mode development",
+    "start": "webpack serve --config ./webpack.config.js --mode development",
     "build": "webpack --mode production"
   },
   "repository": {
@@ -26,7 +26,8 @@
   "homepage": "https://spacetimemeta.io",
   "devDependencies": {
     "webpack": "^4.46.0",
-    "webpack-cli": "^4.10.0"
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3"
   },
   "dependencies": {
     "peerjs": "^1.4.6",

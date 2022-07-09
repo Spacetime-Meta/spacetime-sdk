@@ -9,4 +9,11 @@ module.exports = {
         filename: 'bundle.min.js',
         libraryTarget: 'umd',
     },
+    devServer: {
+        static: {
+            directory: path.join(__dirname, './examples'),
+        },
+        hot: true,
+        host: '0.0.0.0',
+    },
 };

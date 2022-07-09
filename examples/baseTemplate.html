@@ -9,14 +9,14 @@
     </head>
 
     <body>
-        <script src="../build/bundle.min.js"></script>
+        <script src="http://localhost:8080/bundle.min.js"></script>
         <script type="module">
 
             // start by initializing a virtual environment
             const virtualEnvironment = new VirtualEnvironment();
 
             // build the environment
-            virtualEnvironment.loadTerrain('./assets/terrains/baseTemplate.glb', 0, 0, 0, "glb");
+            virtualEnvironment.loadTerrain('./assets/terrains/island.glb', 0, 0, 0, "glb");
             virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
 
             // start the animation loop

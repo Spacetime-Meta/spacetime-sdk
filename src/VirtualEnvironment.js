@@ -68,6 +68,8 @@ export class VirtualEnvironment {
         // inject this in the window
         window.VIRTUAL_ENVIRONMENT = this;
 
+        console.log("hehe sir");
+
     } // -- end constructor
 
     loadTerrain(terrainPath, x, y, z, format, scaleFactor = 1){

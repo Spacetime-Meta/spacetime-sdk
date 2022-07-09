@@ -3,8 +3,10 @@ import { PointerLockControls } from '../util/PointerLockControls.js'; // most re
 import { Vector3, Vector4, Matrix4, Raycaster } from 'three';
 import { AvatarController } from './AvatarController.js';
 
+const UP_VECTOR = new Vector3(0, 1, 0);
+
 class PlayerLocal extends CapsuleEntity {
-    constructor(params, camera, loadingManager) {
+    constructor(params, controlObject, loadingManager) {
         super(0.25, 1.5);
         this.spawnPoint = typeof params.spawn === "undefined" ? {x: 0, y:0, z:0} : params.spawn;
         this.position.x = this.spawnPoint.x;
@@ -12,7 +14,7 @@ class PlayerLocal extends CapsuleEntity {
         this.position.z = this.spawnPoint.z;
 
 
-        this.camera = camera;
+        this.controlObject = controlObject;
         this.fpsControls = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
         this.thirdPersonControls = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 5, 0.2);
         this.controlVector = this.thirdPersonControls.clone();
@@ -27,11 +29,11 @@ class PlayerLocal extends CapsuleEntity {
         
         this.avatarController = new AvatarController(loadingManager);
         this.avatarController.spawnAvatar(params);
-        this.setupControls(this.camera);
+        this.setupControls(this.controlObject);
     }
 
     setupControls() {
-        this.controls = new PointerLockControls(this.camera, document.body);
+        this.controls = new PointerLockControls(this.controlObject, document.body);
         this.controls.sensitivityY = -0.002;
         this.controls.minPolarAngle = 0.01; 
         this.controls.maxPolarAngle = Math.PI - 0.25;
@@ -68,7 +70,7 @@ class PlayerLocal extends CapsuleEntity {
     }
     
     getForwardVector() {
-        this.camera.getWorldDirection(this.playerDirection);
+        this.controlObject.getWorldDirection(this.playerDirection);
         this.playerDirection.y = 0;
         this.playerDirection.normalize();
         this.playerDirection.multiplyScalar(-1);
@@ -76,10 +78,10 @@ class PlayerLocal extends CapsuleEntity {
     }
     
     getSideVector() {
-        this.camera.getWorldDirection(this.playerDirection);
+        this.controlObject.getWorldDirection(this.playerDirection);
         this.playerDirection.y = 0;
         this.playerDirection.normalize();
-        this.playerDirection.cross(this.camera.up);
+        this.playerDirection.cross(UP_VECTOR);
         this.playerDirection.multiplyScalar(-1);
         return this.playerDirection;
     }
@@ -95,19 +97,19 @@ class PlayerLocal extends CapsuleEntity {
             this.speedFactor = this.isRunning ? 0.15 : 0.05;
 
             if (this.keys["w"]) {
-                this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getForwardVector(this.controlObject).multiplyScalar(this.speedFactor * delta));
             }
 
             if (this.keys["s"]) {
-                this.horizontalVelocity.add(this.getForwardVector(this.camera).multiplyScalar(-this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getForwardVector(this.controlObject).multiplyScalar(-this.speedFactor * delta));
             }
 
             if (this.keys["a"]) {
-                this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(-this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getSideVector(this.controlObject).multiplyScalar(-this.speedFactor * delta));
             }
 
             if (this.keys["d"]) {
-                this.horizontalVelocity.add(this.getSideVector(this.camera).multiplyScalar(this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getSideVector(this.controlObject).multiplyScalar(this.speedFactor * delta));
             }
             if (this.keys[" "] && this.canJump) {
                 this.velocity.y = 10.0;

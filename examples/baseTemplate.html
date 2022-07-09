@@ -16,8 +16,10 @@
             const virtualEnvironment = new VirtualEnvironment();
 
             // build the environment
-            virtualEnvironment.loadTerrain('./assets/terrains/island.glb', 0, 0, 0, "glb");
+            virtualEnvironment.loadTerrain('./assets/terrains/baseTemplate.glb', 0, 0, 0, "glb");
             virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
+
+            console.log(virtualEnvironment);
 
             // start the animation loop
             animate();

@@ -1,4 +1,4 @@
-import { WebGLRenderer, VSMShadowMap, PerspectiveCamera, Vector3, LoadingManager, Clock, Matrix4, Raycaster, Mesh, MeshLambertMaterial, PlaneGeometry, VideoTexture } from 'three';
+import { WebGLRenderer, VSMShadowMap, Vector3, LoadingManager, Clock, Matrix4, Raycaster, Mesh, MeshLambertMaterial, PlaneGeometry, VideoTexture } from 'three';
 
 import Stats from './util/Stats.module.js'
 
@@ -7,6 +7,7 @@ import { TerrainController } from './terrain/TerrainController.js';
 import { RemoteController } from './util/RemoteController.js';
 import { UiController } from './UserInterface/UiController.js';
 import { DefaultScene } from "./render/DefaultScene.js"
+import { DefaultCamera } from "./render/DefaultCamera.js"
 
 import {loadingBar, loadingPage} from './UserInterface/UiElements/LoadingPage/loadingPage.js';
 
@@ -41,11 +42,7 @@ export class VirtualEnvironment {
         window.MAIN_SCENE = new DefaultScene();
 
         // ===== camera =====
-        this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
-
-        this.dummyCamera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
-        this.cameraPosition = new Vector3();
-        this.cameraTarget = new Vector3();
+        this.camera = new DefaultCamera();
 
         // ===== UI =====
         this.UI_CONTROLLER = new UiController();
@@ -68,8 +65,6 @@ export class VirtualEnvironment {
         // inject this in the window
         window.VIRTUAL_ENVIRONMENT = this;
 
-        console.log("hehe sir");
-
     } // -- end constructor
 
     loadTerrain(terrainPath, x, y, z, format, scaleFactor = 1){
@@ -81,7 +76,7 @@ export class VirtualEnvironment {
     }
     
     spawnPlayer(params) {
-        window.LOCAL_PLAYER = new PlayerLocal(params, this.dummyCamera, this.loadingManager);
+        window.LOCAL_PLAYER = new PlayerLocal(params, this.camera.controlObject, this.loadingManager);
         MAIN_SCENE.add(LOCAL_PLAYER);
     }
 
@@ -152,37 +147,17 @@ export class VirtualEnvironment {
     
     update() {
 
+        // calculate time since last frame update
+        const delta = Math.min(clock.getDelta(), 0.1);
+
         // update the stats
         this.stats.update();
 
         MAIN_SCENE.update();
 
-        const delta = Math.min(clock.getDelta(), 0.1);
         if (this.terrainController.collider) {
-            
             LOCAL_PLAYER.update(delta, this.terrainController.collider);
-            this.camera.position.copy(LOCAL_PLAYER.position);
-            
-            this.camera.position.copy(LOCAL_PLAYER.position);
-            const dir = this.dummyCamera.getWorldDirection(new Vector3());
-            this.camera.position.add(dir.multiplyScalar(LOCAL_PLAYER.controlVector.z));
-            this.camera.lookAt(LOCAL_PLAYER.position);
-            const invMat = new Matrix4();
-            const raycaster = new Raycaster(LOCAL_PLAYER.position.clone(), this.camera.position.clone().sub(LOCAL_PLAYER.position.clone()).normalize());
-            invMat.copy(this.terrainController.collider.matrixWorld).invert();
-            raycaster.ray.applyMatrix4(invMat);
-            const hit = this.terrainController.collider.geometry.boundsTree.raycastFirst(raycaster.ray);
-            if (hit) {
-                this.camera.position.copy(LOCAL_PLAYER.position);
-                const dir = this.dummyCamera.getWorldDirection(new Vector3());
-                this.camera.position.add(dir.multiplyScalar(Math.min(hit.point.distanceTo(LOCAL_PLAYER.position), LOCAL_PLAYER.controlVector.z * 1.25) * 0.8));
-                this.camera.lookAt(LOCAL_PLAYER.position);
-            }
-            this.cameraPosition.lerp(this.camera.position, LOCAL_PLAYER.controlVector.w);
-            this.cameraTarget.lerp(LOCAL_PLAYER.position, LOCAL_PLAYER.controlVector.w);
-            this.camera.position.copy(this.cameraPosition);
-            this.camera.lookAt(this.cameraTarget);
-            
+            this.camera.update();
         }
 
         this.remoteController.update(delta);

@@ -16,7 +16,7 @@
             const virtualEnvironment = new VirtualEnvironment();
 
             // build the environment
-            virtualEnvironment.loadTerrain('./assets/terrains/interactiveObjects.glb', 0, 0, 0, "glb");
+            virtualEnvironment.loadTerrain({url: './assets/terrains/interactiveObjects.glb'});
             virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
 
             // start the animation loop

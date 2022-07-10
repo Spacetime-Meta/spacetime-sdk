@@ -8,11 +8,13 @@ const UP_VECTOR = new Vector3(0, 1, 0);
 class PlayerLocal extends CapsuleEntity {
     constructor(params, controlObject, loadingManager) {
         super(0.25, 1.5);
+        
+        params = typeof params === "undefined" ? {} : params;
+        
         this.spawnPoint = typeof params.spawn === "undefined" ? {x: 0, y:0, z:0} : params.spawn;
         this.position.x = this.spawnPoint.x;
         this.position.y = this.spawnPoint.y;
         this.position.z = this.spawnPoint.z;
-
 
         this.controlObject = controlObject;
         this.fpsControls = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);

@@ -67,8 +67,29 @@ export class VirtualEnvironment {
 
     } // -- end constructor
 
-    loadTerrain(terrainPath, x, y, z, format, scaleFactor = 1){
-        this.terrainController.loadTerrain(terrainPath, MAIN_SCENE, x, y, z, format, scaleFactor);
+    loadTerrain(options) {
+        const defaultOptions = {
+            url: undefined,
+            position: {x: 0, y: 0, z: 0},
+            scaleFactor: 1
+        };
+        for (let opt in defaultOptions) {
+            options[opt] = typeof options[opt] === 'undefined' ? defaultOptions[opt] : options[opt];
+        }
+        if(typeof options.url === "undefined") {
+            console.error("[Virtual Environment] Must provide url to load terrain");
+        } else {
+            console.log(options.url.substring(options.url.lastIndexOf(".")))
+            this.terrainController.loadTerrain(
+                options.url, 
+                MAIN_SCENE, 
+                options.position.x, 
+                options.position.y, 
+                options.position.z, 
+                options.url.substring(options.url.lastIndexOf(".")),
+                options.scaleFactor
+            );
+        }
     }
 
     generateTerrain(seed) {

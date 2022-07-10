@@ -24,13 +24,13 @@ export class TerrainController {
 
     loadTerrain(URL, scene, x, y, z, format, scaleFactor){
         switch (format) {
-            case "fbx":
+            case ".fbx":
                 this.FBXLoader.load(URL, (responseObject) => {
                     this.handleLoadedTerrain(responseObject, scene, x, y, z, scaleFactor);
                 })
                 break;
         
-            case "glb":
+            case ".glb":
                 this.GLTFLoader.load(URL, (responseObject) => {
                     this.handleLoadedTerrain(responseObject.scene, scene, x, y, z, scaleFactor);
                 })

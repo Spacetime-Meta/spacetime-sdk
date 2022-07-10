@@ -17,11 +17,11 @@
 
             // To use the portals, you must build a portal map inside the Virtual Environment
             virtualEnvironment.portalMap = {
-                0: `${window.location.origin}/examples/baseTemplate.html`,
+                0: `${window.location.origin}/baseTemplate.html`,
             }
 
             // build the environment
-            virtualEnvironment.loadTerrain('./assets/terrains/portalsDemo.glb', 0, 0, 0, "glb");
+            virtualEnvironment.loadTerrain({url: './assets/terrains/portalsDemo.glb'});
             virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
 
             // start the animation loop

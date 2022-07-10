@@ -16,8 +16,11 @@
             const virtualEnvironment = new VirtualEnvironment();
 
             // build the environment
-            virtualEnvironment.loadTerrain('./assets/terrains/dome.fbx', 0, 0, 0, "fbx", 0.008);
-            virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 10, z: 0}});
+            virtualEnvironment.loadTerrain({
+                url: './assets/terrains/dome.fbx',
+                scaleFactor: 0.008
+            });
+            virtualEnvironment.spawnPlayer( {spawn: {x: 0, y: 7, z: 0}} );
 
             // start the animation loop
             animate();

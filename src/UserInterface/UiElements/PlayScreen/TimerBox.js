@@ -32,7 +32,7 @@ export class TimerBox extends UiElement {
         this.startTime = Date.now();
     }
 
-    update() {
+    update(delta) {
         if(!this.isVictory) {
             const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(2);
             this.element.innerHTML = `time: ${isNaN(elapsed) ? 0.00 : elapsed}s`

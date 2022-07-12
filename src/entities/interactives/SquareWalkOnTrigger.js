@@ -25,16 +25,20 @@ export class SquareWalkOnTrigger extends Interactive {
 
     toggleDebugBox() {
         if(this.isDebugActive) {
-            MAIN_SCENE.remove(this.debugBox);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.debugBox);
         } else {
-            MAIN_SCENE.add(this.debugBox);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.debugBox);
         }
         this.isDebugActive = !this.isDebugActive;
     }
 
-    update() {
+    removeDebugger() {
+        VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.debugBox);
+    }
+
+    update(delta) {
         const playerToPad = new Vector3();
-        playerToPad.subVectors(LOCAL_PLAYER.position, this.mesh.position);
+        playerToPad.subVectors(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position, this.mesh.position);
         
         if(
             Math.abs(playerToPad.x) < this.padSize.x &&

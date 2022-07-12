@@ -14,29 +14,31 @@ export class DefaultCamera extends PerspectiveCamera {
         this.cameraTarget = new Vector3();
 
         this.raycaster = new Raycaster();
+
+        VIRTUAL_ENVIRONMENT.updatableObjects.push(this)
     }
 
     updateCameraPosition(distanceFactor) {
-        this.position.copy(LOCAL_PLAYER.position);
+        this.position.copy(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position);
         this.position.add(this.controlObject.getWorldDirection(ZERO_VECTOR).multiplyScalar(distanceFactor));
-        this.lookAt(LOCAL_PLAYER.position);
+        this.lookAt(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position);
     }
 
-    update() {
+    update(delta) {
 
         let hit;
-        if(LOCAL_PLAYER.controlVector.z > 0.1) { 
+        if( VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controlVector.z > 0.1 && typeof VIRTUAL_ENVIRONMENT.terrainController.collider !== "undefined" ) { 
             // raycast to see if the camera is clipped
             invMat.copy(VIRTUAL_ENVIRONMENT.terrainController.collider.matrixWorld).invert();
-            this.raycaster.set(LOCAL_PLAYER.position.clone(), this.position.clone().sub(LOCAL_PLAYER.position.clone()).normalize());
+            this.raycaster.set(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.clone(), this.position.clone().sub(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.clone()).normalize());
             this.raycaster.ray.applyMatrix4(invMat);
             hit = VIRTUAL_ENVIRONMENT.terrainController.collider.geometry.boundsTree.raycastFirst(this.raycaster.ray);
         }
 
         if (hit) {
-            this.updateCameraPosition(Math.min(hit.distance * 0.8, LOCAL_PLAYER.controlVector.z));
+            this.updateCameraPosition(Math.min(hit.distance * 0.8, VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controlVector.z));
         } else {
-            this.updateCameraPosition(LOCAL_PLAYER.controlVector.z);
+            this.updateCameraPosition(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controlVector.z);
         }
     }
 }

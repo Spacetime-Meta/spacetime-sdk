@@ -4,42 +4,59 @@ import { Vector3, Vector4, Matrix4, Raycaster } from 'three';
 import { AvatarController } from './AvatarController.js';
 
 const UP_VECTOR = new Vector3(0, 1, 0);
+const FIRST_PERSON_CONTROLS = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
+const  THIRD_PERSON_CONTROLS = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 5, 0.2);
+
+const PLAYER_DIMENSIONS = {
+    HEIGHT: 1.5,
+    WIDTH: 0.25
+}
 
 class PlayerLocal extends CapsuleEntity {
-    constructor(params, controlObject, loadingManager) {
-        super(0.25, 1.5);
-        
-        params = typeof params === "undefined" ? {} : params;
-        
-        this.spawnPoint = typeof params.spawn === "undefined" ? {x: 0, y:0, z:0} : params.spawn;
-        this.position.x = this.spawnPoint.x;
-        this.position.y = this.spawnPoint.y;
-        this.position.z = this.spawnPoint.z;
+    constructor() {
+        super(
+            PLAYER_DIMENSIONS.WIDTH,
+            PLAYER_DIMENSIONS.HEIGHT
+        );
 
-        this.controlObject = controlObject;
-        this.fpsControls = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
-        this.thirdPersonControls = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 5, 0.2);
-        this.controlVector = this.thirdPersonControls.clone();
-        this.targetControlVector = this.thirdPersonControls;
+        this.controlVector =  THIRD_PERSON_CONTROLS.clone();
+        this.targetControlVector =  THIRD_PERSON_CONTROLS.clone();
         this.horizontalVelocity = new Vector3();
         this.playerDirection = new Vector3();
         this.positionChange = new Vector3();
+        this.spawnPoint = new Vector3();
+        
         this.keys = {};
-
         this.visible = false;
         this.isRunning = false;
         
-        this.avatarController = new AvatarController(loadingManager);
-        this.avatarController.spawnAvatar(params);
-        this.setupControls(this.controlObject);
+        this.avatarController = new AvatarController();
+        this.avatarController.spawnAvatar({});
+        this.setupControls();
+
+        VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
+        VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this);
+    }
+
+    executeConfig(playerConfig) {
+        const defaultOptions = {
+            spawn: new Vector3()
+        };
+
+        for (let opt in defaultOptions) {
+            playerConfig[opt] = typeof playerConfig[opt] === 'undefined' ? defaultOptions[opt] : playerConfig[opt];
+        };
+
+        this.spawnPoint = playerConfig.spawn;
+        this.position.copy(playerConfig.spawn);
     }
 
     setupControls() {
-        this.controls = new PointerLockControls(this.controlObject, document.body);
+        this.controls = new PointerLockControls(VIRTUAL_ENVIRONMENT.camera.controlObject, document.body);
         this.controls.sensitivityY = -0.002;
         this.controls.minPolarAngle = 0.01; 
         this.controls.maxPolarAngle = Math.PI - 0.25;
-        MAIN_SCENE.add(this.controls.getObject());
+        VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.controls.getObject());
 
         document.addEventListener('keyup', (event) => {
             delete this.keys[event.key.toLowerCase()];
@@ -47,11 +64,11 @@ class PlayerLocal extends CapsuleEntity {
         document.addEventListener('keydown', (event) => {
             if(this.controls.isLocked) {
                 if (event.key === "v") {
-                    if (this.targetControlVector === this.thirdPersonControls) {
-                        this.targetControlVector = this.fpsControls;
+                    if (this.targetControlVector ===  THIRD_PERSON_CONTROLS) {
+                        this.targetControlVector = FIRST_PERSON_CONTROLS;
                         this.avatarController.setTransparency(true);
                     } else {
-                        this.targetControlVector = this.thirdPersonControls;
+                        this.targetControlVector =  THIRD_PERSON_CONTROLS;
                         this.avatarController.setTransparency(false);
                     }
                 }
@@ -72,7 +89,7 @@ class PlayerLocal extends CapsuleEntity {
     }
     
     getForwardVector() {
-        this.controlObject.getWorldDirection(this.playerDirection);
+        VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(this.playerDirection);
         this.playerDirection.y = 0;
         this.playerDirection.normalize();
         this.playerDirection.multiplyScalar(-1);
@@ -80,7 +97,7 @@ class PlayerLocal extends CapsuleEntity {
     }
     
     getSideVector() {
-        this.controlObject.getWorldDirection(this.playerDirection);
+        VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(this.playerDirection);
         this.playerDirection.y = 0;
         this.playerDirection.normalize();
         this.playerDirection.cross(UP_VECTOR);
@@ -88,30 +105,30 @@ class PlayerLocal extends CapsuleEntity {
         return this.playerDirection;
     }
 
-    update(delta, collider) {
+    update(delta) {
 
         if(Object.keys(this.keys).length > 0){
+
             // speedFactor depending on the run/walk state
-            
             if(this.keys["shift"]) {
                 this.isRunning = true;
             }
             this.speedFactor = this.isRunning ? 0.15 : 0.05;
 
             if (this.keys["w"]) {
-                this.horizontalVelocity.add(this.getForwardVector(this.controlObject).multiplyScalar(this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getForwardVector(VIRTUAL_ENVIRONMENT.camera.controlObject).multiplyScalar(this.speedFactor * delta));
             }
 
             if (this.keys["s"]) {
-                this.horizontalVelocity.add(this.getForwardVector(this.controlObject).multiplyScalar(-this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getForwardVector(VIRTUAL_ENVIRONMENT.camera.controlObject).multiplyScalar(-this.speedFactor * delta));
             }
 
             if (this.keys["a"]) {
-                this.horizontalVelocity.add(this.getSideVector(this.controlObject).multiplyScalar(-this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getSideVector(VIRTUAL_ENVIRONMENT.camera.controlObject).multiplyScalar(-this.speedFactor * delta));
             }
 
             if (this.keys["d"]) {
-                this.horizontalVelocity.add(this.getSideVector(this.controlObject).multiplyScalar(this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getSideVector(VIRTUAL_ENVIRONMENT.camera.controlObject).multiplyScalar(this.speedFactor * delta));
             }
             if (this.keys[" "] && this.canJump) {
                 this.velocity.y = 10.0;
@@ -122,11 +139,9 @@ class PlayerLocal extends CapsuleEntity {
             this.horizontalVelocity.multiplyScalar(0);
         }
 
-        
         for(let i=0; i<5; i++){
-            super.update(delta/5, collider);
-        }
-       
+            super.update(delta/5);
+        }  
 
         if (this.position.y < -20) {
             this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);

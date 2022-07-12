@@ -62,4 +62,9 @@ export class OptionToggle extends UiElement {
         }
         this.isActive = !this.isActive;
     }
+
+    synchronize() {
+        this.isActive = !this.isActive;
+        this.toggle();
+    }
 }

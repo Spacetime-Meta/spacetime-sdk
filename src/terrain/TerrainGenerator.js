@@ -31,8 +31,8 @@ class TerrainGenerator {
 
                         const terrain = this.terrain({material: blend, seed: this.worldSeed})
                         VIRTUAL_ENVIRONMENT.terrainController.terrain = terrain;
-                        MAIN_SCENE.add(terrain)
-                        VIRTUAL_ENVIRONMENT.terrainController.generateCollider(MAIN_SCENE);
+                        VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(terrain)
+                        VIRTUAL_ENVIRONMENT.terrainController.generateCollider(VIRTUAL_ENVIRONMENT.MAIN_SCENE);
                     });
                 });
             });

@@ -12,24 +12,35 @@ export class OptionsPanel extends UiElement {
             }
         })
 
-        this.appendChild( new OptionToggle( "Toggle Shadows" ,true , function() {
-            MAIN_SCENE.toggleShadows();
-        }));
-        
-        this.appendChild( new OptionToggle( "Show Performances" ,false , function() {
-            VIRTUAL_ENVIRONMENT.toggleStats();
-        }));
+        this.optionList = [
+            
+            new OptionToggle( "Toggle Shadows" ,true , function() {
+                VIRTUAL_ENVIRONMENT.MAIN_SCENE.toggleShadows();
+            }),
+            
+            new OptionToggle( "Show Performances" ,false , function() {
+                VIRTUAL_ENVIRONMENT.toggleStats();
+            }),
 
-        this.appendChild( new OptionToggle( "Show Hitbox" ,false , function() {
-            LOCAL_PLAYER.toggleHitbox();
-        }));
+            new OptionToggle( "Show Hitbox" ,false , function() {
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.toggleHitbox();
+            }),
 
-        this.appendChild( new OptionToggle( "Show Collider" ,false , function() {
-            VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
-        }));
+            new OptionToggle( "Show Collider" ,false , function() {
+                VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
+            }),
 
-        this.appendChild( new OptionToggle( "Show Triggers" ,false , function() {
-            MAIN_SCENE.toggleInteractiveDebugBox();
-        }));
+            new OptionToggle( "Show Triggers" ,false , function() {
+                VIRTUAL_ENVIRONMENT.terrainController.toggleInteractiveDebugBox();
+            })
+        ];
+
+        this.appendChildList( this.optionList );
     } 
+
+    synchronize() {
+        this.optionList.forEach(option => {
+            option.synchronize()
+        })
+    }
 }

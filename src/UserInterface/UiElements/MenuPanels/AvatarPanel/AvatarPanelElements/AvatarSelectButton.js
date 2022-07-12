@@ -21,7 +21,7 @@ export class AvatarSelectButton extends UiElement {
         })
 
         this.element.addEventListener("click", ()=>{
-            LOCAL_PLAYER.avatarController.changeAvatar(avatarUrl, animationUrl, animationMapping)
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.avatarController.changeAvatar(avatarUrl, animationUrl, animationMapping)
         })
     }
 }

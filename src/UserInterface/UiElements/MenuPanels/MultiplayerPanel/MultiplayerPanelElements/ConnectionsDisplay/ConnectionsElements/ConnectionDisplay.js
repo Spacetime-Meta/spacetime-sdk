@@ -66,7 +66,7 @@ class ConnectionDisplay extends UiElement {
         VIRTUAL_ENVIRONMENT.remoteController.disconnectPeer(this.peer);
     }
 
-    update() {
+    update(delta) {
         if(typeof this.connection !== "undefined"){
             if(this.connection.open){
                 this.element.style.border = "1px solid green";

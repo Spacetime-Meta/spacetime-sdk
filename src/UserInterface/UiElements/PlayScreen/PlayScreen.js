@@ -23,8 +23,10 @@ class PlayScreen extends UiElement {
     }
 
     setupTimerBox() {
-        this.timerBox = new TimerBox();
-        this.appendChild(this.timerBox);
+        if(typeof this.timerBox === "undefined") {
+            this.timerBox = new TimerBox();
+            this.appendChild(this.timerBox);
+        }
     }
 }
 export { PlayScreen }

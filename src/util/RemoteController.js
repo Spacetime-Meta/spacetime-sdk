@@ -37,6 +37,8 @@ export class RemoteController {
             this.peer = new Peer(localProxy.peerId);
             this.initPeer(this.peer)
         }
+
+        VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
     }
 
     initPeer(peer) {
@@ -237,12 +239,12 @@ export class RemoteController {
                 jsonMessage.pathname = window.location.pathname;
             case "stream":
                 jsonMessage.transform = {
-                    position: LOCAL_PLAYER.position,
-                    horizontalVelocity: LOCAL_PLAYER.horizontalVelocity
+                    position: VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position,
+                    horizontalVelocity: VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.horizontalVelocity
                 }; 
                 jsonMessage.animation = [
-                    LOCAL_PLAYER.currentAnimation,
-                    LOCAL_PLAYER.currentAnimationTime
+                    VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.currentAnimation,
+                    VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.currentAnimationTime
                 ];
         }
         return JSON.stringify(jsonMessage);
@@ -251,8 +253,8 @@ export class RemoteController {
     update(delta) {
         this.connections.forEach(connection => {
             if(connection.needUpdate) {
-                const position = LOCAL_PLAYER.position;
-                const horizontalVelocity = LOCAL_PLAYER.horizontalVelocity;
+                const position = VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position;
+                const horizontalVelocity = VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.horizontalVelocity;
 
                 connection.send(this.jsonMessageFormatter("stream"));
 

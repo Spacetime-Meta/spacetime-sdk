@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
-        <title>Spacetime SDK</title>
+        <title>Base Template</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
     </head>
+
     <body>
-        <h1>Welcome to the spacetime sdk</h1>
-        <br>
-        
-        <h3>Examples</h3>
-        <ol>
-            <li><a href="./baseTemplate.html">Base Template (Default Settings Demo)</a></li>
-            <li><a href="./dome.html">Dome (FBX Loader Demo)</a></li>
-            <li><a href="./floor-is-lava.html">Floor is Lava (Add Solid Objects)</a></li>
-            <li><a href="./interactiveObjects.html">Tower Parkour (Interactive Objects Demo)</a></li>
-            <li><a href="./terrainGeneration.html">Seed 100 (Terrain Generation)</a></li>
-            <li><a href="./portalDemo.html">Portal Demo</a></li>
-        </ol>
+        <script src="http://localhost:8080/bundle.min.js"></script>
+        <script type="module">          
+            
+            // simply call the virtual env with your config 
+            const virtualEnvironment = new VirtualEnvironment("./configs/devPlanet.json");
+
+            // start the animation loop
+            animate();
+            function animate() {
+                virtualEnvironment.update();
+                requestAnimationFrame(animate);
+            }
+        </script>
     </body>
+    
 </html>

@@ -30,7 +30,7 @@ class MultiplayerPanel extends UiElement {
         }
     }
 
-    update() {
+    update(delta) {
         if(typeof VIRTUAL_ENVIRONMENT.remoteController.peer !== "undefined") {
             this.goLiveDisplay.element.style.display = "none";
             this.connectionsManagementDisplay.element.style.display = "block";

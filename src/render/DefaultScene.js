@@ -1,6 +1,5 @@
 import { Scene, Color, Fog, HemisphereLight } from 'three';
 
-import { SquareWalkOnTrigger } from '../entities/interactives/SquareWalkOnTrigger.js';
 import { DefaultDirectionalLight } from "./DefaultDirectionalLight.js"
 
 export class DefaultScene extends Scene {
@@ -21,71 +20,16 @@ export class DefaultScene extends Scene {
         this.add(this.shadowLight);
         this.add(this.shadowLight.target);
 
-        this.interactives = [];
+
+
+        VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
     }
 
     toggleShadows() {
         this.shadowLight.castShadow = !this.shadowLight.castShadow;
     }
 
-    toggleInteractiveDebugBox() {
-        this.interactives.forEach(interactive => {
-            interactive.toggleDebugBox();
-        })
-    }
-
-    buildInteractives() {
-        this.children.forEach(child => {
-            if(child.name === "Scene") {
-                child.children.forEach(mesh => {
-                    if(mesh.name.substring(0,5) === "_stm_") {
-                        const type = mesh.name.substring(5).substring(0,mesh.name.substring(5).indexOf('_'));
-
-                        switch (type) {
-                            
-                            case "launchpad": {
-                                this.interactives.push( new SquareWalkOnTrigger(mesh, () => {
-                                    LOCAL_PLAYER.velocity.y = 50;
-                                }) );
-                            } break;
-
-                            case "spawnPoint": {
-                                LOCAL_PLAYER.spawnPoint = mesh.position;
-                                LOCAL_PLAYER.position.copy(mesh.position);
-                            } break;
-
-                            case "startTime": {
-                                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.setupTimer();
-                                this.interactives.push( new SquareWalkOnTrigger(mesh, () => {
-                                    VIRTUAL_ENVIRONMENT.UI_CONTROLLER.playScreen.timerBox.startTimer();
-                                }) );
-                            } break;
-
-                            case "stopTime": {
-                                this.interactives.push( new SquareWalkOnTrigger(mesh, () => {
-                                    VIRTUAL_ENVIRONMENT.UI_CONTROLLER.playScreen.timerBox.stopTimer()
-                                }) );
-                            } break;
-
-                            case "portal": {
-                                const id = mesh.name.substring(12, 12 + mesh.name.substring(12).indexOf('_'))
-                                this.interactives.push( new SquareWalkOnTrigger(mesh, () => {
-                                    window.location.href = VIRTUAL_ENVIRONMENT.portalMap[id]
-                                }) );
-                            } break;
-                        }
-                    }
-                })
-            }
-        })
-    }
-
-    update() {
-
+    update(delta) {
         this.shadowLight.update();
-
-        this.interactives.forEach(interactive => {
-            interactive.update();
-        })
     }
 }

@@ -1,6 +1,7 @@
 import { Box3, Vector3, Line3, Matrix4, Object3D, Mesh, BoxGeometry, Raycaster, ArrowHelper } from 'three';
 
 const downVector = new Vector3(0, -1, 0);
+const tempSegment = new Line3();
 
 export class CapsuleEntity extends Object3D {
     constructor(radius, size) {
@@ -11,7 +12,7 @@ export class CapsuleEntity extends Object3D {
         this.radius = radius;
         this.size = size;
         this.onGround = false;
-        this.canJump = true;
+        this.canJump = false;
         this.gravity = -20;
         this.segment = new Line3(new Vector3(), new Vector3(0, -size, 0.0));
 
@@ -24,38 +25,27 @@ export class CapsuleEntity extends Object3D {
 
         this.isHelperActive = false;
 
-        this.friction = 0.975;
+        this.friction = 0.98;
     }
 
     toggleHitbox() {
         if(this.isHelperActive) {
-            MAIN_SCENE.remove(this.debugHitBox);
-            MAIN_SCENE.remove(this.arrowHelper);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.debugHitBox);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.arrowHelper);
         } else {
-            MAIN_SCENE.add(this.arrowHelper);
-            MAIN_SCENE.add(this.debugHitBox);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.arrowHelper);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.debugHitBox);
         }
         this.isHelperActive = !this.isHelperActive;
     }
 
-    update(delta, collider) {
-
-        // make the player fall if he is not grounded 
-        this.velocity.y += this.onGround ? 0 : delta * this.gravity;
-
-        // add the velocity to the position
-        this.position.addScaledVector(this.velocity, delta);
-        this.position.add(this.horizontalVelocity);
-
-        // apply the friction
-        this.horizontalVelocity.multiplyScalar(this.friction);
-        
+    collisionLogic(delta, collider) {
+ 
         this.updateMatrixWorld();
         
         const tempMat = new Matrix4();
         tempMat.copy(collider.matrixWorld).invert();
 
-        const tempSegment = new Line3();
         tempSegment.copy(this.segment);
         tempSegment.start.applyMatrix4(this.matrixWorld).applyMatrix4(tempMat);
         tempSegment.end.applyMatrix4(this.matrixWorld).applyMatrix4(tempMat);
@@ -95,7 +85,6 @@ export class CapsuleEntity extends Object3D {
         const newPosition = tempVector;
         newPosition.copy(tempSegment.start).applyMatrix4(collider.matrixWorld);
 
-        
         const deltaVector = tempVector2;
         deltaVector.subVectors(newPosition, this.position);
         
@@ -105,37 +94,53 @@ export class CapsuleEntity extends Object3D {
         
         // evaluate if the player is grounded
         this.onGround = deltaVector.y > Math.abs(delta * this.velocity.y * 0.25);
-        
-        // evaluate if the player is close to the ground
-        this.raycaster.set(tempSegment.start, downVector);
-        this.raycaster.ray.applyMatrix4(tempMat)
-        const hit = collider.bvh.raycastFirst( this.raycaster.ray );
-
-        
-        if(hit) {
-            this.canJump = hit.distance < 2 || this.onGround;
-        } else {
-            this.canJump = this.onGround;
-        }
-        
-        if(this.isHelperActive){
-            this.debugHitBox.position.copy(tempSegment.start.add(tempSegment.end).multiplyScalar(0.5))
-        
-            if(this.canJump) {
-                this.arrowHelper.setColor(0x00ff00)
-            } else {
-                this.arrowHelper.setColor(0xff0000)
-            }
-
-            this.arrowHelper.position.copy(tempSegment.start);
-        }
-        
 
         if (this.onGround) {
             this.velocity.set(0, 0, 0);
         } else {
             deltaVector.normalize();
             this.velocity.addScaledVector(deltaVector, -deltaVector.dot(this.velocity));
+        }
+        
+        // evaluate if the player is close to the ground
+        this.raycaster.set(tempSegment.start, downVector);
+        this.raycaster.ray.applyMatrix4(tempMat)
+        const hit = collider.bvh.raycastFirst( this.raycaster.ray );
+
+        if(hit) {
+            this.canJump = hit.distance < 2 || this.onGround;
+        } else {
+            this.canJump = this.onGround;
+        }
+    }
+
+    update(delta) {
+
+        // add the movement velocity to the position
+        this.position.add(this.horizontalVelocity);
+
+        // apply the friction
+        this.horizontalVelocity.multiplyScalar(this.friction);
+
+
+        if(VIRTUAL_ENVIRONMENT.terrainController.collider) {
+            // make the player fall if he is not grounded 
+            this.velocity.y += this.onGround ? 0 : delta * this.gravity;
+            this.position.addScaledVector(this.velocity, delta);
+            
+            this.collisionLogic(delta, VIRTUAL_ENVIRONMENT.terrainController.collider); 
+        }
+        
+        if(this.isHelperActive){        
+            if(this.canJump) {
+                this.arrowHelper.setColor(0x00ff00)
+            } else {
+                this.arrowHelper.setColor(0xff0000)
+            }
+
+            this.debugHitBox.position.copy(tempSegment.start);
+            this.debugHitBox.position.y -= this.size / 2; 
+            this.arrowHelper.position.copy(this.position);
         }
     }
 }

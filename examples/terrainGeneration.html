@@ -16,8 +16,8 @@
             const virtualEnvironment = new VirtualEnvironment();
 
             // build the environment
-            virtualEnvironment.generateTerrain(100);
-            virtualEnvironment.spawnPlayer({spawn: {x: 0, y: 300, z: 0}});
+            virtualEnvironment.terrainController.generateTerrain(100);
+            virtualEnvironment.LOCAL_PLAYER.position.y = 200;
 
             // start the animation loop
             animate();

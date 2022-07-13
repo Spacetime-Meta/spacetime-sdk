@@ -361,7 +361,7 @@ export class SpacetimeMap extends UiElement {
         }
     }
 
-    update() {
+    update(delta) {
 
         this.renderer.render(this.scene, this.camera);
 

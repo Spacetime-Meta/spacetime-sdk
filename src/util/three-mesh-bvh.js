@@ -1326,7 +1326,7 @@ class SeparatingAxisTriangle extends Triangle {
 
     }
 
-    update() {
+    update(delta) {
 
         const a = this.a;
         const b = this.b;
@@ -1757,7 +1757,7 @@ class OrientedBox extends Box3 {
 
 OrientedBox.prototype.update = (function() {
 
-    return function update() {
+    return function update(delta) {
 
         const matrix = this.matrix;
         const min = this.min;
@@ -4222,7 +4222,7 @@ class MeshBVHRootVisualizer extends Object3D {
 
     raycast() {}
 
-    update() {
+    update(delta) {
 
         const geometry = this.geometry;
         const boundsTree = this.mesh.geometry.boundsTree;
@@ -4436,7 +4436,7 @@ class MeshBVHVisualizer extends Group {
 
     }
 
-    update() {
+    update(delta) {
 
         const bvh = this.mesh.geometry.boundsTree;
         const totalRoots = bvh ? bvh._roots.length : 0;

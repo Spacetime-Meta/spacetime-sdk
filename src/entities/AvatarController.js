@@ -7,11 +7,10 @@ const DEFAULT_ANIMATION_PATH = 'https://elegant-truffle-070d6b.netlify.app/defau
 const DEFAULT_ANIMATION_MAPPING = { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 };
 
 class AvatarController extends THREE.Object3D {
-    constructor(manager) {//animationURL, avatarURL, keyMap
+    constructor() {
         super();
         this.isVisible = true;
-        this.loader = new GLTFLoader(manager);
-        this.manager = manager;
+        this.loader = new GLTFLoader();
         this.animations = {};
         this.quaternion90deg = new THREE.Quaternion();
         this.quaternion90deg.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), -Math.PI / 2 );
@@ -60,23 +59,22 @@ class AvatarController extends THREE.Object3D {
 
     setTransparency(setTo) {
         if(setTo) {
-            window.MAIN_SCENE.remove(this.model);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.model);
             
         } else {
-            window.MAIN_SCENE.add(this.model);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.model);
         }
         this.isVisible = !setTo;
     }
 
     changeAvatar(avatarUrl, animationsUrl, animationMapping) {
-        loadingBar(this.manager);
         this.loadAvatar(avatarUrl, () => this.loadAnimations(animationsUrl, animationMapping));
     }
 
     loadAvatar(avatarURL, loadAnimation) {
         this.loader.load(avatarURL, (responseObject) => {
             
-            MAIN_SCENE.remove(this.model)
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.model)
 
             this.radius = .25;
             this.size = 1.5;
@@ -90,13 +88,13 @@ class AvatarController extends THREE.Object3D {
                     child.frustumCulled = false;
                 }
             });
-            MAIN_SCENE.add(this.model);
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.model);
             loadAnimation(); 
         });
     }
 
     removeAvatar(){
-        MAIN_SCENE.remove(this.model);
+        VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.model);
     }
 
     loadAnimations(animationURL, animationMapping) {

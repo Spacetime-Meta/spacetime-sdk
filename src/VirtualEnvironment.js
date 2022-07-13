@@ -1,190 +1,140 @@
-import { WebGLRenderer, VSMShadowMap, Vector3, LoadingManager, Clock, Matrix4, Raycaster, Mesh, MeshLambertMaterial, PlaneGeometry, VideoTexture } from 'three';
+import { Vector3, LoadingManager, Cache, Clock, Matrix4, Raycaster, Mesh, MeshLambertMaterial, PlaneGeometry, VideoTexture } from 'three';
 
-import Stats from './util/Stats.module.js'
+import Stats from './util/Stats.module.js';
 
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import { TerrainController } from './terrain/TerrainController.js';
 import { RemoteController } from './util/RemoteController.js';
 import { UiController } from './UserInterface/UiController.js';
-import { DefaultScene } from "./render/DefaultScene.js"
-import { DefaultCamera } from "./render/DefaultCamera.js"
-
-import {loadingBar, loadingPage} from './UserInterface/UiElements/LoadingPage/loadingPage.js';
+import { DefaultScene } from "./render/DefaultScene.js";
+import { DefaultCamera } from "./render/DefaultCamera.js";
+import { DefaultRenderer } from "./render/DefaultRenderer.js";
 
 const clock = new Clock();
+const DEFAULT = "default";
 
 export class VirtualEnvironment {
-    constructor() {
-        // set the page css
-        document.body.style.margin = "0";
-        document.body.style.fontFamily = "Space Mono, monospace";
+    
+    constructor(configPath) {
+
+        // injects this in the window so we can access
+        // VIRTUAL_ENVIRONMENT from anywhere in the app
+        window.VIRTUAL_ENVIRONMENT = this;
         
         // vars
-        this.isStatsActive = false;
+        this.isConfigCompleted = false;
         this.portalMap = {};
-
-        // ===== loading =====
-        this.loading();
-
-        // ==== stats ===== 
-        this.stats = Stats()
-        this.stats.dom.style.left = "350px"
+        this.updatableObjects = [];
         
-        // ===== renderer =====
-        this.renderer = new WebGLRenderer({ alpha: true });
-        this.renderer.setPixelRatio(1);
-        this.renderer.setSize(window.innerWidth-1, window.innerHeight-1);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = VSMShadowMap;
-        document.body.appendChild(this.renderer.domElement);
+        // this will create the update loop logic
+        this.initEnvironment();
 
-        // ===== scene =====
-        window.MAIN_SCENE = new DefaultScene();
+        // this will read a config file and customize
+        // the environment accordingly
+        this.loadConfig(configPath);
 
-        // ===== camera =====
-        this.camera = new DefaultCamera();
+    }
 
+    initEnvironment() { 
         // ===== UI =====
         this.UI_CONTROLLER = new UiController();
-
-        // ===== Terrain Controller
-        this.terrainController = new TerrainController(this.loadingManager);
-
-        // ===== setup resize listener ==========
+        
+        // ===== renderer, scene, camera =====
+        this.renderer = new DefaultRenderer();
+        this.MAIN_SCENE = new DefaultScene();
+        this.camera = new DefaultCamera();
+        
         window.addEventListener('resize', () => onWindowResize(this.camera, this.renderer), false);
-
         function onWindowResize(camera, renderer) {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
+        
+        // enables the THREE.Cache object 
+        // https://threejs.org/docs/#api/en/loaders/Cache
+        Cache.enabled = true;
+        
+        this.loadingManager = new LoadingManager();
+        this.terrainController = new TerrainController(this.loadingManager);
+
+        // player local will load the default spacetime avatar
+        this.LOCAL_PLAYER = new PlayerLocal();
 
         // ===== setupMultiplayer =====
-        this.remoteController = new RemoteController(this.loadingManager, MAIN_SCENE);
+        this.remoteController = new RemoteController(this.loadingManager, this.MAIN_SCENE);
+    }
 
-        // inject this in the window
-        window.VIRTUAL_ENVIRONMENT = this;
-
-    } // -- end constructor
-
-    loadTerrain(options) {
-        const defaultOptions = {
-            url: undefined,
-            position: {x: 0, y: 0, z: 0},
-            scaleFactor: 1
-        };
-        for (let opt in defaultOptions) {
-            options[opt] = typeof options[opt] === 'undefined' ? defaultOptions[opt] : options[opt];
-        }
-        if(typeof options.url === "undefined") {
-            console.error("[Virtual Environment] Must provide url to load terrain");
+    loadConfig(configPath) {
+        if(typeof configPath === "undefined") {
+            console.warn(`%c [Virtual Environment] No config files specified`);
         } else {
-            console.log(options.url.substring(options.url.lastIndexOf(".")))
-            this.terrainController.loadTerrain(
-                options.url, 
-                MAIN_SCENE, 
-                options.position.x, 
-                options.position.y, 
-                options.position.z, 
-                options.url.substring(options.url.lastIndexOf(".")),
-                options.scaleFactor
-            );
-        }
-    }
+            if(this.lastConfig !== configPath) {
+                
+                console.log(`%c [Virtual Environment] Loading new config path: ${configPath}`, 'color:#bada55');
+                this.lastConfig = configPath
 
-    generateTerrain(seed) {
-        this.terrainController.generateTerrain(seed);
-    }
-    
-    spawnPlayer(params) {
-        window.LOCAL_PLAYER = new PlayerLocal(params, this.camera.controlObject, this.loadingManager);
-        MAIN_SCENE.add(LOCAL_PLAYER);
-    }
+                if(typeof configPath === "string") {
+                    fetch(configPath)
+                        .then( (response) => { return response.json(); } )
+                        .then( (configObject) => { 
+                            this.configObject = configObject;
+                            this.executeConfig(configObject); 
+                        } );
+                
+                } else {
+                    console.error("[Virtual Environment] ConfigPath must be an url to a .json or .glb/.gltf.\nConfig Path: " + configPath);
+                }
 
-    newSolidGeometriesFromSource(url, x, y, z, scaleFactor){
-        this.terrainController.newSolidGeometriesFromSource(MAIN_SCENE, url, x, y, z, scaleFactor)
-    }
-
-    newVideoDisplayPlane(url, width, height, x, y, z, rotationY) {
-        const video = document.createElement('video');
-        video.id = url; // give unique id to support multiple players
-        video.loop = true;
-        video.crossOrigin = "anonymous";
-        video.playsinline = true;
-        video.style.display = "none";
-
-        const source =  document.createElement('source')
-        source.src = url;
-        source.type = 'video/mp4';
-
-        video.appendChild(source);
-        document.body.appendChild(video)
-
-        document.onkeydown = function(e) {
-            if (e.keyCode == 80 && !this.videoHasPlayed) {
-                //p - play 
-                video.play();
-                this.videoHasPlayed = true;
-            } else if (e.keyCode == 80 && this.videoHasPlayed) {
-                //p - pause
-                this.videoHasPlayed = false;
-                video.pause();
-            } else if (e.keyCode == 82) {
-                //r - rewind video
-                video.currentTime(0);
+            } else {
+                console.warn("[Virtual Environment] You are trying to load the same config twice.\nConfig Path: " + configPath);
             }
-
         }
-
-        const mesh = new Mesh( 
-            new PlaneGeometry( width, height ), 
-            new MeshLambertMaterial({ 
-                color: 0xffffff, 
-                map: new VideoTexture( video ) 
-            }) 
-        );
-        mesh.position.set(x,y,z)
-        mesh.rotateY(rotationY)
-
-        MAIN_SCENE.add( mesh )
     }
 
-    loading() {
-        // ===== loading manager =====
-        this.loadingManager = new LoadingManager();
+    executeConfig(configObject) {
 
-        loadingPage();
-        loadingBar(this.loadingManager);
+        if(typeof configObject.player !== "undefined") {
+            this.LOCAL_PLAYER.executeConfig(configObject.player);
+        }
+
+        if(typeof configObject.terrain !== "undefined") {
+            this.terrainController.executeConfig(configObject.terrain);
+        }
+
+        this.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.synchronize();
+
     }
 
     toggleStats() {
         if(this.isStatsActive) {
             document.body.removeChild(this.stats.dom);
         } else {
+
+            // in the first time user clicks
+            if(typeof this.stats === "undefined") {
+                this.stats = Stats()
+                this.stats.dom.style.left = "350px"
+                this.updatableObjects.push(this.stats)
+                
+                // init  at false since rest of the method will toggle on
+                this.isStatsActive = false;
+            }
             document.body.appendChild(this.stats.dom)
         }
         this.isStatsActive = !this.isStatsActive;
     }
     
     update() {
-
         // calculate time since last frame update
         const delta = Math.min(clock.getDelta(), 0.1);
-
-        // update the stats
-        this.stats.update();
-
-        MAIN_SCENE.update();
-
-        if (this.terrainController.collider) {
-            LOCAL_PLAYER.update(delta, this.terrainController.collider);
-            this.camera.update();
-        }
-
-        this.remoteController.update(delta);
-        this.renderer.render(MAIN_SCENE, this.camera);
-
-        this.UI_CONTROLLER.update();
+        
+        this.updatableObjects.forEach(object => {
+            object.update(delta);
+        });
+        
+        // have the renderer render the scene again
+        this.renderer.render(this.MAIN_SCENE, this.camera);
     }
 
 }

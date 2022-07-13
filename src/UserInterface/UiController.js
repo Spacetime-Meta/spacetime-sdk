@@ -8,6 +8,8 @@ export class UiController {
      * one disappears when the controls are lock.
     */
     constructor() {
+        document.body.style.fontFamily = "Space Mono, monospace";
+
         this.blockerScreen = new BlockerScreen();
         this.playScreen = new PlayScreen();
 
@@ -17,10 +19,13 @@ export class UiController {
         
         this.updatable = [];
         this.updatable.push(this.connectionsManagementDisplay);
+
+        // add itself to the general update list
+        VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
     }
 
     handleControlsLock() {
-        LOCAL_PLAYER.controls.lock();
+        VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
         this.blockerScreen.element.style.display = "none";
         this.playScreen.element.style.display = "block";
     }
@@ -43,7 +48,7 @@ export class UiController {
         this.updatable.push(this.playScreen.timerBox);
     }
 
-    update() {
+    update(delta) {
         this.updatable.forEach(item => {
             item.update();
         })

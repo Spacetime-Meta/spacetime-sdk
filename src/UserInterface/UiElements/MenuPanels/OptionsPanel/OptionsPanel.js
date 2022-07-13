@@ -12,24 +12,39 @@ export class OptionsPanel extends UiElement {
             }
         })
 
-        this.appendChild( new OptionToggle( "Toggle Shadows" ,true , function() {
-            MAIN_SCENE.toggleShadows();
-        }));
+            
+        this.toggleShadows = new OptionToggle( "Toggle Shadows" , true, function() {
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.toggleShadows();
+        }),
         
-        this.appendChild( new OptionToggle( "Show Performances" ,false , function() {
+        this.togglePerformances = new OptionToggle( "Show Performances" , false, function() {
             VIRTUAL_ENVIRONMENT.toggleStats();
-        }));
+        }),
 
-        this.appendChild( new OptionToggle( "Show Hitbox" ,false , function() {
-            LOCAL_PLAYER.toggleHitbox();
-        }));
+        this.toggleHitbox = new OptionToggle( "Show Hitbox", false, function() {
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.toggleHitbox();
+        }),
 
-        this.appendChild( new OptionToggle( "Show Collider" ,false , function() {
+        this.toggleCollider = new OptionToggle( "Show Collider", false, function() {
             VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
-        }));
+        }),
 
-        this.appendChild( new OptionToggle( "Show Triggers" ,false , function() {
-            MAIN_SCENE.toggleInteractiveDebugBox();
-        }));
-    } 
+        this.toggleTriggers = new OptionToggle( "Show Triggers", false, function() {
+            VIRTUAL_ENVIRONMENT.terrainController.toggleInteractiveDebugBox();
+        })
+
+        this.appendChildList([
+            this.toggleShadows,
+            this.togglePerformances,
+            this.toggleHitbox,
+            this.toggleCollider,
+            this.toggleTriggers    
+        ]);
+    }
+
+    synchronize() {
+        if(this.toggleCollider.isActive) {
+            // VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
+        }
+    }
 }

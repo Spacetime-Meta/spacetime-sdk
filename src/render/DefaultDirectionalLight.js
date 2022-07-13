@@ -20,10 +20,10 @@ export class DefaultDirectionalLight extends DirectionalLight {
 
         // use this to visualize the shadow camera
         // const helper = new CameraHelper(this.shadow.camera)
-        // MAIN_SCENE.add(helper)
+        // VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(helper)
     }
-    update() {
-        this.position.addVectors(LOCAL_PLAYER.position, OFFSET);
-        this.target.position.copy(LOCAL_PLAYER.position);
+    update(delta) {
+        this.position.addVectors(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position, OFFSET);
+        this.target.position.copy(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position);
     }
 }

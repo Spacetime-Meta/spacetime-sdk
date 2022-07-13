@@ -1,0 +1,9 @@
+{
+    "version": 1,
+    "terrain": {
+        "url": "./assets/terrains/devPlanet.glb",
+        "portalMap": {
+            "0": "./configs/baseTemplate.json"
+        } 
+    }
+}

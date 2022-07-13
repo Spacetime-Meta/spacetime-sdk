@@ -13,14 +13,11 @@
         <script type="module">
         
         // start by initializing a virtual environment
-        let virtualEnvironment = new VirtualEnvironment();
-
-        // then fill your world with the stuff you want
-        virtualEnvironment.spawnPlayer({spawn: { x:0, y:10, z:0}})
+        let virtualEnvironment = new VirtualEnvironment("./configs/emptyJson.json");
         
         setTimeout(() => {
-            virtualEnvironment.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', 0, 0, 50, 2);
-            virtualEnvironment.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', 0, 0, 0, 2);
+            virtualEnvironment.terrainController.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', 0, 0, 50, 2);
+            virtualEnvironment.terrainController.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', 0, 0, 0, 2);
 
             let position;
             for(let i=0; i<35; i++) {
@@ -30,7 +27,7 @@
                     z: Math.random() * 50
                 };
 
-                virtualEnvironment.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', position.x, position.y, position.z, Math.random() * 3 + 1);
+                virtualEnvironment.terrainController.newSolidGeometriesFromSource('./assets/objects/rock_platform.glb', position.x, position.y, position.z, Math.random() * 3 + 1);
             }
 
             virtualEnvironment.terrainController.generateCollider(virtualEnvironment.scene);

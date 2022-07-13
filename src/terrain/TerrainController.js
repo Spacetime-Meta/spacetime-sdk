@@ -247,12 +247,12 @@ export class TerrainController {
         this.collider.visible = !this.collider.visible;
     }
 
-    newSolidGeometriesFromSource(scene, url, x, y, z, scaleFactor) {
+    newSolidGeometriesFromSource(url, x, y, z, scaleFactor) {
         this.GLTFLoader.load(url, (responseObject) => {
             setTimeout(() => {   
                 responseObject.scene.scale.set(scaleFactor, scaleFactor, scaleFactor)
                 responseObject.scene.position.set(x,y,z)
-                scene.add(responseObject.scene)
+                VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(responseObject.scene)
     
                 responseObject.scene.traverse((object) => {
                     if(object.geometry && object.visible && object.position) {
@@ -269,7 +269,7 @@ export class TerrainController {
                     }
                 })
                 
-                this.generateCollider(scene)
+                this.generateCollider(VIRTUAL_ENVIRONMENT.MAIN_SCENE)
             }, 2000);
         })
     }

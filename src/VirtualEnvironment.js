@@ -75,7 +75,10 @@ export class VirtualEnvironment {
             if(typeof configPath === "string") {
                 fetch(configPath)
                     .then( (response) => { return response.json(); } )
-                    .then( (configObject) => { this.executeConfig(configObject); } );
+                    .then( (configObject) => { 
+                        this.configObject = configObject;
+                        this.executeConfig(configObject); 
+                    } );
             
             } else {
                 console.error("[Virtual Environment] ConfigPath must be an url to a .json or .glb/.gltf.\nConfig Path: " + configPath);

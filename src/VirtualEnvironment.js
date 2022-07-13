@@ -66,29 +66,30 @@ export class VirtualEnvironment {
     }
 
     loadConfig(configPath) {
-
-        if(this.lastConfig !== configPath) {
-            
-            console.log(`%c [Virtual Environment] Loading new config path: ${configPath}`, 'color:#bada55');
-            this.lastConfig = configPath
-
-            if(typeof configPath === "string") {
-                fetch(configPath)
-                    .then( (response) => { return response.json(); } )
-                    .then( (configObject) => { 
-                        this.configObject = configObject;
-                        this.executeConfig(configObject); 
-                    } );
-            
-            } else {
-                console.error("[Virtual Environment] ConfigPath must be an url to a .json or .glb/.gltf.\nConfig Path: " + configPath);
-            }
-
+        if(typeof configPath === "undefined") {
+            console.warn(`%c [Virtual Environment] No config files specified`);
         } else {
-            console.warn("[Virtual Environment] You are trying to load the same config twice.\nConfig Path: " + configPath);
+            if(this.lastConfig !== configPath) {
+                
+                console.log(`%c [Virtual Environment] Loading new config path: ${configPath}`, 'color:#bada55');
+                this.lastConfig = configPath
+
+                if(typeof configPath === "string") {
+                    fetch(configPath)
+                        .then( (response) => { return response.json(); } )
+                        .then( (configObject) => { 
+                            this.configObject = configObject;
+                            this.executeConfig(configObject); 
+                        } );
+                
+                } else {
+                    console.error("[Virtual Environment] ConfigPath must be an url to a .json or .glb/.gltf.\nConfig Path: " + configPath);
+                }
+
+            } else {
+                console.warn("[Virtual Environment] You are trying to load the same config twice.\nConfig Path: " + configPath);
+            }
         }
-
-
     }
 
     executeConfig(configObject) {

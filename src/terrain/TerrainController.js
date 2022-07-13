@@ -9,14 +9,18 @@ import { SquareWalkOnTrigger } from '../entities/interactives/SquareWalkOnTrigge
 export class TerrainController {
     
     constructor(manager){
+
+        // loaders
         this.FBXLoader = new FBXLoader(manager);
         this.GLTFLoader = new GLTFLoader(manager);
+        
+        
         this.terrain = new Object3D();
         this.collider;
-        this.bloomScene = new Scene();
         this.geometries = [];
         this.interactives = [];
 
+        // this is an updatable object
         VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
         
     }
@@ -30,11 +34,11 @@ export class TerrainController {
         switch (terrainConfig.format) {
 
             // FBX loader is broken use only glb/gltf until fixed
-            // case ".fbx":
-            //     this.FBXLoader.load(terrainConfig.url, (responseObject) => {
-            //         this.handleLoadedTerrain(responseObject.scene, terrainConfig);
-            //     })
-            //     break;
+            case ".fbx":
+                this.FBXLoader.load(terrainConfig.url, (responseObject) => {
+                    this.handleLoadedTerrain(responseObject.scene, terrainConfig);
+                })
+                break;
         
             case ".glb":
                 this.GLTFLoader.load(terrainConfig.url, (responseObject) => {
@@ -181,22 +185,19 @@ export class TerrainController {
 
     handleLoadedTerrain(terrain, terrainConfig) {
         this.terrain = terrain;
+
+        //apply configs
         this.terrain.position.copy(terrainConfig.position);
         this.terrain.scale.set(terrainConfig.scaleFactor, terrainConfig.scaleFactor, terrainConfig.scaleFactor);
+        
         this.terrain.traverse(object => {
             if (object.isMesh) {
                 object.castShadow = true;
                 object.receiveShadow = true;
-                object.material.roughness = 1;
-                if (object.material.map) {
-                    object.material.map.anisotropy = 16;
-                    object.material.map.needsUpdate = true;
-                }
+
+                //apply wold position from geometry 
                 const cloned = new Mesh(object.geometry, object.material);
                 object.getWorldPosition(cloned.position);
-                if (object.material.emissive && (object.material.emissive.r > 0 || object.material.emissive.g > 0 || object.material.color.b > 0)) {
-                    this.bloomScene.attach(cloned);
-                }
             }
             if (object.isLight) {
                 object.parent.remove(object);
@@ -227,8 +228,11 @@ export class TerrainController {
         mergedGeometry.boundsTree = new MeshBVH(mergedGeometry, { lazyGeneration: false });
         this.collider = new Mesh(mergedGeometry);
         this.collider.bvh = mergedGeometry.boundsTree;
+
+        // debug option
         this.collider.material.wireframe = true;
-        this.collider.visible = false; // toggle this value to see the collider
+        // toggle this value to see the collider
+        this.collider.visible = VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.toggleCollider.isActive;
         VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.collider);
 
         /* The following lines of code are used to debug the BVH collider. 
@@ -244,6 +248,7 @@ export class TerrainController {
     }
 
     toggleViewCollider() {
+        console.log(this.collider.visible)
         this.collider.visible = !this.collider.visible;
     }
 

@@ -20,7 +20,10 @@ export class SquareWalkOnTrigger extends Interactive {
         this.debugBox.position.copy(mesh.position);
         this.debugBox.position.y = mesh.position.y + 1 + this.padSize.y;
 
-        this.isDebugActive = false;
+        this.isDebugActive = VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.toggleTriggers.isActive;
+        if(this.isDebugActive) {
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.debugBox);
+        }
     }
 
     toggleDebugBox() {

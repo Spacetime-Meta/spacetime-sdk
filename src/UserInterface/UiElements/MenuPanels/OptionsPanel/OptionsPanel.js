@@ -12,35 +12,39 @@ export class OptionsPanel extends UiElement {
             }
         })
 
-        this.optionList = [
             
-            new OptionToggle( "Toggle Shadows" ,true , function() {
-                VIRTUAL_ENVIRONMENT.MAIN_SCENE.toggleShadows();
-            }),
-            
-            new OptionToggle( "Show Performances" ,false , function() {
-                VIRTUAL_ENVIRONMENT.toggleStats();
-            }),
+        this.toggleShadows = new OptionToggle( "Toggle Shadows" , true, function() {
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.toggleShadows();
+        }),
+        
+        this.togglePerformances = new OptionToggle( "Show Performances" , false, function() {
+            VIRTUAL_ENVIRONMENT.toggleStats();
+        }),
 
-            new OptionToggle( "Show Hitbox" ,false , function() {
-                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.toggleHitbox();
-            }),
+        this.toggleHitbox = new OptionToggle( "Show Hitbox", false, function() {
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.toggleHitbox();
+        }),
 
-            new OptionToggle( "Show Collider" ,false , function() {
-                VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
-            }),
+        this.toggleCollider = new OptionToggle( "Show Collider", false, function() {
+            VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
+        }),
 
-            new OptionToggle( "Show Triggers" ,false , function() {
-                VIRTUAL_ENVIRONMENT.terrainController.toggleInteractiveDebugBox();
-            })
-        ];
+        this.toggleTriggers = new OptionToggle( "Show Triggers", false, function() {
+            VIRTUAL_ENVIRONMENT.terrainController.toggleInteractiveDebugBox();
+        })
 
-        this.appendChildList( this.optionList );
-    } 
+        this.appendChildList([
+            this.toggleShadows,
+            this.togglePerformances,
+            this.toggleHitbox,
+            this.toggleCollider,
+            this.toggleTriggers    
+        ]);
+    }
 
     synchronize() {
-        this.optionList.forEach(option => {
-            option.synchronize()
-        })
+        if(this.toggleCollider.isActive) {
+            // VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
+        }
     }
 }

@@ -25,7 +25,7 @@ export class CapsuleEntity extends Object3D {
 
         this.isHelperActive = false;
 
-        this.friction = 0.975;
+        this.friction = 0.98;
     }
 
     toggleHitbox() {

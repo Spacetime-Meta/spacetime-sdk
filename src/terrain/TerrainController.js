@@ -229,9 +229,7 @@ export class TerrainController {
         this.collider = new Mesh(mergedGeometry);
         this.collider.bvh = mergedGeometry.boundsTree;
 
-        // debug option
         this.collider.material.wireframe = true;
-        // toggle this value to see the collider
         this.collider.visible = VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.toggleCollider.isActive;
         VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.collider);
 
@@ -248,7 +246,6 @@ export class TerrainController {
     }
 
     toggleViewCollider() {
-        console.log(this.collider.visible)
         this.collider.visible = !this.collider.visible;
     }
 

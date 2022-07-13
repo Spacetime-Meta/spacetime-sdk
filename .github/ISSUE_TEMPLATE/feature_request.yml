@@ -1,11 +1,11 @@
 name: Feature
 description: Suggest an idea for the project.
-title: '[Feature]: '
+title: '[SDK/Feature]: '
 body: 
 - type: markdown
   attributes:
     value: |
-      Thank you for taking the time to fill out this feature request! 
+      ## Thank you for taking the time to fill out this feature request! 
       Ignoring this template may result in your feature request getting deleted.
 - type: textarea
   id: overview

@@ -10,6 +10,8 @@ import { DefaultScene } from "./render/DefaultScene.js";
 import { DefaultCamera } from "./render/DefaultCamera.js";
 import { DefaultRenderer } from "./render/DefaultRenderer.js";
 
+import WalletApi, { Wallet } from './cardano/nami.js';
+
 const clock = new Clock();
 const DEFAULT = "default";
 
@@ -20,6 +22,13 @@ export class VirtualEnvironment {
         // injects this in the window so we can access
         // VIRTUAL_ENVIRONMENT from anywhere in the app
         window.VIRTUAL_ENVIRONMENT = this;
+
+        async function detect() {
+            // const cardano_serialization_lib = await Cardano();
+            const wallet = new Wallet(window.cardano["eternl"])
+        }
+        detect();
+        
         
         // vars
         this.isConfigCompleted = false;

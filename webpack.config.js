@@ -15,6 +15,9 @@ module.exports = {
         },
         hot: true,
         host: '0.0.0.0',
+        client: {
+            overlay: false,
+        }
     },
     experiments: {
         asyncWebAssembly: true

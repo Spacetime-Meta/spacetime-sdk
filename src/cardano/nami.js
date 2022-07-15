@@ -105,10 +105,9 @@ class WalletApi {
 
         let countedValue = this.S.Value.new(this.S.BigNum.from_str("0"))
         parsedUtxos.forEach(element => { countedValue = countedValue.checked_add(element.output().amount()) });
-        const minAda = this.S.min_ada_required(countedValue, this.S.BigNum.from_str(protocolParameter.minUtxo)); 
 
-        const availableAda = countedValue.coin().checked_sub(minAda); 
-        const lovelace = availableAda.to_str();
+        const lovelace = countedValue.coin().to_str();
+
         const assets = [];
         if (value.multiasset()) {
             const multiAssets = value.multiasset().keys();

@@ -1,0 +1,72 @@
+import WalletApi, { Cardano, Wallet } from './nami.js';
+import blockfrostApiKey from './config.js';
+
+export class CardanoConnector {
+    constructor() {
+
+        // vars
+        this.isConnected = false;
+
+        // check if the user has a pre selected wallet
+        // in localStorage and attempt connection
+        this.detect();
+
+    }
+    
+    
+    detect = async function () {
+        const cardano_serialization_lib = await Cardano();
+
+        // check local storage for a pre selected wallet
+        this.walletName = localStorage.getItem('wallet_name');
+        if(this.walletName){
+
+            this.walletName = this.migrateCCVaultToEternel(this.walletName);
+
+            if(typeof window.cardano[this.walletName] !== "undefined"){
+                const wallet = new Wallet(window.cardano[this.walletName])
+                await wallet.isEnabled().then(async result => {
+                    
+                    this.isConnected = await result;
+                    if(result) {
+                        
+                        console.log(`%c [Cardano Connector] Connected to predefined wallet: ${this.walletName}`, 'color:#bada55');
+                        
+                        let walletInnerApi = await wallet.enable()
+
+                        const walletAPI = new WalletApi(
+                            cardano_serialization_lib,
+                            wallet,
+                            walletInnerApi,
+                            blockfrostApiKey
+                        )
+
+                        await walletAPI.getBalance().then(result => {
+                            this.assets = result.assets;
+                            console.log(`%c [Cardano Connector] Wallet balance is: ${result.lovelace / 1000000} ₳`, 'color:#bada55');
+                            this.lovelace = result.lovelace;
+                        })
+                    }
+                    else { 
+                        console.log("No spaming user")
+                        localStorage.removeItem('wallet_name')
+                    }
+                })
+            } else {
+                console.error("[Cardano Connector] Predefined wallet not injected in window");
+            }
+        }
+    }
+
+    migrateCCVaultToEternel(walletName) {
+        if(walletName === "ccvault") {
+            console.log(`%c [Cardano Connector] Converting ccvault to eternl`, 'color:#bada55');
+            localStorage.removeItem('wallet_name');
+            localStorage.setItem('wallet_name', 'eternl');
+
+            return 'eternl';
+        }
+
+        return walletName;
+    }
+}

@@ -9,8 +9,7 @@ import { UiController } from './UserInterface/UiController.js';
 import { DefaultScene } from "./render/DefaultScene.js";
 import { DefaultCamera } from "./render/DefaultCamera.js";
 import { DefaultRenderer } from "./render/DefaultRenderer.js";
-
-import WalletApi, { Wallet } from './cardano/nami.js';
+import { CardanoConnector } from "./cardano/CardanoConnector.js";
 
 const clock = new Clock();
 const DEFAULT = "default";
@@ -22,13 +21,6 @@ export class VirtualEnvironment {
         // injects this in the window so we can access
         // VIRTUAL_ENVIRONMENT from anywhere in the app
         window.VIRTUAL_ENVIRONMENT = this;
-
-        async function detect() {
-            // const cardano_serialization_lib = await Cardano();
-            const wallet = new Wallet(window.cardano["eternl"])
-        }
-        detect();
-        
         
         // vars
         this.isConfigCompleted = false;
@@ -41,6 +33,9 @@ export class VirtualEnvironment {
         // this will read a config file and customize
         // the environment accordingly
         this.loadConfig(configPath);
+
+        // this will allow connection to cardano wallets
+        this.cardanoConnector = new CardanoConnector();
 
     }
 
@@ -62,6 +57,7 @@ export class VirtualEnvironment {
         
         // enables the THREE.Cache object 
         // https://threejs.org/docs/#api/en/loaders/Cache
+        // i have no idea if this actually works
         Cache.enabled = true;
         
         this.loadingManager = new LoadingManager();

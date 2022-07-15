@@ -13,7 +13,6 @@ export class CardanoConnector {
 
     }
     
-    
     detect = async function () {
         const cardano_serialization_lib = await Cardano();
 
@@ -32,24 +31,24 @@ export class CardanoConnector {
                         
                         console.log(`%c [Cardano Connector] Connected to predefined wallet: ${this.walletName}`, 'color:#bada55');
                         
-                        let walletInnerApi = await wallet.enable()
+                        let walletInnerApi = await wallet.enable();
 
                         const walletAPI = new WalletApi(
                             cardano_serialization_lib,
                             wallet,
                             walletInnerApi,
                             blockfrostApiKey
-                        )
+                        );
 
                         await walletAPI.getBalance().then(result => {
                             this.assets = result.assets;
                             console.log(`%c [Cardano Connector] Wallet balance is: ${result.lovelace / 1000000} ₳`, 'color:#bada55');
                             this.lovelace = result.lovelace;
-                        })
+                        });
                     }
                     else { 
-                        console.log("No spaming user")
-                        localStorage.removeItem('wallet_name')
+                        console.warn(`[Cardano Connector] Predefined wallet '${walletName}' not enabled in the page, removing from local storage.`)
+                        localStorage.removeItem('wallet_name');
                     }
                 })
             } else {

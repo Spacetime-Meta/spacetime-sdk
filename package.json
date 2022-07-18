@@ -12,12 +12,6 @@
     "type": "git",
     "url": "https://github.com/Spacetime-Meta/spacetime-standard-kit.git"
   },
-  "files": [
-    "build/bundle.min.js",
-    "LICENSE",
-    "package.json",
-    "README.md"
-  ],
   "author": "",
   "license": "MIT",
   "bugs": {

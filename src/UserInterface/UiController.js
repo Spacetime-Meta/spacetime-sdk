@@ -13,9 +13,11 @@ export class UiController {
         this.blockerScreen = new BlockerScreen();
         this.playScreen = new PlayScreen();
 
+        // vars
+        this.isTouchScreen = false;
+
         // references
         this.connectionsManagementDisplay = this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay;
-    
         
         this.updatable = [];
         this.updatable.push(this.connectionsManagementDisplay);
@@ -25,7 +27,10 @@ export class UiController {
     }
 
     handleControlsLock() {
-        VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
+        if(!this.isTouchScreen) {
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
+        }
+
         this.blockerScreen.element.style.display = "none";
         this.playScreen.element.style.display = "block";
     }
@@ -41,6 +46,14 @@ export class UiController {
 
     handleConnectionClose(peerId) {
         this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleConnectionClose(peerId);
+    }
+
+    handleTouchControlsLock() {
+
+        // use this to prevent pointerLockControls from firing
+        this.isTouchScreen = true;
+        
+        console.log(`%c [UI Controller] Touch screen detected.`, 'color:#bada55');
     }
 
     setupTimer() {

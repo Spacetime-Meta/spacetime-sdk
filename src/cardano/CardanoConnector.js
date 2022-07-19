@@ -47,13 +47,15 @@ export class CardanoConnector {
                         });
                     }
                     else { 
-                        console.warn(`[Cardano Connector] Predefined wallet '${walletName}' not enabled in the page, removing from local storage.`)
+                        console.warn(`[Cardano Connector] Predefined wallet '${this.walletName}' not enabled in the page, removing from local storage.`)
                         localStorage.removeItem('wallet_name');
                     }
                 })
             } else {
                 console.error("[Cardano Connector] Predefined wallet not injected in window");
             }
+        } else {
+            console.log("[Cardano Connector] No wallet found");
         }
     }
 

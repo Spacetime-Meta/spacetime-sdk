@@ -30,9 +30,16 @@ export class VirtualEnvironment {
         // this will create the update loop logic
         this.initEnvironment();
 
-        // this will read a config file and customize
-        // the environment accordingly
-        this.loadConfig(configPath);
+        // execute the config if passed as raw object
+        if(typeof configPath === "object") {
+            this.executeConfig(configPath);
+        } else {
+
+            // this will read a config file and customize
+            // the environment accordingly
+            this.loadConfig(configPath);
+        }
+        
 
         // this will allow connection to cardano wallets
         this.cardanoConnector = new CardanoConnector();

@@ -1,7 +1,7 @@
 import { Vector3 } from 'three';
 import { Peer } from 'peerjs';
 
-import localProxy from "./localProxy.js";
+import localProxy from "../util/localProxy.js";
 import { AvatarController } from '../entities/AvatarController.js';
 
 const ESCAPE_MAP = Object.freeze({
@@ -23,10 +23,9 @@ const escapeHTML = function(input) {
 	}
 }
 
-export class RemoteController {
-    constructor(manager) {
+export class PeerJsController {
+    constructor() {
         this.connections = [];
-        this.manager = manager;
 
         /* The following lines check if the user has a peerID in the local storage
          * and automatically creates a new peer if it finds one. This is a good feature for
@@ -109,7 +108,7 @@ export class RemoteController {
         try {
             jsonData = JSON.parse(data);
         } catch (error) {
-            console.error("[RemoteController:onReceiveData] Error while parsing data to JSON.\nData: "+data);
+            console.error("[PeerJsController:onReceiveData] Error while parsing data to JSON.\nData: "+data);
         }
         if(typeof jsonData.type !== 'undefined') {
             switch(jsonData.type) {
@@ -119,7 +118,7 @@ export class RemoteController {
                         this.addMessageToChatBox("[info] Spawning: "+connection.peer);
 
                         // Spawn the other player
-                        connection.avatarController = new AvatarController(this.manager);
+                        connection.avatarController = new AvatarController();
                         connection.avatarController.spawnAvatar({})
                     }
 
@@ -152,14 +151,14 @@ export class RemoteController {
 
         // verify that we are not connecting to self
         if(peerId === this.peer.id){
-            console.warn("[RemoteController:connectToPeer] You are trying to connect to your own peerId. Current id: " + localProxy.peerId);
+            console.warn("[PeerJsController:connectToPeer] You are trying to connect to your own peerId. Current id: " + localProxy.peerId);
             isValid = false;
         }
 
         // verify that we do not already have a connection to this peer
         this.connections.forEach(connection => {
             if(connection.peer === peerId){
-                console.warn("[RemoteController:connectToPeer] You are trying to duplicate a connection to peer: " + peerId);
+                console.warn("[PeerJsController:connectToPeer] You are trying to duplicate a connection to peer: " + peerId);
                 isValid = false;
             }
         })

@@ -26,12 +26,12 @@ class MultiplayerPanel extends UiElement {
     handleGoLive() {
         const inputValue = this.goLiveDisplay.inputs.peerIdInput.element.value
         if(inputValue !== "") {
-            VIRTUAL_ENVIRONMENT.remoteController.createPeerWithId(inputValue);
+            VIRTUAL_ENVIRONMENT.peerJsController.createPeerWithId(inputValue);
         }
     }
 
     update(delta) {
-        if(typeof VIRTUAL_ENVIRONMENT.remoteController.peer !== "undefined") {
+        if(typeof VIRTUAL_ENVIRONMENT.peerJsController.peer !== "undefined") {
             this.goLiveDisplay.element.style.display = "none";
             this.connectionsManagementDisplay.element.style.display = "block";
         } else {

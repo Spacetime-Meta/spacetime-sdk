@@ -40,8 +40,8 @@ class MenuFooter extends UiElement {
                 background: "#ffc8c8"
             },
             onClick: ()=>{
-                VIRTUAL_ENVIRONMENT.remoteController.peer.destroy();
-                delete VIRTUAL_ENVIRONMENT.remoteController.peer;
+                VIRTUAL_ENVIRONMENT.peerJsController.peer.destroy();
+                delete VIRTUAL_ENVIRONMENT.peerJsController.peer;
                 VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
             }
         })
@@ -52,7 +52,7 @@ class MenuFooter extends UiElement {
         ])
 
         this.element.addEventListener("mouseenter", ()=>{
-            if(typeof VIRTUAL_ENVIRONMENT.remoteController.peer !== "undefined"){
+            if(typeof VIRTUAL_ENVIRONMENT.peerJsController.peer !== "undefined"){
                 this.element.style.height = "150px";
             }
         })

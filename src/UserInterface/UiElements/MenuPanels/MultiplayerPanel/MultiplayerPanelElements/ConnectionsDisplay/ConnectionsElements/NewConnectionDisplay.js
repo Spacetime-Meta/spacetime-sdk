@@ -33,7 +33,7 @@ class NewConnectionDisplay extends UiElement {
             type: "button",
             innerHTML: "connect",
             onClick: () => {
-                VIRTUAL_ENVIRONMENT.remoteController.connectToPeer(this.remoteIdInput.element.value);
+                VIRTUAL_ENVIRONMENT.peerJsController.connectToPeer(this.remoteIdInput.element.value);
                 this.remoteIdInput.element.value = "";
             }
         })

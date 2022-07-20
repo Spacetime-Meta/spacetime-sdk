@@ -4,7 +4,8 @@ import Stats from './util/Stats.module.js';
 
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import { TerrainController } from './terrain/TerrainController.js';
-import { RemoteController } from './util/RemoteController.js';
+import { PeerJsController } from './multiplayer/PeerJsController.js';
+import { SocketController } from './multiplayer/SocketController.js';
 import { UiController } from './UserInterface/UiController.js';
 import { DefaultScene } from "./render/DefaultScene.js";
 import { DefaultCamera } from "./render/DefaultCamera.js";
@@ -23,7 +24,6 @@ export class VirtualEnvironment {
         window.VIRTUAL_ENVIRONMENT = this;
         
         // vars
-        this.isConfigCompleted = false;
         this.portalMap = {};
         this.updatableObjects = [];
         
@@ -73,8 +73,9 @@ export class VirtualEnvironment {
         // player local will load the default spacetime avatar
         this.LOCAL_PLAYER = new PlayerLocal();
 
-        // ===== setupMultiplayer =====
-        this.remoteController = new RemoteController(this.loadingManager, this.MAIN_SCENE);
+        // ===== setup peer to peer Multiplayer =====
+        this.peerJsController = new PeerJsController();
+        
     }
 
     loadConfig(configPath) {
@@ -112,6 +113,10 @@ export class VirtualEnvironment {
 
         if(typeof configObject.terrain !== "undefined") {
             this.terrainController.executeConfig(configObject.terrain);
+        }
+
+        if(typeof configObject.socket !== "undefined") {
+            this.socketController = new SocketController();
         }
 
         this.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.synchronize();

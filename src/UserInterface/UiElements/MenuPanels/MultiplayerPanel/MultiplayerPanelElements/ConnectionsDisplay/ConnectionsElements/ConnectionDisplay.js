@@ -63,7 +63,7 @@ class ConnectionDisplay extends UiElement {
     }
 
     handleConnectionClose() {
-        VIRTUAL_ENVIRONMENT.remoteController.disconnectPeer(this.peer);
+        VIRTUAL_ENVIRONMENT.peerJsController.disconnectPeer(this.peer);
     }
 
     update(delta) {

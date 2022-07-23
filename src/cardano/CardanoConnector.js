@@ -55,7 +55,7 @@ export class CardanoConnector {
                 console.error("[Cardano Connector] Predefined wallet not injected in window");
             }
         } else {
-            console.log("[Cardano Connector] No wallet found");
+            console.log(`%c [Cardano Connector] No wallet found`, 'color:#bada55');
         }
     }
 

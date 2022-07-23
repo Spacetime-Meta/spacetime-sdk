@@ -32,6 +32,7 @@ export class VirtualEnvironment {
 
         // execute the config if passed as raw object
         if(typeof configPath === "object") {
+            console.log(`%c [Virtual Environment] Executing raw config`, 'color:#bada55');
             this.executeConfig(configPath);
         } else {
 
@@ -91,7 +92,6 @@ export class VirtualEnvironment {
                     fetch(configPath)
                         .then( (response) => { return response.json(); } )
                         .then( (configObject) => { 
-                            this.configObject = configObject;
                             this.executeConfig(configObject); 
                         } );
                 
@@ -106,6 +106,8 @@ export class VirtualEnvironment {
     }
 
     executeConfig(configObject) {
+
+        this.configObject = configObject;
 
         if(typeof configObject.player !== "undefined") {
             this.LOCAL_PLAYER.executeConfig(configObject.player);

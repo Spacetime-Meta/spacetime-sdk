@@ -59,7 +59,7 @@ export class CapsuleEntity extends Object3D {
 
         const tempVector = new Vector3();
         const tempVector2 = new Vector3();
-        collider.geometry.boundsTree.shapecast({
+        collider.bvh.shapecast({
 
             intersectsBounds: box => box.intersectsBox(tempBox),
 

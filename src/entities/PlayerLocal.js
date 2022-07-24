@@ -1,6 +1,6 @@
 import { CapsuleEntity } from "./CapsuleEntity.js";
 import { PointerLockControls } from '../util/PointerLockControls.js'; // most recent version does not support pointerSpeedY
-import { Vector3, Vector4, Matrix4, Raycaster } from 'three';
+import { Vector3, Vector4, Matrix4, Raycaster, Mesh, BoxGeometry } from 'three';
 import { AvatarController } from './AvatarController.js';
 
 const UP_VECTOR = new Vector3(0, 1, 0);
@@ -36,6 +36,15 @@ class PlayerLocal extends CapsuleEntity {
 
         VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
         VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this);
+
+        // multiplayer debugger
+        this.multiplayerDebugHitBox = new Mesh(new BoxGeometry( 
+            PLAYER_DIMENSIONS.WIDTH * 2, 
+            PLAYER_DIMENSIONS.HEIGHT + PLAYER_DIMENSIONS.WIDTH * 2,
+            PLAYER_DIMENSIONS.WIDTH * 2 
+        ));
+        this.multiplayerDebugHitBox.material.wireframe = true;
+        VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.multiplayerDebugHitBox);
     }
 
     executeConfig(playerConfig) {

@@ -15,7 +15,7 @@ export class SocketController {
 
         this.socket.on("position", (data) => {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.multiplayerDebugHitBox.position.fromArray(data.position);
-            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.multiplayerDebugHitBox.position.y -= 0.75;
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.multiplayerDebugHitBox.position.y;// += 0.75;
             // console.log(data.position);
         })
 

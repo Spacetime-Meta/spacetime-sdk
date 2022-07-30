@@ -7,6 +7,8 @@ const UP_VECTOR = new Vector3(0, 1, 0);
 const FIRST_PERSON_CONTROLS = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
 const  THIRD_PERSON_CONTROLS = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 5, 0.2);
 
+const tempVector = new Vector3();
+
 const PLAYER_DIMENSIONS = {
     HEIGHT: 1.5,
     WIDTH: 0.25
@@ -22,7 +24,6 @@ class PlayerLocal extends CapsuleEntity {
         this.controlVector =  THIRD_PERSON_CONTROLS.clone();
         this.targetControlVector =  THIRD_PERSON_CONTROLS.clone();
         this.horizontalVelocity = new Vector3();
-        this.playerDirection = new Vector3();
         this.positionChange = new Vector3();
         this.spawnPoint = new Vector3();
         
@@ -98,20 +99,20 @@ class PlayerLocal extends CapsuleEntity {
     }
     
     getForwardVector() {
-        VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(this.playerDirection);
-        this.playerDirection.y = 0;
-        this.playerDirection.normalize();
-        this.playerDirection.multiplyScalar(-1);
-        return this.playerDirection;
+        VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
+        tempVector.y = 0;
+        tempVector.normalize();
+        tempVector.multiplyScalar(-1);
+        return tempVector;
     }
     
     getSideVector() {
-        VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(this.playerDirection);
-        this.playerDirection.y = 0;
-        this.playerDirection.normalize();
-        this.playerDirection.cross(UP_VECTOR);
-        this.playerDirection.multiplyScalar(-1);
-        return this.playerDirection;
+        VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
+        tempVector.y = 0;
+        tempVector.normalize();
+        tempVector.cross(UP_VECTOR);
+        tempVector.multiplyScalar(-1);
+        return tempVector;
     }
 
     update(delta) {
@@ -125,19 +126,19 @@ class PlayerLocal extends CapsuleEntity {
             this.speedFactor = this.isRunning ? 0.15 : 0.05;
 
             if (this.keys["w"]) {
-                this.horizontalVelocity.add(this.getForwardVector(VIRTUAL_ENVIRONMENT.camera.controlObject).multiplyScalar(this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getForwardVector().multiplyScalar(this.speedFactor * delta));
             }
 
             if (this.keys["s"]) {
-                this.horizontalVelocity.add(this.getForwardVector(VIRTUAL_ENVIRONMENT.camera.controlObject).multiplyScalar(-this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getForwardVector().multiplyScalar(-this.speedFactor * delta));
             }
 
             if (this.keys["a"]) {
-                this.horizontalVelocity.add(this.getSideVector(VIRTUAL_ENVIRONMENT.camera.controlObject).multiplyScalar(-this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getSideVector().multiplyScalar(-this.speedFactor * delta));
             }
 
             if (this.keys["d"]) {
-                this.horizontalVelocity.add(this.getSideVector(VIRTUAL_ENVIRONMENT.camera.controlObject).multiplyScalar(this.speedFactor * delta));
+                this.horizontalVelocity.add(this.getSideVector().multiplyScalar(this.speedFactor * delta));
             }
             if (this.keys[" "] && this.canJump) {
                 this.velocity.y = 10.0;
@@ -163,6 +164,14 @@ class PlayerLocal extends CapsuleEntity {
         }
 
         this.controlVector.lerp(this.targetControlVector, 0.1);
+
+        if(VIRTUAL_ENVIRONMENT.socketController) {
+            const direction = VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
+            VIRTUAL_ENVIRONMENT.socketController.socket.emit("keys", {
+                keys: this.keys,
+                controlObject: direction
+            });
+        }
     }
 
     updateCurrentAnimation() {

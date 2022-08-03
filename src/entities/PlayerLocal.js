@@ -60,8 +60,6 @@ class PlayerLocal extends CapsuleEntity {
         this.controls.target.set( VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.x , VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.y, VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.z );
 
         this.controls.update();
-
-        console.log(this.controls);
     } 
 
     setupKeyMouseControls() {

@@ -43,8 +43,15 @@ export class DefaultCamera extends PerspectiveCamera {
         if(VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen) {
 
             if(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls) {
+
+                // move the target
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.target.set( VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.x , VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.y, VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.z );
+
+                // adjust the distance
                 VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.maxDistance = this.cameraDistance;
                 VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.minDistance = this.cameraDistance;
+                
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.update();
             }
 
         } else {

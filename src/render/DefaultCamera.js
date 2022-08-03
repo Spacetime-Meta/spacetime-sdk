@@ -23,8 +23,9 @@ export class DefaultCamera extends PerspectiveCamera {
 
     update(delta) {
         
-        // raycast to see if the camera is clipped
         let hit;
+
+        // raycast to see if the camera is clipped
         if( VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controlVector.z > 0.1 && typeof VIRTUAL_ENVIRONMENT.terrainController.collider !== "undefined" ) {     
             invMat.copy(VIRTUAL_ENVIRONMENT.terrainController.collider.matrixWorld).invert();
             this.raycaster.set(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.clone(), this.position.clone().sub(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.clone()).normalize());
@@ -39,13 +40,23 @@ export class DefaultCamera extends PerspectiveCamera {
             this.cameraDistance = VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controlVector.z;
         }
 
-        // the strick position is where the camera would be without the smoothing
-        this.strictPosition.copy(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position);
-        this.strictPosition.add(this.controlObject.getWorldDirection(ZERO_VECTOR).multiplyScalar(this.cameraDistance));
+        if(VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen) {
 
-        // smoothly move the camera toward its strict position
-        this.position.lerp(this.strictPosition, 0.2);
-        this.cameraTarget.lerp(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position, 0.2);
-        this.lookAt(this.cameraTarget);
+            if(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls) {
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.maxDistance = this.cameraDistance;
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.minDistance = this.cameraDistance;
+            }
+
+        } else {
+            // the strick position is where the camera would be without the smoothing
+            this.strictPosition.copy(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position);
+            this.strictPosition.add(this.controlObject.getWorldDirection(ZERO_VECTOR).multiplyScalar(this.cameraDistance));
+
+            // smoothly move the camera toward its strict position
+            this.position.lerp(this.strictPosition, 0.2);
+            this.cameraTarget.lerp(VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position, 0.2);
+            this.lookAt(this.cameraTarget);
+        }
+
     }
 }

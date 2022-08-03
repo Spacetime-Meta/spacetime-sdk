@@ -25,7 +25,10 @@ export class Blocker extends UiElement {
         });
 
         this.element.addEventListener("touchstart", () => {
-            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleTouchControlsLock();
+
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen = true;
+            console.log(`%c [UI Controller] Touch screen detected.`, 'color:#bada55');
+
         });
     }
 }

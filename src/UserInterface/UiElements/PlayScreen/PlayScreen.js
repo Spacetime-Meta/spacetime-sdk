@@ -1,7 +1,7 @@
 import { UiElement } from "../UiElement.js";
 
 import { ControlsInstructions } from "./ControlsInstructions.js";
-import { TimerBox } from "./TimerBox.js"
+import { TimerBox } from "./TimerBox.js";
 
 class PlayScreen extends UiElement {
     constructor() {
@@ -16,7 +16,7 @@ class PlayScreen extends UiElement {
             }
         })
 
-        this.controlsInstructions = new ControlsInstructions(this);
+        this.controlsInstructions = new ControlsInstructions();
         this.appendChild(this.controlsInstructions);
 
         document.body.appendChild(this.element);        

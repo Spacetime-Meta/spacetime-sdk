@@ -1,5 +1,6 @@
 import { BlockerScreen } from './UiElements/BlockerScreen/BlockerScreen.js'
 import { PlayScreen } from './UiElements/PlayScreen/PlayScreen.js'
+import { Joystick } from "./UiElements/PlayScreen/Joystick.js";
 
 export class UiController {
 
@@ -13,7 +14,9 @@ export class UiController {
         this.blockerScreen = new BlockerScreen();
         this.playScreen = new PlayScreen();
 
-        // vars
+        // use this to prevent pointerLockControls from firing
+        // this works since the 'onTouchStart' event fires when user press
+        // and the 'onClick' is fired when user releases the press
         this.isTouchScreen = false;
 
         // references
@@ -28,9 +31,19 @@ export class UiController {
 
     handleControlsLock() {
         if(!this.isTouchScreen) {
+
+            //setup the keyboard/mouse controls
+            if(typeof VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls === "undefined") {
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupKeyMouseControls();
+            }
+
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
+
+        } else {
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupTouchControls();
         }
 
+        // toggle the view like normal
         this.blockerScreen.element.style.display = "none";
         this.playScreen.element.style.display = "block";
     }
@@ -48,17 +61,20 @@ export class UiController {
         this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleConnectionClose(peerId);
     }
 
-    handleTouchControlsLock() {
-
-        // use this to prevent pointerLockControls from firing
-        this.isTouchScreen = true;
-        
-        console.log(`%c [UI Controller] Touch screen detected.`, 'color:#bada55');
-    }
-
     setupTimer() {
+        this.hasTimer = true;
         this.playScreen.setupTimerBox();
         this.updatable.push(this.playScreen.timerBox);
+    }
+
+    setupTouchControls() {
+        // change the controls instructions
+        this.playScreen.controlsInstructions.setMobileInstructions();
+
+        // create the ui elements of the
+        // touch controls, like joystick and back button
+        this.joystick = new Joystick();
+        document.body.appendChild(this.joystick.element);
     }
 
     update(delta) {

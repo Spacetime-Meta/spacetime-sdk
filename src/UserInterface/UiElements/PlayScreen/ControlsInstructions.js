@@ -1,7 +1,12 @@
 import { UiElement } from "../UiElement.js";
 
+const INSTRUCTIONS = {
+    DESKTOP: "<b>WASD</b> move, <b>SHIFT</b> run, <b>SPACE</b> jump, <b>V</b> view, <b>R</b> respawn",
+    MOBILE: "Use joystick to move around"
+}
+
 class ControlsInstructions extends UiElement {
-    constructor(parent) {
+    constructor() {
         super({
             id: "ControlInstructions",
             style: {
@@ -16,16 +21,21 @@ class ControlsInstructions extends UiElement {
             }
         })
 
-        this.appendChild( new UiElement({
+        this.controlsDisplayBox = new UiElement({
             id: "ControlsDisplayBox",
             style: {
                 background: "rgba(0, 0, 0, 0.2)",
                 padding: "2px",
                 border: "1px solid rgba(256, 256, 256, 0.3)"
             },
-            innerHTML: "<b>WASD</b> move, <b>SHIFT</b> run, <b>SPACE</b> jump, <b>V</b> view, <b>R</b> respawn",
-            parent: parent
-        }));
+            innerHTML: INSTRUCTIONS.DESKTOP,
+        })
+
+        this.appendChild(this.controlsDisplayBox);
+    }
+
+    setMobileInstructions() {
+        this.controlsDisplayBox.element.innerHTML = INSTRUCTIONS.MOBILE;
     }
 }
 

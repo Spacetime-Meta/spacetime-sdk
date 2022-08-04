@@ -51,6 +51,7 @@ export class DefaultCamera extends PerspectiveCamera {
                 VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.maxDistance = this.cameraDistance;
                 VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.minDistance = this.cameraDistance;
                 
+                // orbit controls need to be updated every frame
                 VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.update();
             }
 

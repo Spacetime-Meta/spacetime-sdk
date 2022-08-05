@@ -106,16 +106,19 @@ export class VirtualEnvironment {
     }
 
     executeConfig(configObject) {
+        const defaultOptions = {
+            player: {},
+            terrain: {}
+        };
+
+        for (let opt in defaultOptions) {
+            configObject[opt] = typeof configObject[opt] === 'undefined' ? defaultOptions[opt] : configObject[opt];
+        };
 
         this.configObject = configObject;
 
-        if(typeof configObject.player !== "undefined") {
-            this.LOCAL_PLAYER.executeConfig(configObject.player);
-        }
-
-        if(typeof configObject.terrain !== "undefined") {
-            this.terrainController.executeConfig(configObject.terrain);
-        }
+        this.LOCAL_PLAYER.executeConfig(configObject.player);
+        this.terrainController.executeConfig(configObject.terrain);
 
         if(typeof configObject.socket !== "undefined") {
             this.socketController = new SocketController();

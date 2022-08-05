@@ -1,11 +1,12 @@
+import { Vector3, Vector4, Matrix4, Raycaster } from 'three';
+
 import { CapsuleEntity } from "./CapsuleEntity.js";
-import { PointerLockControls } from '../util/PointerLockControls.js'; // most recent version does not support pointerSpeedY
-import { Vector3, Vector4, Matrix4, Raycaster, Mesh, BoxGeometry } from 'three';
 import { AvatarController } from './AvatarController.js';
 
+import { KeyMouseControls } from '../controls/KeyMouseControls.js';
+import { MobileControls } from '../controls/MobileControls.js';
+
 const UP_VECTOR = new Vector3(0, 1, 0);
-const FIRST_PERSON_CONTROLS = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
-const  THIRD_PERSON_CONTROLS = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 5, 0.2);
 
 const tempVector = new Vector3();
 
@@ -21,19 +22,17 @@ class PlayerLocal extends CapsuleEntity {
             PLAYER_DIMENSIONS.HEIGHT
         );
 
-        this.controlVector =  THIRD_PERSON_CONTROLS.clone();
-        this.targetControlVector =  THIRD_PERSON_CONTROLS.clone();
         this.horizontalVelocity = new Vector3();
         this.positionChange = new Vector3();
         this.spawnPoint = new Vector3();
         
-        this.keys = {};
         this.visible = false;
-        this.isRunning = false;
+
+        // set the keyboard as default so we ca start the loop
+        this.controls = new KeyMouseControls();
         
         this.avatarController = new AvatarController();
         this.avatarController.spawnAvatar({});
-        this.setupControls();
 
         VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
         VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this);
@@ -50,102 +49,72 @@ class PlayerLocal extends CapsuleEntity {
 
     executeConfig(playerConfig) {
         const defaultOptions = {
-            spawn: new Vector3()
+            spawn: undefined
         };
 
         for (let opt in defaultOptions) {
             playerConfig[opt] = typeof playerConfig[opt] === 'undefined' ? defaultOptions[opt] : playerConfig[opt];
         };
 
-        this.spawnPoint = playerConfig.spawn;
-        this.position.copy(playerConfig.spawn);
+        // // set the spawnPoint option
+        if(typeof playerConfig.spawn !== "undefined") {
+            this.spawnPoint = playerConfig.spawn;
+            this.position.copy(playerConfig.spawn);
+        }
     }
 
-    setupControls() {
-        this.controls = new PointerLockControls(VIRTUAL_ENVIRONMENT.camera.controlObject, document.body);
-        this.controls.sensitivityY = -0.002;
-        this.controls.minPolarAngle = 0.01; 
-        this.controls.maxPolarAngle = Math.PI - 0.25;
-        VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.controls.getObject());
+    setupControls(type) {
+        switch (type) {
+            case "mobile":
+                if(this.controls.TYPE !== "mobile") {
+                    this.controls = new MobileControls();
+                }
+                break;
+        
+            case "keyboardMouse":
+                if(this.controls.TYPE !== "keyboardMouse") {
+                    this.controls = new KeyMouseControls();
+                }
+                break;
 
-        document.addEventListener('keyup', (event) => {
-            delete this.keys[event.key.toLowerCase()];
-        });
-        document.addEventListener('keydown', (event) => {
-            if(this.controls.isLocked) {
-                if (event.key === "v") {
-                    if (this.targetControlVector ===  THIRD_PERSON_CONTROLS) {
-                        this.targetControlVector = FIRST_PERSON_CONTROLS;
-                        this.avatarController.setTransparency(true);
-                    } else {
-                        this.targetControlVector =  THIRD_PERSON_CONTROLS;
-                        this.avatarController.setTransparency(false);
-                    }
-                }
-                if (event.key === "r") {
-                    this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);
-                    this.velocity = new Vector3();
-                }
-                if (event.keyCode === 32 && event.target === document.body) {
-                    event.preventDefault();
-                }
-                this.keys[event.key.toLowerCase()] = true;
-            }
-        });
-
-        this.controls.addEventListener('unlock', () => {
-            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleControlsUnlock()
-        });
-    }
-    
-    getForwardVector() {
-        VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
-        tempVector.y = 0;
-        tempVector.normalize();
-        tempVector.multiplyScalar(-1);
-        return tempVector;
-    }
-    
-    getSideVector() {
-        VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
-        tempVector.y = 0;
-        tempVector.normalize();
-        tempVector.cross(UP_VECTOR);
-        tempVector.multiplyScalar(-1);
-        return tempVector;
+            default:
+                console.error(`[Player Local] Unexpected control type: ${type}`);
+                break;
+        }
     }
 
     update(delta) {
 
-        if(Object.keys(this.keys).length > 0){
+        // the getKeys will convert joystick/vr inputs to key inputs
+        // so we can use the same control logic
+        const keys = this.controls.getKeys();
+
+        if(Object.keys(keys).length > 0){
 
             // speedFactor depending on the run/walk state
-            if(this.keys["shift"]) {
-                this.isRunning = true;
-            }
-            this.speedFactor = this.isRunning ? 0.15 : 0.05;
+            this.speedFactor = this.controls.isRunning ? 0.15 : 0.05;
 
-            if (this.keys["w"]) {
-                this.horizontalVelocity.add(this.getForwardVector().multiplyScalar(this.speedFactor * delta));
+            if (keys["w"]) {
+                this.horizontalVelocity.add(this.controls.getForwardVector().multiplyScalar(this.speedFactor * delta));
             }
 
-            if (this.keys["s"]) {
-                this.horizontalVelocity.add(this.getForwardVector().multiplyScalar(-this.speedFactor * delta));
+            if (keys["s"]) {
+                this.horizontalVelocity.add(this.controls.getForwardVector().multiplyScalar(-this.speedFactor * delta));
             }
 
-            if (this.keys["a"]) {
-                this.horizontalVelocity.add(this.getSideVector().multiplyScalar(-this.speedFactor * delta));
+            if (keys["a"]) {
+                this.horizontalVelocity.add(this.controls.getSideVector().multiplyScalar(-this.speedFactor * delta));
             }
 
-            if (this.keys["d"]) {
-                this.horizontalVelocity.add(this.getSideVector().multiplyScalar(this.speedFactor * delta));
+            if (keys["d"]) {
+                this.horizontalVelocity.add(this.controls.getSideVector().multiplyScalar(this.speedFactor * delta));
             }
-            if (this.keys[" "] && this.canJump) {
+            if (keys[" "] && this.canJump) {
                 this.velocity.y = 10.0;
                 this.setAnimationParameters("jump", 0);
             }
         } else {
-            this.isRunning = false;
+            this.controls.isRunning = false;
             this.horizontalVelocity.multiplyScalar(0);
         }
 
@@ -158,12 +127,10 @@ class PlayerLocal extends CapsuleEntity {
             this.velocity = new Vector3();
         }
 
-        this.updateCurrentAnimation()
+        this.updateCurrentAnimation(keys)
         if(typeof this.avatarController !== "undefined"){
             this.avatarController.update(delta, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
         }
-
-        this.controlVector.lerp(this.targetControlVector, 0.1);
 
         if(VIRTUAL_ENVIRONMENT.socketController) {
             const direction = VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
@@ -172,9 +139,12 @@ class PlayerLocal extends CapsuleEntity {
                 controlObject: direction
             });
         }
+        
+        // update the control object
+        this.controls.update();
     }
 
-    updateCurrentAnimation() {
+    updateCurrentAnimation(keys) {
         if (this.lastPosition) {
             this.positionChange.multiplyScalar(0.8);
             this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
@@ -182,8 +152,8 @@ class PlayerLocal extends CapsuleEntity {
         this.lastPosition = this.position.clone();
 
         if(this.onGround) {
-            if (this.keys["w"] || this.keys["s"] || this.keys["a"] || this.keys["d"]) {
-                if(this.isRunning){ 
+            if (keys["w"] || keys["s"] || keys["a"] || keys["d"]) {
+                if(this.controls.isRunning){ 
                     this.setAnimationParameters("run"); 
                 } else { 
                     this.setAnimationParameters("walk"); 

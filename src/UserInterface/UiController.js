@@ -1,5 +1,6 @@
 import { BlockerScreen } from './UiElements/BlockerScreen/BlockerScreen.js'
 import { PlayScreen } from './UiElements/PlayScreen/PlayScreen.js'
+import { Joystick } from "./UiElements/PlayScreen/Joystick.js";
 
 export class UiController {
 
@@ -13,9 +14,13 @@ export class UiController {
         this.blockerScreen = new BlockerScreen();
         this.playScreen = new PlayScreen();
 
+        // use this to prevent pointerLockControls from firing
+        // this works since the 'onTouchStart' event fires when user press
+        // and the 'onClick' is fired when user releases the press
+        this.isTouchScreen = false;
+
         // references
         this.connectionsManagementDisplay = this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay;
-    
         
         this.updatable = [];
         this.updatable.push(this.connectionsManagementDisplay);
@@ -25,7 +30,14 @@ export class UiController {
     }
 
     handleControlsLock() {
-        VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
+        if(this.isTouchScreen) {
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("mobile");
+        } else {
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("keyboardMouse");
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
+        }
+
+        // toggle the view like normal
         this.blockerScreen.element.style.display = "none";
         this.playScreen.element.style.display = "block";
     }
@@ -44,8 +56,19 @@ export class UiController {
     }
 
     setupTimer() {
+        this.hasTimer = true;
         this.playScreen.setupTimerBox();
         this.updatable.push(this.playScreen.timerBox);
+    }
+
+    setupTouchControls() {
+        // create the ui elements of the
+        // touch controls, like jump and back button
+        this.playScreen.setupMobileDisplay();
+
+        // creates and add the joystick
+        this.joystick = new Joystick();
+        document.body.appendChild(this.joystick.element);
     }
 
     update(delta) {

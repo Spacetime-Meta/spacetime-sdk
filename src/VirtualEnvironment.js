@@ -105,14 +105,17 @@ export class VirtualEnvironment {
     }
 
     executeConfig(configObject) {
+        const defaultOptions = {
+            player: {},
+            terrain: {}
+        };
 
-        if(typeof configObject.player !== "undefined") {
-            this.LOCAL_PLAYER.executeConfig(configObject.player);
-        }
+        for (let opt in defaultOptions) {
+            configObject[opt] = typeof configObject[opt] === 'undefined' ? defaultOptions[opt] : configObject[opt];
+        };
 
-        if(typeof configObject.terrain !== "undefined") {
-            this.terrainController.executeConfig(configObject.terrain);
-        }
+        this.LOCAL_PLAYER.executeConfig(configObject.player);
+        this.terrainController.executeConfig(configObject.terrain);
 
         this.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.synchronize();
 

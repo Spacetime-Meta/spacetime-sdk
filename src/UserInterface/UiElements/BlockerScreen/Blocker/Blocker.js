@@ -19,7 +19,16 @@ export class Blocker extends UiElement {
                 fontSize: "large"
             },
             innerHTML: "Click to play",
-            onClick: () => VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleControlsLock()
-        })
+            onClick: () => {
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleControlsLock();
+            },
+        });
+
+        this.element.addEventListener("touchstart", () => {
+
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen = true;
+            console.log(`%c [UI Controller] Touch screen detected.`, 'color:#bada55');
+
+        });
     }
 }

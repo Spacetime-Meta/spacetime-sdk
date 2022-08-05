@@ -34,13 +34,13 @@ export class UiController {
 
             //setup the keyboard/mouse controls
             if(typeof VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls === "undefined") {
-                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupKeyMouseControls();
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("keyboardMouse");
             }
 
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
 
         } else {
-            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupTouchControls();
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("mobile");
         }
 
         // toggle the view like normal

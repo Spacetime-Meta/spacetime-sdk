@@ -2,28 +2,6 @@ import { UiElement } from "../UiElement";
 
 import nipplejs from 'nipplejs';
 
-const FORWARD_QUADRANT_KEY_MAP = [
-    {"d": true}, // 0
-    {"d": true, "w": true}, // 1
-    {"d": true, "w": true}, // 2
-    {"w": true}, // 3
-    {"w": true}, // 4
-    {"a": true, "w": true}, // 5
-    {"a": true, "w": true}, // 6
-    {"a": true}, // 7
-]
-
-const BACKWARD_QUADRANT_KEY_MAP = [
-    {"d": true}, // 0
-    {"d": true, "s": true}, // 1
-    {"d": true, "s": true}, // 2
-    {"s": true}, // 3
-    {"s": true}, // 4
-    {"a": true, "s": true}, // 5
-    {"a": true, "s": true}, // 6
-    {"a": true}, // 7
-]
-
 class Joystick extends UiElement {
     constructor(){
         super({
@@ -38,9 +16,13 @@ class Joystick extends UiElement {
             }
         })
 
+        this.isForward = true;
+        this.isMaxed = false;
+        this.quadrant = NaN;
+
         setTimeout(() => { 
             this.init()
-            this.ready = true 
+            VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
         }, 100);
     }
 
@@ -68,20 +50,23 @@ class Joystick extends UiElement {
         this.joystick.on('end', () => { this.joystick.isActive = false });
     }
 
-    collectTouchKeys() {
-        if(this.ready && this.joystick.isActive) {
-
+    update() {
+        if(this.joystick.isActive) {
             // calculate the joysticks angle from the 2d vector
             const joyAngle = Math.acos( this.joystick.frontPosition.x / Math.sqrt(Math.pow(this.joystick.frontPosition.x, 2) + Math.pow(this.joystick.frontPosition.y, 2)) ); 
 
-            // calculate the quadrant
-            const quadrant = Math.round(joyAngle / Math.PI * 7);
-
-            // extract the keymap
-            return this.joystick.frontPosition.y > 0 ? BACKWARD_QUADRANT_KEY_MAP[quadrant] : FORWARD_QUADRANT_KEY_MAP[quadrant];
-
+            // calculate and update the quadrant
+            this.quadrant = Math.round(joyAngle / Math.PI * 7);
+        } else {
+            this.quadrant = NaN;
         }
-        return {};
+
+        
+        // update the isMaxed state
+        this.isMaxed = Math.sqrt(Math.pow(this.joystick.frontPosition.x, 2) + Math.pow(this.joystick.frontPosition.y, 2)) > 59.95;
+
+        //update the isForward state
+        this.isForward = this.joystick.frontPosition.y > 0;
     }
 }
 

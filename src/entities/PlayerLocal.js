@@ -1,12 +1,12 @@
-import { CapsuleEntity } from "./CapsuleEntity.js";
-import { PointerLockControls } from '../util/PointerLockControls.js'; // most recent version does not support pointerSpeedY
 import { Vector3, Vector4, Matrix4, Raycaster } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+import { CapsuleEntity } from "./CapsuleEntity.js";
 import { AvatarController } from './AvatarController.js';
 
+import { KeyMouseControls } from '../controls/KeyMouseControls.js';
+import { MobileControls } from '../controls/MobileControls.js';
+
 const UP_VECTOR = new Vector3(0, 1, 0);
-const FIRST_PERSON_CONTROLS = new Vector4(0.01, Math.PI - 0.01, 0.01, 1);
-const  THIRD_PERSON_CONTROLS = new Vector4(Math.PI / 3, Math.PI / 2 - 0.01, 5, 0.2);
 
 const PLAYER_DIMENSIONS = {
     HEIGHT: 1.5,
@@ -20,16 +20,14 @@ class PlayerLocal extends CapsuleEntity {
             PLAYER_DIMENSIONS.HEIGHT
         );
 
-        this.controlVector =  THIRD_PERSON_CONTROLS.clone();
-        this.targetControlVector =  THIRD_PERSON_CONTROLS.clone();
         this.horizontalVelocity = new Vector3();
-        this.playerDirection = new Vector3();
         this.positionChange = new Vector3();
         this.spawnPoint = new Vector3();
         
-        this.keys = {};
         this.visible = false;
-        this.isRunning = false;
+
+        // set the keyboard as default so we ca start the loop
+        this.controls = new KeyMouseControls();
         
         this.avatarController = new AvatarController();
         this.avatarController.spawnAvatar({});
@@ -40,141 +38,68 @@ class PlayerLocal extends CapsuleEntity {
 
     executeConfig(playerConfig) {
         const defaultOptions = {
-            spawn: new Vector3()
+            spawn: undefined
         };
 
         for (let opt in defaultOptions) {
             playerConfig[opt] = typeof playerConfig[opt] === 'undefined' ? defaultOptions[opt] : playerConfig[opt];
         };
 
-        this.spawnPoint = playerConfig.spawn;
-        this.position.copy(playerConfig.spawn);
-    }
-
-    setupTouchControls() {
-        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.setupTouchControls();
-        this.controls = new OrbitControls(VIRTUAL_ENVIRONMENT.camera, VIRTUAL_ENVIRONMENT.UI_CONTROLLER.playScreen.element);
-        this.controls.minPolarAngle = 0.01; 
-        this.controls.maxPolarAngle = Math.PI - 0.25;
-        this.controls.target.set( VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.x , VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.y, VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.z );
-
-        this.controls.update();
-    } 
-
-    setupKeyMouseControls() {
-        this.controls = new PointerLockControls(VIRTUAL_ENVIRONMENT.camera.controlObject, document.body);
-        this.controls.sensitivityY = -0.002;
-        this.controls.minPolarAngle = 0.01; 
-        this.controls.maxPolarAngle = Math.PI - 0.25;
-        // VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.controls.getObject());
-
-        document.addEventListener('keyup', (event) => {
-            delete this.keys[event.key.toLowerCase()];
-        });
-        document.addEventListener('keydown', (event) => {
-            
-            // this prevents the controls from working
-            // while typing in the menu
-            if(this.controls.isLocked) {
-                
-                if (event.key === "v") {
-                    if (this.targetControlVector ===  THIRD_PERSON_CONTROLS) {
-                        this.targetControlVector = FIRST_PERSON_CONTROLS;
-                        this.avatarController.setTransparency(true);
-                    } else {
-                        this.targetControlVector = THIRD_PERSON_CONTROLS;
-                        this.avatarController.setTransparency(false);
-                    }
-                }
-
-                if (event.key === "r") {
-                    this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);
-                    this.velocity = new Vector3();
-                }
-
-                if (event.keyCode === 32 && event.target === document.body) {
-                    event.preventDefault();
-                }
-
-                this.keys[event.key.toLowerCase()] = true;
-            }
-        });
-
-        this.controls.addEventListener('unlock', () => {
-            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.handleControlsUnlock()
-        });
-    }
-    
-    getForwardVector() {
-        if(VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen && this.controls) {
-            this.playerDirection = this.getOrbitControlsDirection();
-        } else {
-            VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(this.playerDirection);
+        // // set the spawnPoint option
+        if(typeof playerConfig.spawn !== "undefined") {
+            this.spawnPoint = playerConfig.spawn;
+            this.position.copy(playerConfig.spawn);
         }
-
-        
-        this.playerDirection.y = 0;
-        this.playerDirection.normalize();
-        this.playerDirection.multiplyScalar(-1);
-        return this.playerDirection;
     }
-    
-    getSideVector() {
-        if(VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen && this.controls) {
-            this.playerDirection = this.getOrbitControlsDirection();
-        } else {
-            VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(this.playerDirection);
+
+    setupControls(type) {
+        switch (type) {
+            case "mobile":
+                this.controls = new MobileControls();
+                break;
+        
+            case "keyboardMouse":
+                this.controls = new KeyMouseControls();
+                break;
+
+            default:
+                console.error(`[Player Local] Unexpected control type: ${type}`);
+                break;
         }
-        
-        this.playerDirection.y = 0;
-        this.playerDirection.normalize();
-        this.playerDirection.cross(UP_VECTOR);
-        this.playerDirection.multiplyScalar(-1);
-        return this.playerDirection;
-    }
-
-    getOrbitControlsDirection() {
-        const azimuthalAngle = this.controls.getAzimuthalAngle();
-        return new Vector3(Math.sin(azimuthalAngle), 0, Math.cos(azimuthalAngle));
     }
 
     update(delta) {
 
-        // the collectTouchKeys will convert joystick input to key inputs
+        // the getKeys will convert joystick/vr inputs to key inputs
         // so we can use the same control logic
-        if(VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen && VIRTUAL_ENVIRONMENT.UI_CONTROLLER.joystick) {
-            this.keys = VIRTUAL_ENVIRONMENT.UI_CONTROLLER.joystick.collectTouchKeys();
-        }
+        const keys = this.controls.getKeys();
 
-        if(Object.keys(this.keys).length > 0){
+        if(Object.keys(keys).length > 0){
 
             // speedFactor depending on the run/walk state
-            if(this.keys["shift"]) {
-                this.isRunning = true;
-            }
-            this.speedFactor = this.isRunning ? 0.15 : 0.05;
+            this.speedFactor = this.controls.isRunning ? 0.15 : 0.05;
 
-            if (this.keys["w"]) {
-                this.horizontalVelocity.add(this.getForwardVector().multiplyScalar(this.speedFactor * delta));
+            if (keys["w"]) {
+                this.horizontalVelocity.add(this.controls.getForwardVector().multiplyScalar(this.speedFactor * delta));
             }
 
-            if (this.keys["s"]) {
-                this.horizontalVelocity.add(this.getForwardVector().multiplyScalar(-this.speedFactor * delta));
+            if (keys["s"]) {
+                this.horizontalVelocity.add(this.controls.getForwardVector().multiplyScalar(-this.speedFactor * delta));
             }
 
-            if (this.keys["a"]) {
-                this.horizontalVelocity.add(this.getSideVector().multiplyScalar(-this.speedFactor * delta));
+            if (keys["a"]) {
+                this.horizontalVelocity.add(this.controls.getSideVector().multiplyScalar(-this.speedFactor * delta));
             }
 
-            if (this.keys["d"]) {
-                this.horizontalVelocity.add(this.getSideVector().multiplyScalar(this.speedFactor * delta));
+            if (keys["d"]) {
+                this.horizontalVelocity.add(this.controls.getSideVector().multiplyScalar(this.speedFactor * delta));
             }
-            if (this.keys[" "] && this.canJump) {
+            if (keys[" "] && this.canJump) {
                 this.velocity.y = 10.0;
                 this.setAnimationParameters("jump", 0);
             }
         } else {
-            this.isRunning = false;
+            this.controls.isRunning = false;
             this.horizontalVelocity.multiplyScalar(0);
         }
 
@@ -187,15 +112,16 @@ class PlayerLocal extends CapsuleEntity {
             this.velocity = new Vector3();
         }
 
-        this.updateCurrentAnimation()
+        this.updateCurrentAnimation(keys)
         if(typeof this.avatarController !== "undefined"){
             this.avatarController.update(delta, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
         }
 
-        this.controlVector.lerp(this.targetControlVector, 0.1);
+        // update the control object
+        this.controls.update();
     }
 
-    updateCurrentAnimation() {
+    updateCurrentAnimation(keys) {
         if (this.lastPosition) {
             this.positionChange.multiplyScalar(0.8);
             this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
@@ -203,8 +129,8 @@ class PlayerLocal extends CapsuleEntity {
         this.lastPosition = this.position.clone();
 
         if(this.onGround) {
-            if (this.keys["w"] || this.keys["s"] || this.keys["a"] || this.keys["d"]) {
-                if(this.isRunning){ 
+            if (keys["w"] || keys["s"] || keys["a"] || keys["d"]) {
+                if(this.controls.isRunning){ 
                     this.setAnimationParameters("run"); 
                 } else { 
                     this.setAnimationParameters("walk"); 

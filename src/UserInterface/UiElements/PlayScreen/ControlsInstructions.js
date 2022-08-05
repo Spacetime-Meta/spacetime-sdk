@@ -2,7 +2,7 @@ import { UiElement } from "../UiElement.js";
 
 const INSTRUCTIONS = {
     DESKTOP: "<b>WASD</b> move, <b>SHIFT</b> run, <b>SPACE</b> jump, <b>V</b> view, <b>R</b> respawn",
-    MOBILE: "Use joystick to move around"
+    MOBILE: "Use <b>Joystick/Scroll</b> to move around"
 }
 
 class ControlsInstructions extends UiElement {
@@ -11,7 +11,7 @@ class ControlsInstructions extends UiElement {
             id: "ControlInstructions",
             style: {
                 position: "absolute",
-                top: "0",
+                top: "5px",
                 left: "0",
                 width: "100%",
                 color: "rgba(256, 256, 256, 0.8)",
@@ -24,9 +24,9 @@ class ControlsInstructions extends UiElement {
         this.controlsDisplayBox = new UiElement({
             id: "ControlsDisplayBox",
             style: {
-                background: "rgba(0, 0, 0, 0.2)",
-                padding: "2px",
-                border: "1px solid rgba(256, 256, 256, 0.3)"
+                background: "rgba(250,250,250,0.2)",
+                borderRadius: "5px",
+                padding: "10px",
             },
             innerHTML: INSTRUCTIONS.DESKTOP,
         })

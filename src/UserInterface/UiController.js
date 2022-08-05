@@ -30,17 +30,11 @@ export class UiController {
     }
 
     handleControlsLock() {
-        if(!this.isTouchScreen) {
-
-            //setup the keyboard/mouse controls
-            if(typeof VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls === "undefined") {
-                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("keyboardMouse");
-            }
-
-            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
-
-        } else {
+        if(this.isTouchScreen) {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("mobile");
+        } else {
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("keyboardMouse");
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
         }
 
         // toggle the view like normal
@@ -68,11 +62,11 @@ export class UiController {
     }
 
     setupTouchControls() {
-        // change the controls instructions
-        this.playScreen.controlsInstructions.setMobileInstructions();
-
         // create the ui elements of the
-        // touch controls, like joystick and back button
+        // touch controls, like jump and back button
+        this.playScreen.setupMobileDisplay();
+
+        // creates and add the joystick
         this.joystick = new Joystick();
         document.body.appendChild(this.joystick.element);
     }

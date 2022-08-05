@@ -23,6 +23,8 @@ export class KeyMouseControls extends PointerLockControls {
 
         this.isRunning = false;
 
+        this.TYPE = "keyboardMouse"
+
         this.keys = {}
 
         document.addEventListener('keyup', (event) => {

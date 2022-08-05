@@ -55,11 +55,15 @@ class PlayerLocal extends CapsuleEntity {
     setupControls(type) {
         switch (type) {
             case "mobile":
-                this.controls = new MobileControls();
+                if(this.controls.TYPE !== "mobile") {
+                    this.controls = new MobileControls();
+                }
                 break;
         
             case "keyboardMouse":
-                this.controls = new KeyMouseControls();
+                if(this.controls.TYPE !== "keyboardMouse") {
+                    this.controls = new KeyMouseControls();
+                }
                 break;
 
             default:

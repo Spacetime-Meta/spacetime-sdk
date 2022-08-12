@@ -44,19 +44,6 @@ class AvatarController extends THREE.Object3D {
         }
     }
 
-    update(delta, position, horizontalVelocity, anim, time = 0.5) {
-        
-        // use the mixer as only signal that everything is properly loaded
-        if(this.mixer){
-            this.position.copy(position);
-            if(this.isVisible) {
-                this.updateFacingDirection(horizontalVelocity);
-                this.play(anim, time);
-                this.mixer.update(delta); 
-            }
-        } 
-    }
-
     setTransparency(setTo) {
         if(setTo) {
             VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.model);
@@ -127,6 +114,21 @@ class AvatarController extends THREE.Object3D {
         this.model.position.copy(this.position);
         this.model.position.y -= this.size / 2;
         this.model.quaternion.copy(this.quaternion);
+    }
+    
+    update(delta, position, horizontalVelocity, anim, time = 0.5) {
+        
+        // use the mixer as only signal that everything is properly loaded
+        if(this.mixer && this.isVisible){
+
+            // set position of the avatar
+            this.position.copy(position);
+
+            this.updateFacingDirection(horizontalVelocity);
+
+            this.play(anim, time);
+            this.mixer.update(delta); 
+        } 
     }
 }
 

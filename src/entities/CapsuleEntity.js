@@ -95,10 +95,7 @@ export class CapsuleEntity extends Object3D {
         
         // evaluate if the player is grounded
         this.onGround = deltaVector.y > Math.abs(delta * this.velocity.y * 0.25);
-        // console.log(deltaVector.y);
-        // console.log(Math.abs(delta * this.velocity.y * 0.25));
-        // console.log(this.onGround);
-        // console.log("");
+
 
         if (this.onGround) {
             this.velocity.set(0, 0, 0);
@@ -114,12 +111,6 @@ export class CapsuleEntity extends Object3D {
         const hit = collider.bvh.raycastFirst( this.raycaster.ray );
 
         if(hit) {
-
-            // console.log(hit.distance);
-            if(hit.distance > 2) {
-                console.log(this.onGround);
-            }
-
             this.canJump = hit.distance < 2 || this.onGround;
         } else {
             this.canJump = this.onGround;

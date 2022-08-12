@@ -138,14 +138,7 @@ export class CapsuleEntity extends Object3D {
         if(VIRTUAL_ENVIRONMENT.terrainController.collider) {
             // make the player fall if he is not grounded 
             this.velocity.y += this.onGround ? 0 : delta * this.gravity;
-            // console.log(this.onGround);
-            // if(!this.onGround) {
-            //     console.log(delta);
-            //     console.log(delta * this.gravity);
-            //     console.log(this.velocity.y);
-            //     console.log(this.position.y);
-            //     console.log("");
-            // }
+
             this.position.addScaledVector(this.velocity, delta);
             
             this.collisionLogic(delta, VIRTUAL_ENVIRONMENT.terrainController.collider); 

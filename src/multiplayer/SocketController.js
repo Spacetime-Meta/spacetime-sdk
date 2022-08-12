@@ -1,12 +1,17 @@
 import { io } from 'socket.io-client'
+import { Vector3 } from 'three' 
+
+const tempVector = new Vector3();
 
 export class SocketController {
     constructor() {
 
         this.socket = io();
-        // this.socket.on("connect", () => {
 
-        // });
+        // this.socket.on("connect", () => {});
+        this.socket.on("disconnect", () => {
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.serverTransform = undefined;
+        })
 
         this.socket.on("intro", (data) => {
             this.socket.id = data.id;
@@ -14,9 +19,12 @@ export class SocketController {
         });
 
         this.socket.on("position", (data) => {
+            
+            tempVector.fromArray(data.position);
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.serverTransform = tempVector;
+
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.multiplayerDebugHitBox.position.fromArray(data.position);
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.multiplayerDebugHitBox.position.y -= 0.75;
-            // console.log(data.position);
         })
 
         this.socket.on("distribute", (data) => {

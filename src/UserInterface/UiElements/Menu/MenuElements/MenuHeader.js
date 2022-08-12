@@ -37,6 +37,7 @@ class MenuHeader extends UiElement {
         this.avatarPanelButton = new MenuHeaderButtons("avatar", this);
         this.optionsPanelButton = new MenuHeaderButtons("options", this);
         this.mapPanelButton = new MenuHeaderButtons("map", this);
+        this.walletPanelButton = new MenuHeaderButtons("wallet", this);
         
         this.optionList = new UiElement({
             style: {
@@ -49,7 +50,8 @@ class MenuHeader extends UiElement {
             this.multiplayerPanelButton,
             this.avatarPanelButton,
             this.optionsPanelButton,
-            this.mapPanelButton
+            this.mapPanelButton,
+            this.walletPanelButton
         ])
 
         this.appendChildList([
@@ -81,6 +83,12 @@ class MenuHeader extends UiElement {
                 this.mapPanelButton.element.style.background = "#c8c8c8";
                 this.mapPanelButton.options.style.background = "#c8c8c8";
                 break;
+            case "wallet":
+                this.walletPanelButton.element.style.background = "#c8c8c8";
+                this.walletPanelButton.options.style.background = "#c8c8c8";
+                break;
+            default:
+                console.error(`[Menu Header] Unexpected panel selection: ${panel}`);
         }
     }
 
@@ -108,6 +116,8 @@ class MenuHeader extends UiElement {
         this.optionsPanelButton.options.style.background = "#e0e0e0";
         this.mapPanelButton.element.style.background = "#e0e0e0";
         this.mapPanelButton.options.style.background = "#e0e0e0";
+        this.walletPanelButton.element.style.background = "#e0e0e0";
+        this.walletPanelButton.options.style.background = "#e0e0e0";
     }
 }
 export { MenuHeader }

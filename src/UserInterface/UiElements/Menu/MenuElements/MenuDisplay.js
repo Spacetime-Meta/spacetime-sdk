@@ -5,6 +5,7 @@ import { MultiplayerPanel } from "../../MenuPanels/MultiplayerPanel/MultiplayerP
 import { AvatarPanel } from "../../MenuPanels/AvatarPanel/AvatarPanel.js";
 import { OptionsPanel } from "../../MenuPanels/OptionsPanel/OptionsPanel.js";
 import { MapPanel } from "../../MenuPanels/MapPanel/MapPanel.js";
+import { WalletPanel } from "../../MenuPanels/WalletPanel/WalletPanel.js";
 
 class MenuDisplay extends UiElement {
     constructor() {
@@ -20,13 +21,15 @@ class MenuDisplay extends UiElement {
         this.avatarPanel = new AvatarPanel();
         this.optionsPanel = new OptionsPanel();
         this.mapPanel = new MapPanel();
+        this.walletPanel = new WalletPanel();
 
         this.appendChildList([
             this.chatPanel,
             this.multiplayerPanel,
             this.avatarPanel,
             this.optionsPanel,
-            this.mapPanel
+            this.mapPanel,
+            this.walletPanel
         ])
     }
 
@@ -47,9 +50,13 @@ class MenuDisplay extends UiElement {
                 break;
             case "map":
                 this.mapPanel.element.style.display = "flex";
-                if(!this.mapPanel.isLoaded) {
-                    this.mapPanel.initMap();
-                }
+                if(!this.mapPanel.isLoaded) { this.mapPanel.initMap() }
+                break;
+            case "wallet":
+                this.walletPanel.element.style.display = "block";
+                break;
+            default:
+                console.error(`[Menu Display] Unexpected panel selection: ${panel}`);
                 break;
         }
     }
@@ -60,6 +67,7 @@ class MenuDisplay extends UiElement {
         this.avatarPanel.element.style.display = "none";
         this.optionsPanel.element.style.display = "none";
         this.mapPanel.element.style.display = "none";
+        this.walletPanel.element.style.display = "none";
     }
 }
 export { MenuDisplay }

@@ -15,6 +15,11 @@ export class SocketController {
         // this.socket.on("connect", () => {});
         this.socket.on("disconnect", () => {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.serverTransform = undefined;
+        });
+
+        this.socket.on("disconnectPlayer", (data) => {
+            this.playerList[data.id].removeAvatar();
+            delete this.playerList[data.id];
         })
 
         this.socket.on("intro", (data) => {

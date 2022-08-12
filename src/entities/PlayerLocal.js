@@ -1,4 +1,4 @@
-import { Vector3, Vector4, Matrix4, Raycaster } from 'three';
+import { Vector3, Vector4, Matrix4, Raycaster, Mesh, BoxGeometry } from 'three';
 
 import { CapsuleEntity } from "./CapsuleEntity.js";
 import { AvatarController } from './AvatarController.js';
@@ -135,7 +135,7 @@ class PlayerLocal extends CapsuleEntity {
         if(VIRTUAL_ENVIRONMENT.socketController) {
             const direction = VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
             VIRTUAL_ENVIRONMENT.socketController.socket.emit("keys", {
-                keys: this.keys,
+                keys: keys,
                 controlObject: direction
             });
         }

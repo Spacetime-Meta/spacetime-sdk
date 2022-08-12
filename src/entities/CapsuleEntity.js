@@ -15,6 +15,7 @@ export class CapsuleEntity extends Object3D {
         this.canJump = false;
         this.gravity = -20;
         this.segment = new Line3(new Vector3(), new Vector3(0, -size, 0.0));
+        console.log(this.segment);
 
         this.raycaster = new Raycaster();
         this.raycaster.set(this.position, downVector);
@@ -94,6 +95,10 @@ export class CapsuleEntity extends Object3D {
         
         // evaluate if the player is grounded
         this.onGround = deltaVector.y > Math.abs(delta * this.velocity.y * 0.25);
+        // console.log(deltaVector.y);
+        // console.log(Math.abs(delta * this.velocity.y * 0.25));
+        // console.log(this.onGround);
+        // console.log("");
 
         if (this.onGround) {
             this.velocity.set(0, 0, 0);
@@ -104,10 +109,17 @@ export class CapsuleEntity extends Object3D {
         
         // evaluate if the player is close to the ground
         this.raycaster.set(tempSegment.start, downVector);
+        // console.log(tempSegment.start);
         this.raycaster.ray.applyMatrix4(tempMat)
         const hit = collider.bvh.raycastFirst( this.raycaster.ray );
 
         if(hit) {
+
+            // console.log(hit.distance);
+            if(hit.distance > 2) {
+                console.log(this.onGround);
+            }
+
             this.canJump = hit.distance < 2 || this.onGround;
         } else {
             this.canJump = this.onGround;
@@ -126,6 +138,14 @@ export class CapsuleEntity extends Object3D {
         if(VIRTUAL_ENVIRONMENT.terrainController.collider) {
             // make the player fall if he is not grounded 
             this.velocity.y += this.onGround ? 0 : delta * this.gravity;
+            // console.log(this.onGround);
+            // if(!this.onGround) {
+            //     console.log(delta);
+            //     console.log(delta * this.gravity);
+            //     console.log(this.velocity.y);
+            //     console.log(this.position.y);
+            //     console.log("");
+            // }
             this.position.addScaledVector(this.velocity, delta);
             
             this.collisionLogic(delta, VIRTUAL_ENVIRONMENT.terrainController.collider); 

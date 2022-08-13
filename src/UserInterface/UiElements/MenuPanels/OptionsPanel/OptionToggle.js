@@ -6,7 +6,8 @@ export class OptionToggle extends UiElement {
             style: {
                 margin: "15px",
                 display: "grid",
-                gridTemplateColumns: "225px 1fr"
+                gridTemplateColumns: "225px 1fr",
+                cursor: "pointer"
             },
             onClick: () => {
                 this.toggle();

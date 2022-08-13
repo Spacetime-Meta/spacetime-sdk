@@ -20,7 +20,7 @@ export class UiController {
         this.isTouchScreen = false;
 
         // references
-        this.connectionsManagementDisplay = this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay;
+        this.connectionsManagementDisplay = this.blockerScreen.menu.menuDisplay.peerToPeerPanel.connectionsManagementDisplay;
         
         this.updatable = [];
         this.updatable.push(this.connectionsManagementDisplay);
@@ -52,7 +52,7 @@ export class UiController {
     }
 
     handleConnectionClose(peerId) {
-        this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleConnectionClose(peerId);
+        this.blockerScreen.menu.menuDisplay.peerToPeerPanel.connectionsManagementDisplay.handleConnectionClose(peerId);
     }
 
     setupTimer() {
@@ -69,6 +69,10 @@ export class UiController {
         // creates and add the joystick
         this.joystick = new Joystick();
         document.body.appendChild(this.joystick.element);
+    }
+
+    togglePeerToPeer() {
+        this.blockerScreen.menu.menuHeader.togglePeerToPeer()
     }
 
     update(delta) {

@@ -42,7 +42,7 @@ class MenuFooter extends UiElement {
             onClick: ()=>{
                 VIRTUAL_ENVIRONMENT.peerJsController.peer.destroy();
                 delete VIRTUAL_ENVIRONMENT.peerJsController.peer;
-                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.peerToPeerPanel.update();
             }
         })
 
@@ -52,7 +52,7 @@ class MenuFooter extends UiElement {
         ])
 
         this.element.addEventListener("mouseenter", ()=>{
-            if(typeof VIRTUAL_ENVIRONMENT.peerJsController.peer !== "undefined"){
+            if(VIRTUAL_ENVIRONMENT.peerJsController && VIRTUAL_ENVIRONMENT.peerJsController.peer) {
                 this.element.style.height = "150px";
             }
         })
@@ -62,7 +62,7 @@ class MenuFooter extends UiElement {
         })
     }
 
-    setPeerIdDisplay(content) {
+    setIdDisplay(content) {
         this.textInfo.element.innerHTML = content;
     }
 }

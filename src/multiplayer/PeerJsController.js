@@ -46,7 +46,7 @@ export class PeerJsController {
         })
 
         peer.on("close", () => {
-            window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setPeerIdDisplay("Not Connected")
+            window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setIdDisplay("Not Connected")
         })
     }
 
@@ -58,12 +58,12 @@ export class PeerJsController {
 
     onConnectionOpen() {
         this.addMessageToChatBox("[info] Peer created with id: "+localProxy.peerId);
-        window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.update();
-        window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setPeerIdDisplay(`Connected as: ${localProxy.peerId}`);
+        window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.peerToPeerPanel.update();
+        window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setIdDisplay(`Connected as: ${localProxy.peerId}`);
 
         // listen for new connection
         this.peer.on('connection', (newConnection) => {
-            window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
+            window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.peerToPeerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
             this.onConnectionConnect(newConnection)
         })
 
@@ -166,7 +166,7 @@ export class PeerJsController {
         if(isValid) {
             this.addMessageToChatBox("[info] Trying connection to peer: " + peerId);
             const newConnection = this.peer.connect(peerId);
-            window.window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
+            window.window.VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.peerToPeerPanel.connectionsManagementDisplay.handleNewConnection(newConnection);
 
             // on new connection establish
             newConnection.on('open', () => {

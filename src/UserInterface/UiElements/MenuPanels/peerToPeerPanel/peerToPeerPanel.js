@@ -1,12 +1,12 @@
 import { UiElement } from "../../UiElement.js";
 
-import { GoLiveDisplay } from "./MultiplayerPanelElements/GoLiveDisplay/GoLiveDisplay.js"
-import { ConnectionsManagementDisplay } from "./MultiplayerPanelElements/ConnectionsDisplay/ConnectionsDisplay.js"
+import { GoLiveDisplay } from "./PeerToPeerPanelElements/GoLiveDisplay/GoLiveDisplay.js"
+import { ConnectionsManagementDisplay } from "./PeerToPeerPanelElements/ConnectionsDisplay/ConnectionsDisplay.js"
 
-class MultiplayerPanel extends UiElement {
+class PeerToPeerPanel extends UiElement {
     constructor(){
         super({
-            id: "MultiplayerPanel",
+            id: "PeerToPeerPanel",
             style: {
                 display: "none",
                 height: "100%",
@@ -40,4 +40,4 @@ class MultiplayerPanel extends UiElement {
         }
     }
 }
-export { MultiplayerPanel }
+export { PeerToPeerPanel }

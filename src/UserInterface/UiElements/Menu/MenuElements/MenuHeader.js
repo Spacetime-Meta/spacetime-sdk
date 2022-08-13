@@ -19,6 +19,7 @@ class MenuHeader extends UiElement {
         })
 
         this.isOpen = false;
+        this.isPeerToPeer = false;
 
         this.toggleMenuButton = new UiElement({
             innerHTML: "☰",
@@ -33,10 +34,12 @@ class MenuHeader extends UiElement {
         })
 
         this.chatPanelButton = new MenuHeaderButtons("chat", this);
-        this.multiplayerPanelButton = new MenuHeaderButtons("multiplayer", this);
+        this.peerToPeerPanelButton = new MenuHeaderButtons("multiplayer", this);
+        this.peerToPeerPanelButton.element.style.display = "none";
         this.avatarPanelButton = new MenuHeaderButtons("avatar", this);
         this.optionsPanelButton = new MenuHeaderButtons("options", this);
         this.mapPanelButton = new MenuHeaderButtons("map", this);
+        this.homePanelButton = new MenuHeaderButtons("home", this);
         
         this.optionList = new UiElement({
             style: {
@@ -44,12 +47,14 @@ class MenuHeader extends UiElement {
                 marginTop: "50px",
             }
         })
+
         this.optionList.appendChildList([
+            this.homePanelButton,
             this.chatPanelButton,
-            this.multiplayerPanelButton,
+            this.peerToPeerPanelButton,
             this.avatarPanelButton,
             this.optionsPanelButton,
-            this.mapPanelButton
+            this.mapPanelButton,
         ])
 
         this.appendChildList([
@@ -61,13 +66,17 @@ class MenuHeader extends UiElement {
     handleMenuHeaderSelection(panel) {
         this.closeAllHeaders()
         switch(panel) {
+            case "home":
+                this.homePanelButton.element.style.background = "#c8c8c8";
+                this.homePanelButton.options.style.background = "#c8c8c8";
+                break;
             case "chat":
                 this.chatPanelButton.element.style.background = "#c8c8c8";
                 this.chatPanelButton.options.style.background = "#c8c8c8";
                 break;
             case "multiplayer":
-                this.multiplayerPanelButton.element.style.background = "#c8c8c8";
-                this.multiplayerPanelButton.options.style.background = "#c8c8c8";
+                this.peerToPeerPanelButton.element.style.background = "#c8c8c8";
+                this.peerToPeerPanelButton.options.style.background = "#c8c8c8";
                 break;
             case "avatar":
                 this.avatarPanelButton.element.style.background = "#c8c8c8";
@@ -100,14 +109,25 @@ class MenuHeader extends UiElement {
     closeAllHeaders() {
         this.chatPanelButton.element.style.background = "#e0e0e0";
         this.chatPanelButton.options.style.background = "#e0e0e0";
-        this.multiplayerPanelButton.element.style.background = "#e0e0e0";
-        this.multiplayerPanelButton.options.style.background = "#e0e0e0";
+        this.peerToPeerPanelButton.element.style.background = "#e0e0e0";
+        this.peerToPeerPanelButton.options.style.background = "#e0e0e0";
         this.avatarPanelButton.element.style.background = "#e0e0e0";
         this.avatarPanelButton.options.style.background = "#e0e0e0";
         this.optionsPanelButton.element.style.background = "#e0e0e0";
         this.optionsPanelButton.options.style.background = "#e0e0e0";
         this.mapPanelButton.element.style.background = "#e0e0e0";
         this.mapPanelButton.options.style.background = "#e0e0e0";
+        this.homePanelButton.element.style.background = "#e0e0e0";
+        this.homePanelButton.options.style.background = "#e0e0e0";
+    }
+
+    togglePeerToPeer() {
+        if(this.isPeerToPeer) {
+            this.peerToPeerPanelButton.element.style.display = "none";
+        } else {
+            this.peerToPeerPanelButton.element.style.display = "block";
+        }
+        this.isPeerToPeer = !this.isPeerToPeer;
     }
 }
 export { MenuHeader }

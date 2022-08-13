@@ -37,13 +37,19 @@ export class OptionsPanel extends UiElement {
             VIRTUAL_ENVIRONMENT.terrainController.toggleInteractiveDebugBox();
         });
 
+        this.togglePeerToPeer = new OptionToggle("Peer To Peer", false, function() {
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.togglePeerToPeer();
+            VIRTUAL_ENVIRONMENT.activatePeerToPeer();
+        });
+
         this.appendChildList([
             this.toggleShadows,
             this.togglePerformances,
             this.toggleHitbox,
             this.toggleServerHitbox,
             this.toggleCollider,
-            this.toggleTriggers    
+            this.toggleTriggers,
+            this.togglePeerToPeer    
         ]);
     }
 

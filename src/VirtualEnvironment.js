@@ -73,9 +73,6 @@ export class VirtualEnvironment {
 
         // player local will load the default spacetime avatar
         this.LOCAL_PLAYER = new PlayerLocal();
-
-        // ===== setup peer to peer Multiplayer =====
-        this.peerJsController = new PeerJsController();
         
     }
 
@@ -126,6 +123,11 @@ export class VirtualEnvironment {
 
         this.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.synchronize();
 
+    }
+
+    activatePeerToPeer() {
+        // ===== setup peer to peer Multiplayer =====
+        this.peerJsController = new PeerJsController();
     }
 
     toggleStats() {

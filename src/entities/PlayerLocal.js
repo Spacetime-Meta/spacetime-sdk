@@ -41,15 +41,6 @@ class PlayerLocal extends CapsuleEntity {
 
         VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
         VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this);
-
-        // multiplayer debugger
-        this.multiplayerDebugHitBox = new Mesh(new BoxGeometry( 
-            PLAYER_DIMENSIONS.WIDTH * 2, 
-            PLAYER_DIMENSIONS.HEIGHT + PLAYER_DIMENSIONS.WIDTH * 2,
-            PLAYER_DIMENSIONS.WIDTH * 2 
-        ));
-        this.multiplayerDebugHitBox.material.wireframe = true;
-        VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.multiplayerDebugHitBox);
     }
 
     executeConfig(playerConfig) {
@@ -175,10 +166,12 @@ class PlayerLocal extends CapsuleEntity {
         // emit information to the server
         if(VIRTUAL_ENVIRONMENT.socketController) {
             const direction = VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
-            VIRTUAL_ENVIRONMENT.socketController.socket.emit("keys", {
-                keys: keys,
-                controlObject: direction
-            });
+            setTimeout(() => {
+                VIRTUAL_ENVIRONMENT.socketController.socket.emit("keys", {
+                    keys: keys,
+                    controlObject: direction
+                });
+            }, 100);
         }
         
         // update the control object

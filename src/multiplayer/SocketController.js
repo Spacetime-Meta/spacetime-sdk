@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client'
-import { Vector3 } from 'three' 
+import { Vector3, Mesh, BoxGeometry } from 'three' 
 
 import { AvatarController } from '../entities/AvatarController.js';
 
@@ -34,9 +34,10 @@ export class SocketController {
                     tempVector.fromArray(data[entry].position)
                     VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.serverTransform = tempVector;
                     
-                    // send this to socket class
-                    VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.multiplayerDebugHitBox.position.copy(tempVector);
-                    VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.multiplayerDebugHitBox.position.y -= 0.75;
+                    if(this.serverHitbox) {
+                        this.serverHitbox.position.copy(tempVector);
+                        this.serverHitbox.position.y -= 0.75;
+                    }
 
                 } else {
                     if(this.playerList[entry]) {
@@ -65,6 +66,22 @@ export class SocketController {
         });
 
         VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
+    }
+
+    toggleServerHitbox() {
+        if(this.serverHitbox) {
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.serverHitbox);
+            delete this.serverHitbox;
+        } else {
+            // multiplayer debugger
+            this.serverHitbox = new Mesh(new BoxGeometry( 
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.radius * 2, 
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.size + VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.radius * 2,
+                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.radius * 2 
+            ));
+            this.serverHitbox.material.wireframe = true;
+            VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this.serverHitbox);
+        }
     }
 
     update(delta) {

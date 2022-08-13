@@ -15,28 +15,33 @@ export class OptionsPanel extends UiElement {
             
         this.toggleShadows = new OptionToggle( "Toggle Shadows" , true, function() {
             VIRTUAL_ENVIRONMENT.MAIN_SCENE.toggleShadows();
-        }),
+        });
         
         this.togglePerformances = new OptionToggle( "Show Performances" , false, function() {
             VIRTUAL_ENVIRONMENT.toggleStats();
-        }),
+        })
 
-        this.toggleHitbox = new OptionToggle( "Show Hitbox", false, function() {
+        this.toggleHitbox = new OptionToggle( "Show Local Hitbox", false, function() {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.toggleHitbox();
-        }),
+        });
+
+        this.toggleServerHitbox = new OptionToggle( "Show Server Hitbox", false, function() {
+            VIRTUAL_ENVIRONMENT.socketController.toggleServerHitbox();
+        });
 
         this.toggleCollider = new OptionToggle( "Show Collider", false, function() {
             VIRTUAL_ENVIRONMENT.terrainController.toggleViewCollider();
-        }),
+        });
 
         this.toggleTriggers = new OptionToggle( "Show Triggers", false, function() {
             VIRTUAL_ENVIRONMENT.terrainController.toggleInteractiveDebugBox();
-        })
+        });
 
         this.appendChildList([
             this.toggleShadows,
             this.togglePerformances,
             this.toggleHitbox,
+            this.toggleServerHitbox,
             this.toggleCollider,
             this.toggleTriggers    
         ]);

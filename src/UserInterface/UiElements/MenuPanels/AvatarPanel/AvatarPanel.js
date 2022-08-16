@@ -50,5 +50,14 @@ export class AvatarPanel extends UiElement {
             this.yBotAvatarSelectButton,
             this.vanguardAvatarSelectButton,
         ])
-    } 
+    }
+
+    addNewAvatarButton(name, meshSource, animationSource, animationMapping) {
+        this.appendChild( new AvatarSelectButton(
+            name,
+            meshSource,
+            animationSource,
+            animationMapping
+        ))
+    }
 }

@@ -212,14 +212,16 @@ export class TerrainController {
     generateCollider(){
         this.terrain.traverse(object => {
             if (object.geometry && object.visible) {
-                const cloned = object.geometry.clone();
-                cloned.applyMatrix4(object.matrixWorld);
-                for (const key in cloned.attributes) {
-                    if (key !== 'position') { 
-                        cloned.deleteAttribute(key);
+                if(object.name !== "_stm_water_") {
+                    const cloned = object.geometry.clone();
+                    cloned.applyMatrix4(object.matrixWorld);
+                    for (const key in cloned.attributes) {
+                        if (key !== 'position') { 
+                            cloned.deleteAttribute(key);
+                        }
                     }
+                    this.geometries.push(cloned);
                 }
-                this.geometries.push(cloned);
             }
         });
 

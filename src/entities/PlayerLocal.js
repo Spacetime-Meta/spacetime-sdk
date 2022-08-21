@@ -159,13 +159,17 @@ class PlayerLocal extends CapsuleEntity {
 
         // emit information to the server
         if(VIRTUAL_ENVIRONMENT.socketController) {
-            const direction = VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
-            setTimeout(() => {
-                VIRTUAL_ENVIRONMENT.socketController.socket.emit("keys", {
-                    keys: keys,
-                    controlObject: direction
-                });
-            }, 100);
+            
+            const data = { keys: keys }
+            
+            if(this.controls.TYPE === "mobile") {
+                data.controlObject = this.controls.getControlObject();
+            } else {
+                data.controlObject = VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
+            }
+                
+            VIRTUAL_ENVIRONMENT.socketController.socket.emit("keys", data);
+            // console.log(data.keys);
         }
         
         // update the control object

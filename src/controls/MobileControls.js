@@ -62,13 +62,20 @@ export class MobileControls {
         return this.getForwardVector().cross(UP_VECTOR);
     }
 
+    getControlObject() {
+        temp.x = Math.sin(this.orbitControls.getAzimuthalAngle());
+        temp.z = Math.cos(this.orbitControls.getAzimuthalAngle());
+        return temp
+    }
+
     getKeys() {
         const quadrant = VIRTUAL_ENVIRONMENT.UI_CONTROLLER.joystick.quadrant;
 
         if(!isNaN(quadrant)) {
             return {
                 ...(VIRTUAL_ENVIRONMENT.UI_CONTROLLER.joystick.isForward ? BACKWARD_QUADRANT_KEY_MAP[quadrant] : FORWARD_QUADRANT_KEY_MAP[quadrant]),
-                ...(this.isJumping ? {" ": true} : {})
+                ...(this.isJumping ? {" ": true} : {}),
+                ...(this.isRunning ? {"shift": true} : {})
             }
         } else {
             return this.isJumping ? {" ": true} : {};

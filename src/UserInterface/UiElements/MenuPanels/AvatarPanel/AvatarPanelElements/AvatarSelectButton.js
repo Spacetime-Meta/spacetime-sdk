@@ -1,9 +1,9 @@
 import { UiElement } from "../../../UiElement.js";
 
 export class AvatarSelectButton extends UiElement {
-    constructor(name, avatarUrl, animationUrl, animationMapping){
+    constructor(options) {
         super({
-            innerHTML: name,
+            innerHTML: options.name,
             style: {
                 padding: "10px",
                 margin: "10px",
@@ -21,7 +21,7 @@ export class AvatarSelectButton extends UiElement {
         })
 
         this.element.addEventListener("click", ()=>{
-            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.avatarController.changeAvatar(avatarUrl, animationUrl, animationMapping)
+            VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.avatarController.changeAvatar(options);
         })
     }
 }

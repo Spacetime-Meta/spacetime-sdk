@@ -23,33 +23,6 @@ export class AvatarPanel extends UiElement {
                 paddingTop: "50px"
             }
         }));
-
-        this.xBotAvatarSelectButton = new AvatarSelectButton(
-            "xBot",
-            'https://elegant-truffle-070d6b.netlify.app/xBot.glb',
-            defaultAnimations,
-            defaultMapping
-        );
-
-        this.yBotAvatarSelectButton = new AvatarSelectButton(
-            "yBot",
-            'https://elegant-truffle-070d6b.netlify.app/yBot.glb',
-            defaultAnimations,
-            defaultMapping
-        );
-
-        this.vanguardAvatarSelectButton = new AvatarSelectButton(
-            "vanguard",
-            'https://elegant-truffle-070d6b.netlify.app/vanguard.glb',
-            defaultAnimations,
-            defaultMapping
-        );
-
-        this.appendChildList([
-            this.xBotAvatarSelectButton,
-            this.yBotAvatarSelectButton,
-            this.vanguardAvatarSelectButton,
-        ])
     }
 
     addNewAvatarButton(name, meshSource, animationSource, animationMapping) {

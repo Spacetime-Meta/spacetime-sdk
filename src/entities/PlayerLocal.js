@@ -37,26 +37,20 @@ class PlayerLocal extends CapsuleEntity {
         this.controls = new KeyMouseControls();
         
         this.avatarController = new AvatarController();
-        this.avatarController.spawnAvatar({});
 
         VIRTUAL_ENVIRONMENT.updatableObjects.push(this);
         VIRTUAL_ENVIRONMENT.MAIN_SCENE.add(this);
     }
 
-    executeConfig(playerConfig) {
-        const defaultOptions = {
-            spawn: undefined
+    executeConfig(config) {
+
+        // set the spawnPoint option
+        if(typeof config.player.spawn !== "undefined") {
+            this.spawnPoint = config.player.spawn;
+            this.position.copy(config.player.spawn);
         };
 
-        for (let opt in defaultOptions) {
-            playerConfig[opt] = typeof playerConfig[opt] === 'undefined' ? defaultOptions[opt] : playerConfig[opt];
-        };
-
-        // // set the spawnPoint option
-        if(typeof playerConfig.spawn !== "undefined") {
-            this.spawnPoint = playerConfig.spawn;
-            this.position.copy(playerConfig.spawn);
-        }
+        this.avatarController.executeConfig(config.avatar);
     }
 
     setupControls(type) {

@@ -2,10 +2,6 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { loadingBar } from '../UserInterface/UiElements/LoadingPage/loadingPage.js';
 
-const DEFAULT_AVATAR_PATH = 'https://elegant-truffle-070d6b.netlify.app/vanguard.glb';
-const DEFAULT_ANIMATION_PATH = 'https://elegant-truffle-070d6b.netlify.app/defaultAnimations.glb';
-const DEFAULT_ANIMATION_MAPPING = { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 };
-
 class AvatarController extends THREE.Object3D {
     constructor() {
         super();
@@ -16,11 +12,19 @@ class AvatarController extends THREE.Object3D {
         this.quaternion90deg.setFromAxisAngle( new THREE.Vector3( -1, 0, 0 ), -Math.PI / 2 );
     }
 
+    executeConfig(config) {
+        this.spawnAvatar(config.default);
+        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.avatarPanel.addNewAvatarButton(config.default);
+
+        if(config.others) {
+            config.others.forEach(avatar => {
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuDisplay.avatarPanel.addNewAvatarButton(avatar);
+            })
+        }
+    }
+
     spawnAvatar(params) {
-        params.avatarPath = typeof params.avatarPath === "undefined" ? DEFAULT_AVATAR_PATH : params.avatarPath;
-        params.animationPath = typeof params.animationPath === "undefined" ? DEFAULT_ANIMATION_PATH : params.animationPath;
-        params.animationMapping = typeof params.animationMapping === "undefined" ? DEFAULT_ANIMATION_MAPPING : params.animationMapping;
-        this.loadAvatar(params.avatarPath, () => this.loadAnimations(params.animationPath, params.animationMapping));
+        this.loadAvatar(params, () => this.loadAnimations(params.animations, params.mapping));
     }
 
     play(anim, time = 0.5) {
@@ -54,20 +58,28 @@ class AvatarController extends THREE.Object3D {
         this.isVisible = !setTo;
     }
 
-    changeAvatar(avatarUrl, animationsUrl, animationMapping) {
-        this.loadAvatar(avatarUrl, () => this.loadAnimations(animationsUrl, animationMapping));
+    changeAvatar(params) {
+        this.loadAvatar(params, () => this.loadAnimations(params.animations, params.mapping));
     }
 
-    loadAvatar(avatarURL, loadAnimation) {
-        this.loader.load(avatarURL, (responseObject) => {
+    loadAvatar(params, loadAnimation) {
+
+        if(params.offset) {
+            this.offset = params.offset;
+        } else {
+            this.offset = 1.75;
+        }
+        
+
+        this.loader.load(params.mesh, (responseObject) => {
             
             VIRTUAL_ENVIRONMENT.MAIN_SCENE.remove(this.model)
 
-            this.radius = .25;
+            this.radius = 0.25;
             this.size = 1.5;
 
             this.model = responseObject.scene;
-            this.model.scale.set(0.01, 0.01, 0.01);
+            this.model.scale.set(params.scaleFactor, params.scaleFactor, params.scaleFactor);
             this.model.traverse(child => {
                 if (child.isMesh) {
                     child.castShadow = true;
@@ -112,7 +124,7 @@ class AvatarController extends THREE.Object3D {
         }
 
         this.model.position.copy(this.position);
-        this.model.position.y -= this.size / 2;
+        this.model.position.y -= this.offset;//1.75;//this.size;
         this.model.quaternion.copy(this.quaternion);
     }
     

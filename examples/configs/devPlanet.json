@@ -1,9 +1,18 @@
 {
     "version": 1,
     "terrain": {
-        "url": "./assets/terrains/devPlanet.glb",
+        "url": "./assets/terrains/desert.glb",
         "portalMap": {
             "0": "./configs/baseTemplate.json"
         } 
+    },
+    "avatar": {
+        "default": {
+            "name": "Demo Doods",
+            "mesh": "./assets/avatars/customAvatar.glb",
+            "animations": "./assets/avatars/customAvatar.glb",
+            "mapping": { "walk": 0, "idle": 1, "run": 2, "jump": 3, "fall": 3 },
+            "scaleFactor": 0.2
+        }
     }
 }

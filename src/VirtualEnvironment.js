@@ -105,24 +105,54 @@ export class VirtualEnvironment {
     executeConfig(configObject) {
         const defaultOptions = {
             player: {},
-            terrain: {}
+            avatar: {
+                default: {
+                    name: "vanguard",
+                    mesh: 'https://elegant-truffle-070d6b.netlify.app/vanguard.glb',
+                    animations: 'https://elegant-truffle-070d6b.netlify.app/defaultAnimations.glb',
+                    mapping: { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 },
+                    scaleFactor: 0.01,
+                    offset: 0.75
+                },
+                others: [
+                    {
+                        name: "xBot",
+                        mesh: 'https://elegant-truffle-070d6b.netlify.app/xBot.glb',
+                        animations: 'https://elegant-truffle-070d6b.netlify.app/defaultAnimations.glb',
+                        mapping: { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 },
+                        scaleFactor: 0.01,
+                        offset: 0.75
+                    },
+                    {
+                        name: "yBot",
+                        mesh: 'https://elegant-truffle-070d6b.netlify.app/yBot.glb',
+                        animations: 'https://elegant-truffle-070d6b.netlify.app/defaultAnimations.glb',
+                        mapping: { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 },
+                        scaleFactor: 0.01,
+                        offset: 0.75
+                    }
+                ]
+            }
         };
 
         for (let opt in defaultOptions) {
             configObject[opt] = typeof configObject[opt] === 'undefined' ? defaultOptions[opt] : configObject[opt];
         };
 
-        this.configObject = configObject;
+        this.LOCAL_PLAYER.executeConfig(configObject);
 
-        this.LOCAL_PLAYER.executeConfig(configObject.player);
-        this.terrainController.executeConfig(configObject.terrain);
+        if(configObject.terrain) {
+            this.terrainController.executeConfig(configObject.terrain);
+        } else {
+            console.error('[Virtual Environment] "terrain" is a mandatory parameter, add it to your configuration:\n"terrain": {"url": "<url to your terrain.glb>"}');
+        }
+
 
         if(typeof configObject.socket !== "undefined") {
             this.socketController = new SocketController();
         }
 
         this.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.synchronize();
-
     }
 
     activatePeerToPeer() {

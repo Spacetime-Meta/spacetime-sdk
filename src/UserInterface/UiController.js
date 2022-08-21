@@ -32,6 +32,7 @@ export class UiController {
     handleControlsLock() {
         if(this.isTouchScreen) {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("mobile");
+            this.joystick.element.style.display = "block";
         } else {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("keyboardMouse");
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
@@ -43,6 +44,10 @@ export class UiController {
     }
 
     handleControlsUnlock() {
+        if(this.isTouchScreen) {
+            this.joystick.element.style.display = "none";
+        }
+        
         this.blockerScreen.element.style.display = "grid";
         this.playScreen.element.style.display = "none";
     }

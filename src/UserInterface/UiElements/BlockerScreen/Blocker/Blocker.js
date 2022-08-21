@@ -24,11 +24,37 @@ export class Blocker extends UiElement {
             },
         });
 
-        this.element.addEventListener("touchstart", () => {
+        console.log(window.screen.width);
+        if(window.screen.width < 425) {
+            this.element.innerHTML = "";
+            
+            this.playButton = new UiElement({
+                innerHTML: "Click To Play",
+                style: {
+                    border: "2px solid black",
+                    position: "absolute",
+                    top: "150px",
+                    right: "-50px",
+                    borderRadius: "10px",
+                    background: "#078A8C",
+                    padding: "15px",
+                    transform: "rotate(-90deg)"
+                }
+            })
+            
+            this.playButton.element.addEventListener("touchstart", () => {
+                VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen = true;
+                console.log(`%c [UI Controller] Touch screen detected.`, 'color:#bada55');
+            });
 
+            this.appendChild(this.playButton)
+        }
+
+        this.element.addEventListener("touchstart", () => {
             VIRTUAL_ENVIRONMENT.UI_CONTROLLER.isTouchScreen = true;
             console.log(`%c [UI Controller] Touch screen detected.`, 'color:#bada55');
-
         });
+
+
     }
 }

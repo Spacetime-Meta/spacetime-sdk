@@ -13,8 +13,11 @@ export class SocketController {
         this.playerList = {};
 
         // this.socket.on("connect", () => {});
+
         this.socket.on("disconnect", () => {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.serverTransform = undefined;
+            console.log(`%c [Socket Controller] Disconnected from server`, 'color:#bada55');
+            VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setIdDisplay("Not Connected");
         });
 
         this.socket.on("disconnectPlayer", (data) => {
@@ -42,13 +45,24 @@ export class SocketController {
 
                 } else {
                     if(this.playerList[entry]) {
+                        
+                        // execute this when the player is already created
                         this.playerList[entry].serverState.position.fromArray(data[entry].position);
                         this.playerList[entry].serverState.horizontalVelocity.fromArray(data[entry].horizontalVelocity);
                         this.playerList[entry].serverState.animation = data[entry].animation;
                     } else {
+
+                        // execute this when we receive inf for a player that is not existent
                         console.log(`%c [Socket Controller] Connected to new player: ${entry}`, 'color:#bada55');
                         this.playerList[entry] = new AvatarController();
-                        this.playerList[entry].spawnAvatar({});
+                        this.playerList[entry].spawnAvatar({
+                            name: "yBot",
+                            mesh: 'https://elegant-truffle-070d6b.netlify.app/yBot.glb',
+                            animations: 'https://elegant-truffle-070d6b.netlify.app/defaultAnimations.glb',
+                            mapping: { walk: 1, idle: 2, run: 3, jump: 4, fall: 4 },
+                            scaleFactor: 0.01,
+                            offset: 0.75
+                        });
 
                         this.playerList[entry].serverState = {
                             position: new Vector3(data[entry].position),

@@ -169,7 +169,6 @@ class PlayerLocal extends CapsuleEntity {
             }
                 
             VIRTUAL_ENVIRONMENT.socketController.socket.emit("keys", data);
-            // console.log(data.keys);
         }
         
         // update the control object

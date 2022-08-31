@@ -147,9 +147,21 @@ export class VirtualEnvironment {
             console.error('[Virtual Environment] "terrain" is a mandatory parameter, add it to your configuration:\n"terrain": {"url": "<url to your terrain.glb>"}');
         }
 
-
         if(typeof configObject.socket !== "undefined") {
-            this.socketController = new SocketController();
+            if(typeof this.socketController === "undefined") {
+                this.socketController = new SocketController();
+            } else {
+                // execute config
+            }
+            
+        } else {
+
+            // if a socket controller already exist we must disconnect
+            // and destroy the controller
+            if(this.socketController) {
+                this.socketController.socket.disconnect();
+                delete this.socketController;
+            }
         }
 
         this.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.synchronize();

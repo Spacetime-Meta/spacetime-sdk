@@ -18,9 +18,16 @@ export class SocketController {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.serverTransform = undefined;
             console.log(`%c [Socket Controller] Disconnected from server`, 'color:#bada55');
             VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setIdDisplay("Not Connected");
+
+            for(var playerId in this.playerList) {
+                console.log(`%c [Socket Controller] Disconnected from player: ${playerId}`, 'color:#bada55');
+                this.playerList[playerId].removeAvatar();
+                delete this.playerList[playerId];
+            }
         });
 
         this.socket.on("disconnectPlayer", (data) => {
+            console.log(`%c [Socket Controller] Disconnected from player: ${data.id}`, 'color:#bada55');
             this.playerList[data.id].removeAvatar();
             delete this.playerList[data.id];
         })
@@ -52,7 +59,7 @@ export class SocketController {
                         this.playerList[entry].serverState.animation = data[entry].animation;
                     } else {
 
-                        // execute this when we receive inf for a player that is not existent
+                        // execute this when we receive info for a player that is not existent
                         console.log(`%c [Socket Controller] Connected to new player: ${entry}`, 'color:#bada55');
                         this.playerList[entry] = new AvatarController();
                         this.playerList[entry].spawnAvatar({

@@ -23,7 +23,7 @@ This standard kit project was initially started to populate [this universe](http
 
 **Partners and contributors should keep in mind that; even as the project gets more traction, our main focus will always be on populating the space chunks with complete worlds and valuable experiences. Also, every feature will be reviewed and developed in orientation to the spacetime meta roadmap.**
 
-## How to run in `local`
+## How to run locally
 
 **Goal: Run a simple environment with avatar, ui, multiplayer and cardano wallet connection:**  
 *If you are just looking to develop an environment, the [base template](https://github.com/Spacetime-Meta/base-template) is probably what you are looking for. The spacetime-sdk is meant for developpers who wants to add new features into the metaverse.*
@@ -61,7 +61,7 @@ To use the sdk in your webpage, you first need to get it from a source.
 ```
 
 Then you have access to the `VirtualEnvironment` class in the window.
-To instanciate a new VirtualEnvironment, you need to pass it a config.
+To instantiate a new VirtualEnvironment, you need to pass it a config.
 
 ```javascript
 // simply call the virtual env with your config 

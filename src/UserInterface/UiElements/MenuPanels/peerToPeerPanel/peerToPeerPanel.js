@@ -1,5 +1,4 @@
 import { UiElement } from "../../UiElement.js";
-
 import { GoLiveDisplay } from "./PeerToPeerPanelElements/GoLiveDisplay/GoLiveDisplay.js"
 import { ConnectionsManagementDisplay } from "./PeerToPeerPanelElements/ConnectionsDisplay/ConnectionsDisplay.js"
 

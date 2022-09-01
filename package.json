@@ -9,20 +9,19 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "",
-    "start": "npm run cardano_dep && webpack --mode production && npm run server_dep && node server/server.js",
+    "build": "webpack --mode production",
+    "start": "npm run server_dep && node server/server.js",
     "cardano_dep": "cd src/cardano && npm install & cd ../..",
     "server_dep": "cd server && npm install & cd ..",
-    
     "local": "webpack serve --config ./webpack.config.js --mode development"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Spacetime-Meta/spacetime-standard-kit.git"
+    "url": "https://github.com/Spacetime-Meta/spacetime-sdk.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Spacetime-Meta/spacetime-standard-kit/issues"
+    "url": "https://github.com/Spacetime-Meta/spacetime-sdk/issues"
   },
   "homepage": "https://spacetimemeta.io",
   "devDependencies": {
@@ -31,6 +30,9 @@
     "webpack-dev-server": "^4.9.3"
   },
   "dependencies": {
+    "@emurgo/cardano-serialization-lib-browser": "^10.2.0",
+    "@emurgo/cip14-js": "^3.0.1",
+    "buffer": "^6.0.3",
     "nipplejs": "^0.9.1",
     "peerjs": "^1.4.6",
     "seedrandom": "^3.0.5",

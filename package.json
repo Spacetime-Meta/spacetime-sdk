@@ -3,9 +3,14 @@
   "version": "0.8.0",
   "description": "The Spacetime standard kit provide developers with turnkey virtual environments. This package will provide multiple metaverse features like multiplayer, custom avatars, vehicle and blockchain connection.",
   "main": "./build/bundle.min.js",
+  "engines": {
+    "npm": "6.x",
+    "node": "14.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build && npm run dependencies && npm run server",
+    "start": "npm cardano && npm run build && npm run dependencies && npm run server",
+    "cardano": "cd src/cardano && npm install & cd ../..",
     "dependencies": "cd server && npm install & cd ..",
     "server": "node server/server.js",
     "build": "webpack --mode production",
@@ -16,12 +21,6 @@
     "type": "git",
     "url": "https://github.com/Spacetime-Meta/spacetime-standard-kit.git"
   },
-  "files": [
-    "build",
-    "README.md",
-    "CONTRIBUTING.md"
-  ],
-  "author": "",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Spacetime-Meta/spacetime-standard-kit/issues"

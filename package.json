@@ -5,9 +5,12 @@
   "main": "./build/bundle.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack serve --config ./webpack.config.js --mode development",
-    "local": "webpack serve --config ./webpack.config.js --mode production",
-    "build": "webpack --mode production"
+    "start": "npm run build && npm run dependencies && npm run server",
+    "dependencies": "cd server && npm install & cd ..",
+    "server": "node server/server.js",
+    "build": "webpack --mode production",
+    
+    "local": "webpack serve --config ./webpack.config.js --mode development"
   },
   "repository": {
     "type": "git",

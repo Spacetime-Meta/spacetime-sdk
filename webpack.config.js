@@ -5,7 +5,7 @@ const webpack = require('webpack');
 module.exports = {
     entry: path.resolve(__dirname, './src/VirtualEnvironment.js'),
     output: {
-        path: path.resolve(__dirname, './build'),
+        path: path.resolve(__dirname, './server/client/build'),
         filename: 'bundle.min.js',
         libraryTarget: 'umd',
     },
@@ -27,4 +27,9 @@ module.exports = {
     experiments: {
         asyncWebAssembly: true
     },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env.BLOCKFROST_API_KEY': JSON.stringify(process.env.BLOCKFROST_API_KEY)
+        })
+    ]
 };

@@ -41,9 +41,13 @@ export class VirtualEnvironment {
             this.loadConfig(configPath);
         }
         
+        if(process.env.BLOCKFROST_API_KEY) {
+            // this will allow connection to cardano wallets
+            this.cardanoConnector = new CardanoConnector();
+        } else {
+            console.log(`%c [Virtual Environment] Blockfrost key not found`, 'color:#bada55');
+        }
 
-        // this will allow connection to cardano wallets
-        this.cardanoConnector = new CardanoConnector();
 
     }
 

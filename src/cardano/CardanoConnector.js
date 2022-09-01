@@ -1,6 +1,5 @@
 import WalletApi, { Cardano, Wallet } from './nami.js';
-import blockfrostApiKey from './config.js';
-
+ 
 export class CardanoConnector {
     constructor() {
 
@@ -37,7 +36,7 @@ export class CardanoConnector {
                             cardano_serialization_lib,
                             wallet,
                             walletInnerApi,
-                            blockfrostApiKey
+                            process.env.BLOCKFROST_API_KEY
                         );
 
                         await walletAPI.getBalance().then(result => {

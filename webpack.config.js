@@ -31,5 +31,8 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.BLOCKFROST_API_KEY': JSON.stringify(process.env.BLOCKFROST_API_KEY)
         })
-    ]
+    ],
+    resolve: {
+        fallback: "buffer": require.resolve("buffer/")
+    }
 };

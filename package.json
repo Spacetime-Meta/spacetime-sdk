@@ -9,9 +9,11 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    
     "build": "npm run server_dep && webpack --mode production",
-    "start": "node server/server.js",
     "server_dep": "cd server && npm install & cd ..",
+    
+    "start": "node server/server.js",
 
     "local": "webpack serve --config ./webpack.config.js --mode development"
   },

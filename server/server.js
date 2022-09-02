@@ -37,14 +37,20 @@ server.listen((process.env.PORT || CONFIG.PORT), function () {
 const gr = require('./gameRoom/GameRoom.js');
 const WORLD_POOL = {};
 
-//┌─────────────────────────────────────────────────────────────────────────┐
-//│ Lobby Room                                                              │
-//└─────────────────────────────────────────────────────────────────────────┘
-
 WORLD_POOL["LOBBY"] = new gr.GameRoom({
     ID: "LOBBY",
     TERRAIN_URL: "./server/client/assets/devPlanet.obj" 
 });
+
+// Call hasura pour avoir l'info de spawn planet (0,0,0)
+
+// si config: execute
+// si link: go to link
+// else: default world
+
+// at links: read and save config
+
+// execute config
 
 //┌─────────────────────────────────────────────────────────────────────────┐
 //│ SocketIo setup                                                          │

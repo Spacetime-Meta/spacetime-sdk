@@ -9,10 +9,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production",
-    "start": "npm run server_dep && node server/server.js",
-    "cardano_dep": "cd src/cardano && npm install & cd ../..",
+    "build": "npm run server_dep && webpack --mode production",
+    "start": "node server/server.js",
     "server_dep": "cd server && npm install & cd ..",
+
     "local": "webpack serve --config ./webpack.config.js --mode development"
   },
   "repository": {

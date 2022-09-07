@@ -87,6 +87,10 @@ io.sockets.on('connection', (socket) => {
 //└─────────────────────────────────────────────────────────────────────────┘
 
 setInterval(() => {
+
+    // const used = process.memoryUsage().heapUsed / 1024 / 1024;
+    // console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
+
     for(var world in WORLD_POOL) {
         WORLD_POOL[world].update(1 / SERVER_CONFIG.TARGET_TPS)
     }

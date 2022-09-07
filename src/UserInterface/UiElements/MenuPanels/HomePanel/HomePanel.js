@@ -25,7 +25,7 @@ export class HomePanel extends UiElement {
                 width: "300px"
             }
         })
-        this.spaceTextLogo.element.src = "https://github.com/Spacetime-Meta/documentation/blob/main/src/NewTextLogo.png?raw=true";
+        this.spaceTextLogo.element.src = "https://raw.githubusercontent.com/Spacetime-Meta/documentation/main/src/NewTextLogo.png";
 
 
         this.appendChildList([ 

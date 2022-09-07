@@ -1,14 +1,6 @@
 const l = require('../utils/loader/Loader');
 const es = require('../environmentSimulator/EnvironmentSimulator');
 
-/**
- * The config must always contain the following
- * {
- *      ID: string,
- *      TERRAIN_URL: url,
- * }
-*/
-
 class GameRoom {
     constructor(config) {
         
@@ -20,11 +12,11 @@ class GameRoom {
 
     addPlayer(socket) {
         // save the location of the player in the socket so we can find him later
-        socket.room = this.config.ID;
+        socket.room = this.config.id;
 
         this.environmentSimulator.addPlayer(socket);
 
-        console.log(`[${this.config.ID}] Added player { id: ${socket.id} }`);
+        console.log(`[${this.config.id}] Added player { id: ${socket.id} }`);
     }
 
     removePlayer(socket) {
@@ -54,6 +46,7 @@ class GameRoom {
             }
         }
 
+        // send the game state to every player
         for (var player in this.environmentSimulator.playerList) {
             this.environmentSimulator.playerList[player].socket.emit("gameState", gameState);
         }

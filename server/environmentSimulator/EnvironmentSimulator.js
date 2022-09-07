@@ -4,6 +4,7 @@ const l = require('../utils/loader/Loader');
 const bu = require('../utils/BufferGeometryUtils');
 const b = require('../utils/three-mesh-bvh');
 const p = require('./PlayerSimulator');
+const t = require('./SquareWalkOnTriggerSimulator');
 
 /**
  * The config must always contain the following
@@ -25,11 +26,12 @@ const clock = new THREE.Clock();
 class EnvironmentSimulator {
     constructor(config) {
         this.config = config;
-        console.log(`[${this.config.ID} (ES)] Starting new simulation { terrain: ${config.TERRAIN_URL} }`);
+        console.log(`[${this.config.id} (ES)] Starting new simulation { terrain: ${this.config.socket.geometry} }`);
 
         // vars
         this.geometries = [];
         this.playerList = {};
+        this.interactives = [];
 
         const defaultOptions = {
             position: new THREE.Vector3(),
@@ -43,7 +45,7 @@ class EnvironmentSimulator {
 
         // THREE.GLTFLoader wrapper
         this.loader = new l.Loader();
-        this.loader.loadOBJ(config.TERRAIN_URL, (result) => {
+        this.loader.loadOBJ(this.config.socket.geometry, (result) => {
             this.handleLoadedTerrain(result, this.config);  
         })
     }
@@ -81,7 +83,33 @@ class EnvironmentSimulator {
         });
 
         this.terrain.traverse(object => {
+
             if (object.geometry && object.visible) {
+
+                if(object.name.substring(0,5) === "_stm_") {
+                    const type = object.name.substring(5).substring(0,object.name.substring(5).indexOf('_'));
+
+                    switch (type) {
+
+                        // case "spawnPoint": {
+                        //     VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.spawnPoint = object.position;
+                        //     VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.copy(object.position);
+                        // } break;
+
+                        case "portal": {
+                            const id = object.name.substring(12, 12 + object.name.substring(12).indexOf('_'))
+                            this.interactives.push( new t.SquareWalkOnTriggerSimulator(object, () => {
+                        
+                                console.log(`Officer, we have detected portal no${id}!`);
+
+                                // console.log(this.config);
+                            }) );
+                        } break;
+                    }
+                }
+
+
+
                 const cloned = object.geometry.clone();
                 cloned.applyMatrix4(object.matrixWorld);
                 for (const key in cloned.attributes) {
@@ -102,12 +130,16 @@ class EnvironmentSimulator {
         //     { lazyGeneration: false }
         // );
 
-        console.log(`[${this.config.ID}] Collider loaded`);
+        console.log(`[${this.config.id}] Collider loaded with ${this.interactives.length} interactive items`);
     }
 
     update(delta) {
         for(var player in this.playerList) {
             this.playerList[player].update(delta, this.collider);
+        }
+
+        for(var interactive in this.interactives) {
+            this.interactives[interactive].update(delta, this.playerList);
         }
     }
 }

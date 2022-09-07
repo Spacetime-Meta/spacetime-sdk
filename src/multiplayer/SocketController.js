@@ -36,6 +36,10 @@ export class SocketController {
             this.socket.id = data.id;
             console.log(`%c [Socket Controller] Connected to server as: ${this.socket.id}`, 'color:#bada55');
             VIRTUAL_ENVIRONMENT.UI_CONTROLLER.blockerScreen.menu.menuFooter.setIdDisplay(`Connected as: ${this.socket.id}`);
+
+            // this.socket.emit("intro", {
+            //     location
+            // })
         });
 
         this.socket.on("gameState", (data) => {

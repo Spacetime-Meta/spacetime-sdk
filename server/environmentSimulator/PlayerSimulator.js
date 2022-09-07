@@ -54,7 +54,8 @@ class PlayerSimulator extends c.CapsuleSimulator {
         
         // sometimes when loading we have a lot of 
         // keyframes that accumulates, just skip these frames
-        if(this.keyStack.length > 50) { 
+        // and pretend that it is not a problem
+        if(this.keyStack.length > 25) { 
             this.keyStack = [];
             return; 
         }
@@ -88,10 +89,18 @@ class PlayerSimulator extends c.CapsuleSimulator {
                 if (currentFrame.keys["d"]) {
                     this.horizontalVelocity.add(this.getSideVector(currentFrame.controlObject).multiplyScalar(this.speedFactor * subDelta));
                 }
+
                 if (currentFrame.keys[' '] && this.canJump) {
                     this.animation = ["jump", 0]
                     this.velocity.y = 10.0;
                 }
+
+                // the 'r' key should send the player back to the spawn
+                // point of the current world he is in
+                if (currentFrame.keys['r']) {
+                    this.position.set(0,3,0);
+                }
+
             } else {
                 this.isRunning = false;
                 this.horizontalVelocity.multiplyScalar(0);

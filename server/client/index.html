@@ -13,13 +13,14 @@
 
     <body>
         <!-- <script src="https://www.spacetimemeta.io/sdk/v1/bundle.min.js"></script> -->
-        <!-- <script src="http://localhost:8080/bundle.min.js"></script> -->
-        <script src="./client/build/bundle.min.js"></script>
+        <script src="http://localhost:8080/bundle.min.js"></script>
+        <!-- <script src="./client/build/bundle.min.js"></script> -->
         <script type="module">
 
             // start by initializing a virtual environment
             // const virtualEnvironment = new VirtualEnvironment("./client/configs/devPlanet.json");
-            const virtualEnvironment = new VirtualEnvironment("./client/configs/baseTemplate.json");
+            // const virtualEnvironment = new VirtualEnvironment("./client/configs/spawnPlanet.json");
+            const virtualEnvironment = new VirtualEnvironment();
 
             // start the animation loop
             animate();

@@ -31,12 +31,12 @@ export class VirtualEnvironment {
         this.initEnvironment();
 
         // execute the config if passed as raw object
-        if(typeof configPath === "object") {
+        if(typeof configPath === "object" && configPath !== null) {
             console.log(`%c [Virtual Environment] Executing raw config`, 'color:#bada55');
             this.executeConfig(configPath);
         } else {
 
-            // this will read a config file and customize
+            // this will find the corresponding config file and customize
             // the environment accordingly
             this.loadConfig(configPath);
         }
@@ -47,7 +47,6 @@ export class VirtualEnvironment {
         } else {
             console.log(`%c [Virtual Environment] Blockfrost key not found`, 'color:#bada55');
         }
-
 
     }
 
@@ -82,7 +81,29 @@ export class VirtualEnvironment {
 
     loadConfig(configPath) {
         if(typeof configPath === "undefined") {
-            console.warn(`%c [Virtual Environment] No config files specified`);
+            console.log(`%c [Virtual Environment] No config files specified, looking at query params for location`, 'color:#edad00');
+
+            const params = new Proxy(new URLSearchParams(window.location.search), {
+                get: (searchParams, prop) => searchParams.get(prop),
+            });
+
+            let location = params.location;
+            if(typeof location === "object" && location !== null) {
+                console.log(location);
+                console.log(`%c [Virtual Environment] Reading configuration for chunk: ${location}`, 'color:#bada55');
+
+                
+                
+            } else {
+                console.log(`%c [Virtual Environment] No location found, defaulting to spawn planet`, 'color:#edad00');
+                fetch("./client/configs/spawnPlanet.json")
+                    .then( (response) => { return response.json(); } )
+                    .then( (configObject) => { 
+                        this.executeConfig(configObject); 
+                    } );
+            }
+            
+
         } else {
             if(this.lastConfig !== configPath) {
                 

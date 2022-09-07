@@ -33,7 +33,7 @@ class MenuHeader extends UiElement {
             }
         })
 
-        this.chatPanelButton = new MenuHeaderButtons("chat", this);
+        // this.chatPanelButton = new MenuHeaderButtons("chat", this);
         this.peerToPeerPanelButton = new MenuHeaderButtons("multiplayer", this);
         this.peerToPeerPanelButton.element.style.display = "none";
         this.avatarPanelButton = new MenuHeaderButtons("avatar", this);
@@ -50,7 +50,7 @@ class MenuHeader extends UiElement {
 
         this.optionList.appendChildList([
             this.homePanelButton,
-            this.chatPanelButton,
+            // this.chatPanelButton,
             this.peerToPeerPanelButton,
             this.avatarPanelButton,
             this.optionsPanelButton,
@@ -70,10 +70,10 @@ class MenuHeader extends UiElement {
                 this.homePanelButton.element.style.background = "#c8c8c8";
                 this.homePanelButton.options.style.background = "#c8c8c8";
                 break;
-            case "chat":
-                this.chatPanelButton.element.style.background = "#c8c8c8";
-                this.chatPanelButton.options.style.background = "#c8c8c8";
-                break;
+            // case "chat":
+            //     this.chatPanelButton.element.style.background = "#c8c8c8";
+            //     this.chatPanelButton.options.style.background = "#c8c8c8";
+            //     break;
             case "multiplayer":
                 this.peerToPeerPanelButton.element.style.background = "#c8c8c8";
                 this.peerToPeerPanelButton.options.style.background = "#c8c8c8";
@@ -107,8 +107,8 @@ class MenuHeader extends UiElement {
     }
 
     closeAllHeaders() {
-        this.chatPanelButton.element.style.background = "#e0e0e0";
-        this.chatPanelButton.options.style.background = "#e0e0e0";
+        // this.chatPanelButton.element.style.background = "#e0e0e0";
+        // this.chatPanelButton.options.style.background = "#e0e0e0";
         this.peerToPeerPanelButton.element.style.background = "#e0e0e0";
         this.peerToPeerPanelButton.options.style.background = "#e0e0e0";
         this.avatarPanelButton.element.style.background = "#e0e0e0";

@@ -1,16 +1,17 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
+var fs = require('fs');
 
-/**
- * The config must always contain the following
- * {
- *      PORT: number,
- *      ID: string,
- *      TARGET_TPS: number,
- * }
-*/
-const CONFIG = require('./config.js');
+const SERVER_CONFIG = {
+    PORT: 2000,
+    ID: "STM MAIN SERVER",
+    TARGET_TPS: 10,
+    DEFAULT_WORLD: {
+        CHUNK_LOCATION: "0,0,0", 
+        CONFIG: "./server/client/configs/spawnPlanet.json",
+    }
+}
 
 //┌─────────────────────────────────────────────────────────────────────────┐
 //│ Start Express Server                                                    │
@@ -26,8 +27,8 @@ app.get('/', function (request, response) {
 app.use('/client', express.static(__dirname + '/client'));
 
 // the server will listen to port from config file
-server.listen((process.env.PORT || CONFIG.PORT), function () {
-    console.log(`[${CONFIG.ID}] Server started on port: ${CONFIG.PORT}`);
+server.listen((process.env.PORT || SERVER_CONFIG.PORT), function () {
+    console.log(`[${SERVER_CONFIG.ID}] Server started on port: ${SERVER_CONFIG.PORT}`);
 });
 
 //┌─────────────────────────────────────────────────────────────────────────┐
@@ -37,40 +38,37 @@ server.listen((process.env.PORT || CONFIG.PORT), function () {
 const gr = require('./gameRoom/GameRoom.js');
 const WORLD_POOL = {};
 
-WORLD_POOL["LOBBY"] = new gr.GameRoom({
-    ID: "LOBBY",
-    TERRAIN_URL: "./server/client/assets/devPlanet.obj" 
-});
+// load the default world config
+let rawData = fs.readFileSync(SERVER_CONFIG.DEFAULT_WORLD.CONFIG);
+const SPAWN_CONFIG = JSON.parse(rawData);
 
-// Call hasura pour avoir l'info de spawn planet (0,0,0)
+// assign the id
+SPAWN_CONFIG.id = SERVER_CONFIG.DEFAULT_WORLD.CHUNK_LOCATION;
 
-// si config: execute
-// si link: go to link
-// else: default world
-
-// at links: read and save config
-
-// execute config
+// always init the spawn planet as it is the default world
+WORLD_POOL[SPAWN_CONFIG.id] = new gr.GameRoom(SPAWN_CONFIG);
 
 //┌─────────────────────────────────────────────────────────────────────────┐
 //│ SocketIo setup                                                          │
 //└─────────────────────────────────────────────────────────────────────────┘
 
 const io = require('socket.io')(server, {});
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', (socket) => {
 
     // give unique id to the socket connection
     socket.id = Math.round(Math.random() * 0xffffff);
-    console.log(`[${CONFIG.ID}] New socket connection { id: ${socket.id} }`);
+    console.log(`[${SERVER_CONFIG.ID}] New socket connection { id: ${socket.id} }`);
     socket.emit("intro", {id: socket.id});
 
     socket.on("disconnect", () => {
-        console.log(`[${CONFIG.ID}] Disconnected socket { id: ${socket.id} }`);
+        console.log(`[${SERVER_CONFIG.ID}] Disconnected socket { id: ${socket.id} }`);
         WORLD_POOL[socket.room].removePlayer(socket);
     });
 
+    // socket.on("intro")
+
     // send user to the LOBBY room
-    WORLD_POOL["LOBBY"].addPlayer(socket);
+    WORLD_POOL[SPAWN_CONFIG.id].addPlayer(socket);
 });
 
 //┌─────────────────────────────────────────────────────────────────────────┐
@@ -79,6 +77,6 @@ io.sockets.on('connection', function (socket) {
 
 setInterval(() => {
     for(var world in WORLD_POOL) {
-        WORLD_POOL[world].update(1 / CONFIG.TARGET_TPS)
+        WORLD_POOL[world].update(1 / SERVER_CONFIG.TARGET_TPS)
     }
-}, 1000 / CONFIG.TARGET_TPS);
+}, 1000 / SERVER_CONFIG.TARGET_TPS);

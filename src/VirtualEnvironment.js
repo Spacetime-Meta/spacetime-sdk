@@ -89,13 +89,17 @@ export class VirtualEnvironment {
 
             let location = params.location;
             if(typeof location === "object" && location !== null) {
-                console.log(location);
-                console.log(`%c [Virtual Environment] Reading configuration for chunk: ${location}`, 'color:#bada55');
 
+                this.location = location;
+                
+                console.log(`%c [Virtual Environment] Reading configuration for chunk: ${location}`, 'color:#bada55');
                 
                 
             } else {
                 console.log(`%c [Virtual Environment] No location found, defaulting to spawn planet`, 'color:#edad00');
+                
+                this.location = "0,0,0";
+                
                 fetch("./client/configs/spawnPlanet.json")
                     .then( (response) => { return response.json(); } )
                     .then( (configObject) => { 

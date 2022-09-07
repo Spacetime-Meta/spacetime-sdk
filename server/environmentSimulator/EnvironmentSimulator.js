@@ -100,7 +100,7 @@ class EnvironmentSimulator {
                             const id = object.name.substring(12, 12 + object.name.substring(12).indexOf('_'))
                             this.interactives.push( new t.SquareWalkOnTriggerSimulator(object, () => {
                         
-                                console.log(`Officer, we have detected portal no${id}!`);
+                                // console.log(`Officer, we have detected portal no${id}!`);
 
                                 // console.log(this.config);
                             }) );

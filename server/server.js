@@ -65,10 +65,21 @@ io.sockets.on('connection', (socket) => {
         WORLD_POOL[socket.room].removePlayer(socket);
     });
 
-    // socket.on("intro")
+    socket.on("intro", (data) => {
 
-    // send user to the LOBBY room
-    WORLD_POOL[SPAWN_CONFIG.id].addPlayer(socket);
+        // add user to the given world
+        if(WORLD_POOL[data.location]) {
+            WORLD_POOL[data.location].addPlayer(socket);
+        } else {
+
+            // get config of the specified world
+
+            // create new game room
+
+            // add player to this new game room
+
+        }
+    })
 });
 
 //┌─────────────────────────────────────────────────────────────────────────┐

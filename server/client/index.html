@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <title>STADA</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Space+Mono&display=swap" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <!-- <script src="https://www.spacetimemeta.io/sdk/v1/bundle.min.js"></script> -->
+        <script src="http://localhost:8080/bundle.min.js"></script>
+        <!-- <script src="./client/build/bundle.min.js"></script> -->
+        <script type="module">
+
+            // start by initializing a virtual environment
+            // const virtualEnvironment = new VirtualEnvironment("./client/configs/devPlanet.json");
+            // const virtualEnvironment = new VirtualEnvironment("./client/configs/spawnPlanet.json");
+            const virtualEnvironment = new VirtualEnvironment();
+
+            // start the animation loop
+            animate();
+            function animate() {
+                VIRTUAL_ENVIRONMENT.update();
+                requestAnimationFrame(animate);
+            }
+
+        </script>
+
+    </body>
+    
+</html>

@@ -20,7 +20,7 @@ export class UiController {
         this.isTouchScreen = false;
 
         // references
-        this.connectionsManagementDisplay = this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay;
+        this.connectionsManagementDisplay = this.blockerScreen.menu.menuDisplay.peerToPeerPanel.connectionsManagementDisplay;
         
         this.updatable = [];
         this.updatable.push(this.connectionsManagementDisplay);
@@ -32,6 +32,7 @@ export class UiController {
     handleControlsLock() {
         if(this.isTouchScreen) {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("mobile");
+            this.joystick.element.style.display = "block";
         } else {
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.setupControls("keyboardMouse");
             VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.controls.lock();
@@ -43,6 +44,10 @@ export class UiController {
     }
 
     handleControlsUnlock() {
+        if(this.isTouchScreen) {
+            this.joystick.element.style.display = "none";
+        }
+        
         this.blockerScreen.element.style.display = "grid";
         this.playScreen.element.style.display = "none";
     }
@@ -52,7 +57,7 @@ export class UiController {
     }
 
     handleConnectionClose(peerId) {
-        this.blockerScreen.menu.menuDisplay.multiplayerPanel.connectionsManagementDisplay.handleConnectionClose(peerId);
+        this.blockerScreen.menu.menuDisplay.peerToPeerPanel.connectionsManagementDisplay.handleConnectionClose(peerId);
     }
 
     setupTimer() {
@@ -69,6 +74,10 @@ export class UiController {
         // creates and add the joystick
         this.joystick = new Joystick();
         document.body.appendChild(this.joystick.element);
+    }
+
+    togglePeerToPeer() {
+        this.blockerScreen.menu.menuHeader.togglePeerToPeer()
     }
 
     update(delta) {

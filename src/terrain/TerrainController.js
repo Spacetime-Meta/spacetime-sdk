@@ -114,7 +114,9 @@ export class TerrainController {
 
                             case "stopTime": {
                                 this.interactives.push( new SquareWalkOnTrigger(mesh, () => {
-                                    VIRTUAL_ENVIRONMENT.UI_CONTROLLER.playScreen.timerBox.stopTimer()
+                                    if(VIRTUAL_ENVIRONMENT.UI_CONTROLLER.playScreen.timerBox) {
+                                        VIRTUAL_ENVIRONMENT.UI_CONTROLLER.playScreen.timerBox.stopTimer()
+                                    }
                                 }) );
                             } break;
 

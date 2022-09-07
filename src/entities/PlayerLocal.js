@@ -1,4 +1,4 @@
-import { Vector3, Vector4, Matrix4, Raycaster } from 'three';
+import { Vector3, Vector4, Matrix4, Raycaster, Mesh, BoxGeometry } from 'three';
 
 import { CapsuleEntity } from "./CapsuleEntity.js";
 import { AvatarController } from './AvatarController.js';
@@ -7,6 +7,8 @@ import { KeyMouseControls } from '../controls/KeyMouseControls.js';
 import { MobileControls } from '../controls/MobileControls.js';
 
 const UP_VECTOR = new Vector3(0, 1, 0);
+
+const tempVector = new Vector3();
 
 const PLAYER_DIMENSIONS = {
     HEIGHT: 1.5,
@@ -25,6 +27,11 @@ class PlayerLocal extends CapsuleEntity {
         this.spawnPoint = new Vector3();
         
         this.visible = false;
+
+        // transform according to the server. 
+        // should always be undefined when the server 
+        // does not respond
+        this.serverTransform = undefined;
 
         // set the keyboard as default so we ca start the loop
         this.controls = new KeyMouseControls();
@@ -66,6 +73,35 @@ class PlayerLocal extends CapsuleEntity {
         }
     }
 
+    updateCurrentAnimation(keys) {
+        if (this.lastPosition) {
+            this.positionChange.multiplyScalar(0.8);
+            this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
+        }
+        this.lastPosition = this.position.clone();
+
+        if(this.onGround) {
+            if (keys["w"] || keys["s"] || keys["a"] || keys["d"]) {
+                if(this.controls.isRunning){ 
+                    this.setAnimationParameters("run"); 
+                } else { 
+                    this.setAnimationParameters("walk"); 
+                }
+            } else {
+                this.setAnimationParameters("idle");
+            }
+        } else {
+            if(this.positionChange.y < -3) {
+                this.setAnimationParameters("fall", 0.25);
+            }
+        }
+    }
+
+    setAnimationParameters(anim, time = 0.5) {
+        this.currentAnimation = anim;
+        this.currentAnimationTime = time;
+    }
+
     update(delta) {
 
         // the getKeys will convert joystick/vr inputs to key inputs
@@ -103,8 +139,14 @@ class PlayerLocal extends CapsuleEntity {
 
         for(let i=0; i<5; i++){
             super.update(delta/5);
-        }  
+        }
+        
+        // smoothly drifts towards server position
+        if(this.serverTransform) {
+            this.position.lerp(this.serverTransform, 0.02)
+        } 
 
+        // reset position if player falls under the map
         if (this.position.y < -20) {
             this.position.set(this.spawnPoint.x, this.spawnPoint.y, this.spawnPoint.z);
             this.velocity = new Vector3();
@@ -115,37 +157,22 @@ class PlayerLocal extends CapsuleEntity {
             this.avatarController.update(delta, this.position, this.horizontalVelocity, this.currentAnimation, this.currentAnimationTime);
         }
 
+        // emit information to the server
+        if(VIRTUAL_ENVIRONMENT.socketController) {
+            
+            const data = { keys: keys }
+            
+            if(this.controls.TYPE === "mobile") {
+                data.controlObject = this.controls.getControlObject();
+            } else {
+                data.controlObject = VIRTUAL_ENVIRONMENT.camera.controlObject.getWorldDirection(tempVector);
+            }
+                
+            VIRTUAL_ENVIRONMENT.socketController.socket.emit("keys", data);
+        }
+        
         // update the control object
         this.controls.update();
-    }
-
-    updateCurrentAnimation(keys) {
-        if (this.lastPosition) {
-            this.positionChange.multiplyScalar(0.8);
-            this.positionChange.addScaledVector(this.position.clone().sub(this.lastPosition), 0.2);
-        }
-        this.lastPosition = this.position.clone();
-
-        if(this.onGround) {
-            if (keys["w"] || keys["s"] || keys["a"] || keys["d"]) {
-                if(this.controls.isRunning){ 
-                    this.setAnimationParameters("run"); 
-                } else { 
-                    this.setAnimationParameters("walk"); 
-                }
-            } else {
-                this.setAnimationParameters("idle");
-            }
-        } else {
-            if(this.positionChange.y < -3) {
-                this.setAnimationParameters("fall", 0.25);
-            }
-        }
-    }
-
-    setAnimationParameters(anim, time = 0.5) {
-        this.currentAnimation = anim;
-        this.currentAnimationTime = time;
     }
 }
 

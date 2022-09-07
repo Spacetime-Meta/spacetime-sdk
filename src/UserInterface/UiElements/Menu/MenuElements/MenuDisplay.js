@@ -1,10 +1,11 @@
 import { UiElement } from "../../UiElement.js";
 
 import { ChatPanel } from "../../MenuPanels/ChatPanel/ChatPanel.js";
-import { MultiplayerPanel } from "../../MenuPanels/MultiplayerPanel/MultiplayerPanel.js";
+import { PeerToPeerPanel } from "../../MenuPanels/PeerToPeerPanel/PeerToPeerPanel.js";
 import { AvatarPanel } from "../../MenuPanels/AvatarPanel/AvatarPanel.js";
 import { OptionsPanel } from "../../MenuPanels/OptionsPanel/OptionsPanel.js";
 import { MapPanel } from "../../MenuPanels/MapPanel/MapPanel.js";
+import { HomePanel } from "../../MenuPanels/HomePanel/HomePanel.js";
 
 class MenuDisplay extends UiElement {
     constructor() {
@@ -16,14 +17,16 @@ class MenuDisplay extends UiElement {
         })
         
         this.chatPanel = new ChatPanel();
-        this.multiplayerPanel = new MultiplayerPanel();
+        this.peerToPeerPanel = new PeerToPeerPanel();
         this.avatarPanel = new AvatarPanel();
         this.optionsPanel = new OptionsPanel();
         this.mapPanel = new MapPanel();
+        this.homePanel = new HomePanel();
 
         this.appendChildList([
+            this.homePanel,
             this.chatPanel,
-            this.multiplayerPanel,
+            this.peerToPeerPanel,
             this.avatarPanel,
             this.optionsPanel,
             this.mapPanel
@@ -37,13 +40,16 @@ class MenuDisplay extends UiElement {
                 this.chatPanel.element.style.display = "grid";
                 break;
             case "multiplayer":
-                this.multiplayerPanel.element.style.display = "block";
+                this.peerToPeerPanel.element.style.display = "block";
                 break;
             case "avatar":
                 this.avatarPanel.element.style.display = "block";
                 break;
             case "options":
                 this.optionsPanel.element.style.display = "block";
+                break;
+            case "home":
+                this.homePanel.element.style.display = "block";
                 break;
             case "map":
                 this.mapPanel.element.style.display = "flex";
@@ -56,10 +62,11 @@ class MenuDisplay extends UiElement {
 
     closeAllPanels() {
         this.chatPanel.element.style.display = "none";
-        this.multiplayerPanel.element.style.display = "none";
+        this.peerToPeerPanel.element.style.display = "none";
         this.avatarPanel.element.style.display = "none";
         this.optionsPanel.element.style.display = "none";
         this.mapPanel.element.style.display = "none";
+        this.homePanel.element.style.display = "none";
     }
 }
 export { MenuDisplay }

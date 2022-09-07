@@ -15,6 +15,7 @@ export class CapsuleEntity extends Object3D {
         this.canJump = false;
         this.gravity = -20;
         this.segment = new Line3(new Vector3(), new Vector3(0, -size, 0.0));
+        console.log(this.segment);
 
         this.raycaster = new Raycaster();
         this.raycaster.set(this.position, downVector);
@@ -59,7 +60,7 @@ export class CapsuleEntity extends Object3D {
 
         const tempVector = new Vector3();
         const tempVector2 = new Vector3();
-        collider.geometry.boundsTree.shapecast({
+        collider.bvh.shapecast({
 
             intersectsBounds: box => box.intersectsBox(tempBox),
 
@@ -95,6 +96,7 @@ export class CapsuleEntity extends Object3D {
         // evaluate if the player is grounded
         this.onGround = deltaVector.y > Math.abs(delta * this.velocity.y * 0.25);
 
+
         if (this.onGround) {
             this.velocity.set(0, 0, 0);
         } else {
@@ -104,6 +106,7 @@ export class CapsuleEntity extends Object3D {
         
         // evaluate if the player is close to the ground
         this.raycaster.set(tempSegment.start, downVector);
+        // console.log(tempSegment.start);
         this.raycaster.ray.applyMatrix4(tempMat)
         const hit = collider.bvh.raycastFirst( this.raycaster.ray );
 
@@ -126,6 +129,7 @@ export class CapsuleEntity extends Object3D {
         if(VIRTUAL_ENVIRONMENT.terrainController.collider) {
             // make the player fall if he is not grounded 
             this.velocity.y += this.onGround ? 0 : delta * this.gravity;
+
             this.position.addScaledVector(this.velocity, delta);
             
             this.collisionLogic(delta, VIRTUAL_ENVIRONMENT.terrainController.collider); 

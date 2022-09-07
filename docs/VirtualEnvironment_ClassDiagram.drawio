@@ -27,7 +27,7 @@
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-44" value="VirtualEnvironment" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
                     <mxGeometry x="1835" y="-44.5" width="326" height="396" as="geometry"/>
                 </mxCell>
-                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-45" value="scene: THREE.Scene&#10;renderer:THREE.WebGLRenderer&#10;camera:THREE.PerspectiveCamera&#10;light:THREE.HemisphereLight&#10;controls: THREE.PointerLockControls&#10;player: PlayerLocal&#10;otherPlayer: [PlayerAvatar]&#10;shadowLight: Object&#10;remoteController: RemoteController" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
+                <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-45" value="scene: THREE.Scene&#10;renderer:THREE.WebGLRenderer&#10;camera:THREE.PerspectiveCamera&#10;light:THREE.HemisphereLight&#10;controls: THREE.PointerLockControls&#10;player: PlayerLocal&#10;otherPlayer: [PlayerAvatar]&#10;shadowLight: Object&#10;peerJsController: PeerJsController" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
                     <mxGeometry y="26" width="326" height="144" as="geometry"/>
                 </mxCell>
                 <mxCell id="7TFr1C6rGWP-Rq-zpPYZ-46" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="7TFr1C6rGWP-Rq-zpPYZ-44" vertex="1">
@@ -294,7 +294,7 @@
                         <mxPoint x="2157" y="114" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="22" value="RemoteController" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
+                <mxCell id="22" value="PeerJsController" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
                     <mxGeometry x="1471" y="76" width="229" height="340" as="geometry"/>
                 </mxCell>
                 <mxCell id="23" value="peer: PeerJs.Peer&#10;connections: [PeerJs.Connection]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="22" vertex="1">

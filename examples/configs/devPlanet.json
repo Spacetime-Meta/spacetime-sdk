@@ -14,5 +14,6 @@
             "mapping": { "walk": 0, "idle": 1, "run": 2, "jump": 3, "fall": 3 },
             "scaleFactor": 0.2
         }
-    }
+    },
+    "socket": {}
 }

@@ -1,0 +1,12 @@
+{
+    "version": 1,
+    "terrain": {
+        "url": "./client/assets/spawnPlanet.glb",
+        "portalMap": {
+            "0": "-30,11,-11"
+        } 
+    },
+    "socket": {
+        "geometry": "./server/client/assets/spawnPlanet.obj"
+    }
+}

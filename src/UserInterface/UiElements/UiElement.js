@@ -54,4 +54,8 @@ export class UiElement {
             this.element.appendChild(uiElement.element);
         })
     }
+
+    removeChild(uiElement) {
+        this.element.removeChild(uiElement.element);
+    }
 }

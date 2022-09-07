@@ -48,7 +48,7 @@ export class KeyMouseControls extends PointerLockControls {
                 }
 
                 if (event.key === "r") {
-                    this.position.set( 
+                    VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.position.set( 
                         VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.spawnPoint.x, 
                         VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.spawnPoint.y, 
                         VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.spawnPoint.z, 

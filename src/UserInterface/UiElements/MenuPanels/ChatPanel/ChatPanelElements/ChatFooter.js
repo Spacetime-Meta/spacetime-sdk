@@ -42,7 +42,7 @@ class ChatFooter extends UiElement {
         const message = this.inputBar.element.value;
         if(message !== ""){
             this.inputBar.element.value = "";
-            VIRTUAL_ENVIRONMENT.remoteController.sendChatMessage(message);
+            VIRTUAL_ENVIRONMENT.peerJsController.sendChatMessage(message);
         }
     }
 
@@ -50,7 +50,7 @@ class ChatFooter extends UiElement {
         const sessionId = this.inputBar.element.value;
         if(sessionId !== ""){
             this.inputBar.element.value = "";
-            VIRTUAL_ENVIRONMENT.remoteController.createRoom(sessionId);
+            VIRTUAL_ENVIRONMENT.peerJsController.createRoom(sessionId);
         }
     }
 }

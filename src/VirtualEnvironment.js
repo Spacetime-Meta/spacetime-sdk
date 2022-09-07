@@ -4,7 +4,8 @@ import Stats from './util/Stats.module.js';
 
 import { PlayerLocal } from './entities/PlayerLocal.js';
 import { TerrainController } from './terrain/TerrainController.js';
-import { RemoteController } from './util/RemoteController.js';
+import { PeerJsController } from './multiplayer/PeerJsController.js';
+import { SocketController } from './multiplayer/SocketController.js';
 import { UiController } from './UserInterface/UiController.js';
 import { DefaultScene } from "./render/DefaultScene.js";
 import { DefaultCamera } from "./render/DefaultCamera.js";
@@ -23,7 +24,6 @@ export class VirtualEnvironment {
         window.VIRTUAL_ENVIRONMENT = this;
         
         // vars
-        this.isConfigCompleted = false;
         this.portalMap = {};
         this.updatableObjects = [];
         
@@ -31,18 +31,22 @@ export class VirtualEnvironment {
         this.initEnvironment();
 
         // execute the config if passed as raw object
-        if(typeof configPath === "object") {
+        if(typeof configPath === "object" && configPath !== null) {
+            console.log(`%c [Virtual Environment] Executing raw config`, 'color:#bada55');
             this.executeConfig(configPath);
         } else {
 
-            // this will read a config file and customize
+            // this will find the corresponding config file and customize
             // the environment accordingly
             this.loadConfig(configPath);
         }
         
-
-        // this will allow connection to cardano wallets
-        this.cardanoConnector = new CardanoConnector();
+        if(process.env.BLOCKFROST_API_KEY) {
+            // this will allow connection to cardano wallets
+            this.cardanoConnector = new CardanoConnector();
+        } else {
+            console.log(`%c [Virtual Environment] Blockfrost key not found`, 'color:#bada55');
+        }
 
     }
 
@@ -72,14 +76,38 @@ export class VirtualEnvironment {
 
         // player local will load the default spacetime avatar
         this.LOCAL_PLAYER = new PlayerLocal();
-
-        // ===== setupMultiplayer =====
-        this.remoteController = new RemoteController(this.loadingManager, this.MAIN_SCENE);
+        
     }
 
     loadConfig(configPath) {
         if(typeof configPath === "undefined") {
-            console.warn(`%c [Virtual Environment] No config files specified`);
+            console.log(`%c [Virtual Environment] No config files specified, looking at query params for location`, 'color:#edad00');
+
+            const params = new Proxy(new URLSearchParams(window.location.search), {
+                get: (searchParams, prop) => searchParams.get(prop),
+            });
+
+            let location = params.location;
+            if(typeof location === "object" && location !== null) {
+
+                this.location = location;
+                
+                console.log(`%c [Virtual Environment] Reading configuration for chunk: ${location}`, 'color:#bada55');
+                
+                
+            } else {
+                console.log(`%c [Virtual Environment] No location found, defaulting to spawn planet`, 'color:#edad00');
+                
+                this.location = "0,0,0";
+                
+                fetch("./client/configs/spawnPlanet.json")
+                    .then( (response) => { return response.json(); } )
+                    .then( (configObject) => { 
+                        this.executeConfig(configObject); 
+                    } );
+            }
+            
+
         } else {
             if(this.lastConfig !== configPath) {
                 
@@ -90,7 +118,6 @@ export class VirtualEnvironment {
                     fetch(configPath)
                         .then( (response) => { return response.json(); } )
                         .then( (configObject) => { 
-                            this.configObject = configObject;
                             this.executeConfig(configObject); 
                         } );
                 
@@ -149,8 +176,29 @@ export class VirtualEnvironment {
             console.error('[Virtual Environment] "terrain" is a mandatory parameter, add it to your configuration:\n"terrain": {"url": "<url to your terrain.glb>"}');
         }
 
+        if(typeof configObject.socket !== "undefined") {
+            if(typeof this.socketController === "undefined") {
+                this.socketController = new SocketController();
+            } else {
+                // execute config
+            }
+            
+        } else {
+
+            // if a socket controller already exist we must disconnect
+            // and destroy the controller
+            if(this.socketController) {
+                this.socketController.socket.disconnect();
+                delete this.socketController;
+            }
+        }
 
         this.UI_CONTROLLER.blockerScreen.menu.menuDisplay.optionsPanel.synchronize();
+    }
+
+    activatePeerToPeer() {
+        // ===== setup peer to peer Multiplayer =====
+        this.peerJsController = new PeerJsController();
     }
 
     toggleStats() {

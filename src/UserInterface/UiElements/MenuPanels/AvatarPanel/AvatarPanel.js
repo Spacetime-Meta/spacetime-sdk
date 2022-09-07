@@ -13,6 +13,8 @@ export class AvatarPanel extends UiElement {
             }
         })
 
+        this.avatarButtonList = [];
+
         this.appendChild(new UiElement({
             innerHTML: "Select an Avatar",
             style: {
@@ -25,12 +27,18 @@ export class AvatarPanel extends UiElement {
         }));
     }
 
-    addNewAvatarButton(name, meshSource, animationSource, animationMapping) {
-        this.appendChild( new AvatarSelectButton(
-            name,
-            meshSource,
-            animationSource,
-            animationMapping
-        ))
+    addNewAvatarButton(options) {
+        if(!this.avatarButtonList.includes(options.name+options.mesh)) {
+            const newButton = new AvatarSelectButton(options);
+            this.avatarButtonList.push(options.name+options.mesh);
+            this.appendChild(newButton);
+        }
+    }
+
+    clear() {
+        this.avatarButtonList.forEach(avatarButton => {
+            this.removeElement(avatarButton);
+        });
+        this.avatarButtonList = [];
     }
 }

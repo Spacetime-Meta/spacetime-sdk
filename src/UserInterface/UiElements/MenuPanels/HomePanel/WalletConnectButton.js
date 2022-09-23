@@ -1,9 +1,9 @@
-import { UiElement } from "../../../UiElement.js";
+import { UiElement } from "../../UiElement.js";
 
-export class AvatarSelectButton extends UiElement {
-    constructor(options) {
+export class WalletConnectButton extends UiElement {
+    constructor(walletName) {
         super({
-            innerHTML: options.name,
+            innerHTML: walletName,
             style: {
                 padding: "10px",
                 margin: "10px",
@@ -18,9 +18,9 @@ export class AvatarSelectButton extends UiElement {
             hover: {
                 background: "#d8d8d8"
             },
-            onClick: ()=>{
-                VIRTUAL_ENVIRONMENT.LOCAL_PLAYER.avatarController.changeAvatar(options);
+            onClick: () => {
+                VIRTUAL_ENVIRONMENT.cardanoConnector.connect(walletName);
             }
-        })
+        });
     }
 }

@@ -3,6 +3,7 @@ import { UiElement } from "../../UiElement.js";
 import { ChatPanel } from "../../MenuPanels/ChatPanel/ChatPanel.js";
 import { PeerToPeerPanel } from "../../MenuPanels/PeerToPeerPanel/PeerToPeerPanel.js";
 import { AvatarPanel } from "../../MenuPanels/AvatarPanel/AvatarPanel.js";
+import { WalletPanel } from "../../MenuPanels/WalletPanel/WalletPanel.js";
 import { OptionsPanel } from "../../MenuPanels/OptionsPanel/OptionsPanel.js";
 import { MapPanel } from "../../MenuPanels/MapPanel/MapPanel.js";
 import { HomePanel } from "../../MenuPanels/HomePanel/HomePanel.js";
@@ -19,6 +20,7 @@ class MenuDisplay extends UiElement {
         this.chatPanel = new ChatPanel();
         this.peerToPeerPanel = new PeerToPeerPanel();
         this.avatarPanel = new AvatarPanel();
+        this.walletPanel = new WalletPanel();
         this.optionsPanel = new OptionsPanel();
         this.mapPanel = new MapPanel();
         this.homePanel = new HomePanel();
@@ -28,6 +30,7 @@ class MenuDisplay extends UiElement {
             this.chatPanel,
             this.peerToPeerPanel,
             this.avatarPanel,
+            this.walletPanel,
             this.optionsPanel,
             this.mapPanel
         ])
@@ -44,6 +47,9 @@ class MenuDisplay extends UiElement {
                 break;
             case "avatar":
                 this.avatarPanel.element.style.display = "block";
+                break;
+            case "wallet":
+                this.walletPanel.element.style.display = "block";
                 break;
             case "options":
                 this.optionsPanel.element.style.display = "block";
@@ -64,6 +70,7 @@ class MenuDisplay extends UiElement {
         this.chatPanel.element.style.display = "none";
         this.peerToPeerPanel.element.style.display = "none";
         this.avatarPanel.element.style.display = "none";
+        this.walletPanel.element.style.display = "none";
         this.optionsPanel.element.style.display = "none";
         this.mapPanel.element.style.display = "none";
         this.homePanel.element.style.display = "none";

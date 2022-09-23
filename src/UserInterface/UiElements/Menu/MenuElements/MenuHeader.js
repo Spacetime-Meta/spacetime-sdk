@@ -34,13 +34,16 @@ class MenuHeader extends UiElement {
         })
 
         // this.chatPanelButton = new MenuHeaderButtons("chat", this);
+        
         this.peerToPeerPanelButton = new MenuHeaderButtons("multiplayer", this);
         this.peerToPeerPanelButton.element.style.display = "none";
+
         this.avatarPanelButton = new MenuHeaderButtons("avatar", this);
         this.optionsPanelButton = new MenuHeaderButtons("options", this);
         this.mapPanelButton = new MenuHeaderButtons("map", this);
         this.homePanelButton = new MenuHeaderButtons("home", this);
-        
+        this.walletPanelButton = new MenuHeaderButtons("wallet", this);
+
         this.optionList = new UiElement({
             style: {
                 display: "none",
@@ -53,6 +56,7 @@ class MenuHeader extends UiElement {
             // this.chatPanelButton,
             this.peerToPeerPanelButton,
             this.avatarPanelButton,
+            this.walletPanelButton,
             this.optionsPanelButton,
             this.mapPanelButton,
         ])
@@ -81,6 +85,10 @@ class MenuHeader extends UiElement {
             case "avatar":
                 this.avatarPanelButton.element.style.background = "#c8c8c8";
                 this.avatarPanelButton.options.style.background = "#c8c8c8";
+                break;
+            case "wallet":
+                this.walletPanelButton.element.style.background = "#c8c8c8";
+                this.walletPanelButton.options.style.background = "#c8c8c8";
                 break;
             case "options":
                 this.optionsPanelButton.element.style.background = "#c8c8c8";
@@ -113,6 +121,8 @@ class MenuHeader extends UiElement {
         this.peerToPeerPanelButton.options.style.background = "#e0e0e0";
         this.avatarPanelButton.element.style.background = "#e0e0e0";
         this.avatarPanelButton.options.style.background = "#e0e0e0";
+        this.walletPanelButton.element.style.background = "#e0e0e0";
+        this.walletPanelButton.options.style.background = "#e0e0e0";
         this.optionsPanelButton.element.style.background = "#e0e0e0";
         this.optionsPanelButton.options.style.background = "#e0e0e0";
         this.mapPanelButton.element.style.background = "#e0e0e0";

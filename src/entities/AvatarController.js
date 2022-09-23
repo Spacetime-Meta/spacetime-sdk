@@ -59,6 +59,7 @@ class AvatarController extends THREE.Object3D {
     }
 
     changeAvatar(params) {
+        console.log(`%c [Avatar Controller] Loading new avatar: ${params.name}`, 'color:#bada55');
         this.loadAvatar(params, () => this.loadAnimations(params.animations, params.mapping));
     }
 

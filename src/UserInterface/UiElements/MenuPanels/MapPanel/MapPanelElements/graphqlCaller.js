@@ -137,7 +137,7 @@ async function getSpaceSector(minX, maxX, minY, maxY, minZ, maxZ) {
         if(entry.portal !== "") {
           spaceState[entry.loc]['portal'] = entry.portal
         } else {
-            spaceState[entry.loc]['portal'] = `${window.location.origin}/metaverse/planet/?x=${entry.loc.split(',')[0]}&y=${entry.loc.split(',')[1]}&z=${entry.loc.split(',')[2]}`
+            spaceState[entry.loc]['portal'] = `https://spacetimemeta.io/metaverse/planet/?x=${entry.loc.split(',')[0]}&y=${entry.loc.split(',')[1]}&z=${entry.loc.split(',')[2]}`
         }
 
         if(entry.image !== "") {

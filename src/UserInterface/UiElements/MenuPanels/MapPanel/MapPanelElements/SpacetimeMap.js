@@ -233,7 +233,7 @@ export class SpacetimeMap extends UiElement {
                     this.renderChunk(newChunks[key]) 
                 } 
                 catch (error) { 
-                    console.error("[SpacetimeMap] Error with spaceState key: "+key+" ====================== "+error);
+                    console.error("[SpacetimeMap] Error with spaceState key: "+key+" /n======================/n "+error);
                 }
             }
         });
